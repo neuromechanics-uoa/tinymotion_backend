@@ -1,0 +1,13 @@
+data/tinymotion_backend/
+!data/tinymotion_backend/.gitkeep
+data/swag-config/
+!data/swag-config/.gitkeep
+__pycache__/
+*.db
+.env
+*.env
+_version.py
+*.egg-info/
+cov_html/
+.coverage
+.pytest_cache/

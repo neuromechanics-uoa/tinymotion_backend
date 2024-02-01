@@ -1,0 +1,74 @@
+[build-system]
+requires = ["setuptools >= 63.0.0", "setuptools-scm", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tinymotion_backend"
+description = "Backend system for tinymotion General Movements Assessment data collection app"
+authors = [
+    {name = "Chris Scott", email = "chris.scott@nesi.org.nz"},
+]
+readme = "README.md"
+requires-python = ">=3.10"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Development Status :: 2 - Pre-Alpha",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "alembic",
+    "fastapi >=0.109.0",
+    "passlib[bcrypt]",
+    "pydantic[email] >=2, <3",
+    "pydantic-settings",
+    "sqlmodel >= 0.0.14",
+    "python-jose",
+    "python-multipart",
+    "typer[all]",
+    "uvicorn[standard]",
+]
+dynamic = ["version"]
+
+[project.scripts]
+tinymotion-backend = "tinymotion_backend.cli:app"
+
+[tool.setuptools_scm]
+write_to = "src/tinymotion_backend/_version.py"
+
+[project.optional-dependencies]
+dev = [
+    "httpx",
+    "pyls-flake8",
+    "pytest",
+    "pytest-cov",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+addopts = "--cov-report term-missing --cov=src/ --cov-report html:cov_html --no-cov-on-fail"
+
+[tool.coverage.report]
+# Regexes for lines to exclude from consideration
+exclude_also = [
+    # Don't complain about missing debug-only code:
+    "def __repr__",
+    "if self\\.debug",
+
+    # Don't complain if tests don't hit defensive assertion code:
+    "raise AssertionError",
+    "raise NotImplementedError",
+
+    # Don't complain if non-runnable code isn't run:
+    "if 0:",
+    "if __name__ == .__main__.:",
+
+    # Don't complain about abstract methods, they aren't run:
+    "@(abc\\.)?abstractmethod",
+
+    "if TYPE_CHECKING:",
+]
+omit = [
+    "_version.py",
+]

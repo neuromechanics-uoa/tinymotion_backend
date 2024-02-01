@@ -1,0 +1,10 @@
+.env
+deploy/data/
+!deploy/data/swag-config/.gitkeep
+!deploy/data/tinymotion_backend/.gitkeep
+.coverage
+cov_html/
+__pycache__/
+.pytest_cache/
+*.egg-info/
+*.db

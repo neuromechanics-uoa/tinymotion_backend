@@ -1,0 +1,32 @@
+version: '3.4'
+
+services:
+  tinymotion_backend:
+    image: ghcr.io/neuromechanics-uoa/tinymotion-backend:${TINYMOTION_TAG}
+    container_name: tinymotion_backend
+    restart: unless-stopped
+    user: 1000:1000
+    environment:
+      - TZ=Pacific/Auckland
+    volumes:
+      - ./data/tinymotion_backend:/var/lib/tinymotion_backend
+
+  swag:
+    image: lscr.io/linuxserver/swag
+    container_name: swag
+    cap_add:
+      - NET_ADMIN
+    restart: unless-stopped
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Pacific/Auckland
+      - URL=${DUCKDNS_SUBDOMAIN}.duckdns.org
+      - SUBDOMAINS=wildcard
+      - VALIDATION=duckdns
+      - DUCKDNSTOKEN=${DUCKDNS_TOKEN}
+    volumes:
+      - ./data/swag-config:/config
+      - ./config/swag/tinymotion_backend.subdomain.conf:/config/nginx/proxy-confs/tinymotion_backend.subdomain.conf:ro
+    ports:
+      - 443:443/tcp
