@@ -4,9 +4,15 @@ from sqlmodel import Session
 from tinymotion_backend import database
 from tinymotion_backend.services.user_service import UserService
 from tinymotion_backend.models import UserCreate
+from tinymotion_backend._version import __version__
 
 
 app = typer.Typer()
+
+
+@app.command()
+def version():
+    print(f"TinyMotionBackend v{__version__}")
 
 
 @app.command()
