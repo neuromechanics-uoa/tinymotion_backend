@@ -14,7 +14,7 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
     && python3.11 -m ensurepip
 
 COPY . /opt/tinymotion_backend
-COPY .git /opt/tinymotion_backend/.git
+COPY ./.git/ /opt/tinymotion_backend/.git/
 COPY .gitignore /opt/tinymotion_backend/.gitignore
 COPY .dockerignore /opt/tinymotion_backend/.dockerignore
 COPY .flake8 /opt/tinymotion_backend/.flake8
