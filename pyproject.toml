@@ -18,6 +18,7 @@ classifiers = [
 dependencies = [
     "alembic",
     "fastapi >=0.109.0",
+    "gunicorn",
     "passlib[bcrypt]",
     "pydantic[email] >=2, <3",
     "pydantic-settings",

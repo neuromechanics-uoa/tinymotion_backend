@@ -22,11 +22,9 @@ RUN python3.11 -m pip --no-cache-dir install /opt/tinymotion_backend \
         && rm -rf /opt/tinymotion_backend
 
 WORKDIR /var/lib/tinymotion_backend
-CMD uvicorn \
+CMD gunicorn \
         --workers 4 \
-        --host 0.0.0.0 \
-        --port 8000 \
-        --proxy-headers \
-        --forwarded-allow-ips='*' \
-        --log-level=info \
+        --worker-class uvicorn.workers.UvicornWorker \
+        --bind 0.0.0.0:8000 \
+        --access-logfile="-" \
         tinymotion_backend.main:app
