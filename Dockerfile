@@ -19,9 +19,9 @@ COPY .gitignore /opt/tinymotion_backend/.gitignore
 COPY .dockerignore /opt/tinymotion_backend/.dockerignore
 COPY .flake8 /opt/tinymotion_backend/.flake8
 RUN python3.11 -m pip --no-cache-dir install /opt/tinymotion_backend \
-    && mkdir -p /opt/tinymotion_migrations \
-    && mv /opt/tinymotion_backend/alembic /opt/tinymotion_migrations/alembic \
-    && mv /opt/tinymotion_backend/alembic.ini /opt/tinymotion_migrations/alembic.ini \
+    && mkdir -p /var/lib/tinymotion_migrations \
+    && mv /opt/tinymotion_backend/alembic /var/lib/tinymotion_migrations/alembic \
+    && mv /opt/tinymotion_backend/alembic.ini /var/lib/tinymotion_migrations/alembic.ini \
     && rm -rf /opt/tinymotion_backend
 
 WORKDIR /var/lib/tinymotion_backend
