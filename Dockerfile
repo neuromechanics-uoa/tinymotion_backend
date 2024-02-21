@@ -26,9 +26,9 @@ RUN python3.11 -m pip --no-cache-dir install /opt/tinymotion_backend \
 
 WORKDIR /var/lib/tinymotion_backend
 # run database migrations first, then start the server
-CMD pushd /var/lib/tinymotion_migrations \
+CMD cd /var/lib/tinymotion_migrations \
     && alembic upgrade head \
-    && popd \
+    && cd /var/lib/tinymotion_backend \
     && gunicorn \
         --workers 4 \
         --worker-class uvicorn.workers.UvicornWorker \
