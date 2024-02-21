@@ -1,7 +1,5 @@
 import secrets
-from typing import Union, Optional
 
-from pydantic import field_validator, AnyHttpUrl, EmailStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -20,7 +18,7 @@ class Settings(BaseSettings):
 
     DATABASE_URI: str = "sqlite:///tinymotion.db"
 
-    model_config = SettingsConfigDict(case_sensitive=True, env_file=".tinymotion.env")
+    model_config = SettingsConfigDict(case_sensitive=True, env_prefix="TINYMOTION_")
 
 
 settings = Settings()
