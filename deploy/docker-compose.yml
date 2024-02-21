@@ -2,7 +2,7 @@ version: '3.4'
 
 services:
   tinymotion_backend:
-    image: ghcr.io/neuromechanics-uoa/tinymotion-backend:${TINYMOTION_TAG}
+    image: ghcr.io/neuromechanics-uoa/tinymotion-backend:${TINYMOTION_PROD_TAG}
     container_name: tinymotion_backend
     restart: unless-stopped
     user: 1000:1000
@@ -10,6 +10,16 @@ services:
       - TZ=Pacific/Auckland
     volumes:
       - ./data/tinymotion_backend:/var/lib/tinymotion_backend
+
+  tinymotion_backend_test:
+    image: ghcr.io/neuromechanics-uoa/tinymotion-backend:${TINYMOTION_TEST_TAG}
+    container_name: tinymotion_backend_test
+    restart: unless-stopped
+    user: 1000:1000
+    environment:
+      - TZ=Pacific/Auckland
+    volumes:
+      - ./data/tinymotion_backend_test:/var/lib/tinymotion_backend
 
   swag:
     image: lscr.io/linuxserver/swag
@@ -28,5 +38,6 @@ services:
     volumes:
       - ./data/swag-config:/config
       - ./config/swag/tinymotion_backend.subdomain.conf:/config/nginx/proxy-confs/tinymotion_backend.subdomain.conf:ro
+      - ./config/swag/tinymotion_backend_test.subdomain.conf:/config/nginx/proxy-confs/tinymotion_backend_test.subdomain.conf:ro
     ports:
       - 443:443/tcp
