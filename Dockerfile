@@ -19,10 +19,17 @@ COPY .gitignore /opt/tinymotion_backend/.gitignore
 COPY .dockerignore /opt/tinymotion_backend/.dockerignore
 COPY .flake8 /opt/tinymotion_backend/.flake8
 RUN python3.11 -m pip --no-cache-dir install /opt/tinymotion_backend \
-        && rm -rf /opt/tinymotion_backend
+    && mkdir -p /opt/tinymotion_migrations \
+    && mv /opt/tinymotion_backend/alembic /opt/tinymotion_migrations/alembic \
+    && mv /opt/tinymotion_backend/alembic.ini /opt/tinymotion_migrations/alembic.ini \
+    && rm -rf /opt/tinymotion_backend
 
 WORKDIR /var/lib/tinymotion_backend
-CMD gunicorn \
+# run database migrations first, then start the server
+CMD pushd /var/lib/tinymotion_migrations \
+    && alembic upgrade head \
+    && popd \
+    && gunicorn \
         --workers 4 \
         --worker-class uvicorn.workers.UvicornWorker \
         --bind 0.0.0.0:8000 \
