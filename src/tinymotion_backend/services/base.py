@@ -4,6 +4,8 @@ import sqlalchemy
 from sqlmodel import Session, SQLModel
 from fastapi import HTTPException
 
+from tinymotion_backend.core.exc import UniqueConstraintError
+
 
 ModelType = TypeVar("ModelType", bound=SQLModel)
 CreateSchemaType = TypeVar("CreateSchemaType", bound=SQLModel)
@@ -27,7 +29,7 @@ class BaseService(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
 
     def create(self, obj: CreateSchemaType) -> ModelType:
         # construct the db model object
-        db_obj: ModelType = self.model(**obj.model_dump(mode='python'))
+        db_obj: ModelType = self.model.model_validate(obj)
 
         # add to database
         self.db_session.add(db_obj)
@@ -37,7 +39,7 @@ class BaseService(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         except sqlalchemy.exc.IntegrityError as e:
             self.db_session.rollback()
             if "duplicate key" in str(e) or "UNIQUE constraint failed" in str(e):
-                raise HTTPException(status_code=409, detail="Conflict Error")
+                raise UniqueConstraintError(str(e))
             else:
                 raise e
 

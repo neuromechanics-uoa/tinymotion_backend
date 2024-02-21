@@ -11,3 +11,4 @@ _version.py
 cov_html/
 .coverage
 .pytest_cache/
+.DS_Store

@@ -56,7 +56,7 @@ class InfantBase(SQLModel):
     full_name: str
     birth_date: datetime.date
     due_date: datetime.date
-    nhi_number: str
+    nhi_number: str = Field(unique=True, description="The NHI number must be unique")
 
 
 class Infant(InfantBase, table=True):
@@ -70,8 +70,15 @@ class InfantCreate(InfantBase):
     pass
 
 
+class InfantUpdate(SQLModel):
+    full_name: Optional[str]
+    birth_date: Optional[datetime.date]
+    due_date: Optional[datetime.date]
+    nhi_number: Optional[str]
+
+
 class InfantRead(InfantBase):
-    child_id: int
+    infant_id: int
 
 
 ##############################################################################

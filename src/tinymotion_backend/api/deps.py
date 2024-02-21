@@ -10,6 +10,7 @@ from tinymotion_backend import models
 from tinymotion_backend.core.config import settings
 from tinymotion_backend import database
 from tinymotion_backend.services.user_service import UserService
+from tinymotion_backend.services.infant_service import InfantService
 
 
 logger = logging.getLogger(__name__)
@@ -45,10 +46,14 @@ def get_user_service(session: Session = Depends(get_session)) -> UserService:
     return UserService(session)
 
 
+def get_infant_service(session: Session = Depends(get_session)) -> InfantService:
+    return InfantService(session)
+
+
 def get_current_user(
     token: Annotated[str, Depends(oauth2_scheme)],
     user_service: UserService = Depends(get_user_service),
-) -> models.User:
+) -> models.UserRead:
     token_data = get_token_data(token, settings.ACCESS_TOKEN_SECRET_KEY)
     user = user_service.get(token_data.user_id)
     if not user:
@@ -59,7 +64,7 @@ def get_current_user(
 
 def get_current_active_user(
     current_user: Annotated[models.User, Depends(get_current_user)],
-) -> models.User:
+) -> models.UserRead:
     if current_user.disabled:
         raise HTTPException(status_code=400, detail="Inactive user")
     return current_user
