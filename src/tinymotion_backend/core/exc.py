@@ -14,3 +14,14 @@ class UniqueConstraintError(TinyMotionException):
 
     """
     pass
+
+
+class NotFoundError(TinyMotionException):
+    """
+    Error due to some object not being found in the database
+
+    """
+
+
+class InvalidInputError(TinyMotionException):
+    """Input data is not valid"""

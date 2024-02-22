@@ -42,6 +42,7 @@ dev = [
     "pyls-flake8",
     "pytest",
     "pytest-cov",
+    "freezegun",
 ]
 
 [tool.setuptools.packages.find]

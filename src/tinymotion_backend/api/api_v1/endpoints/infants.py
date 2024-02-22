@@ -15,7 +15,7 @@ router = APIRouter()
 
 @router.post(
     "/",
-    response_model=models.InfantRead,
+    response_model=models.InfantOut,
     responses={
         401: {
             "description": "Unauthorized",

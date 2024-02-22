@@ -2,7 +2,6 @@ from typing import Any, Generic, Optional, Type, TypeVar
 
 import sqlalchemy
 from sqlmodel import Session, SQLModel
-from fastapi import HTTPException
 
 from tinymotion_backend.core.exc import UniqueConstraintError
 
@@ -13,9 +12,10 @@ UpdateSchemaType = TypeVar("UpdateSchemaType", bound=SQLModel)
 
 
 class BaseService(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
-    def __init__(self, model: Type[ModelType], db_session: Session):
+    def __init__(self, model: Type[ModelType], db_session: Session, created_by: int | None = None):
         self.model = model
         self.db_session = db_session
+        self.created_by = created_by
 
     def get(self, id: Any) -> Optional[ModelType]:
         obj: Optional[ModelType] = self.db_session.get(self.model, id)
@@ -29,7 +29,12 @@ class BaseService(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
 
     def create(self, obj: CreateSchemaType) -> ModelType:
         # construct the db model object
-        db_obj: ModelType = self.model.model_validate(obj)
+        db_obj: ModelType = self.model(**obj.model_dump(mode='python'))
+
+        # add created by if exists
+        if self.created_by is not None:
+            db_obj.created_by = self.created_by
+            print(f"Adding created_by: {db_obj!r}")
 
         # add to database
         self.db_session.add(db_obj)

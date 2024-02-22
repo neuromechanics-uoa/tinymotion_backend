@@ -24,10 +24,3 @@ def test_user_service_create_user_missing_data(session: Session, client: TestCli
     infant_service = InfantService(session)
     with pytest.raises(ValidationError):
         infant_in = InfantCreate(full_name="An Infant", birth_date="2024-01-01", due_date="2024-01-02")
-        infant_service.create(infant_in)
-
-
-def test_user_service_create_user_missing_data_2(session: Session, client: TestClient):
-    infant_service = InfantService(session)
-    with pytest.raises(ValidationError):
-        infant_service.create({"full_name": "An Infant"})

@@ -1,11 +1,11 @@
 import logging
-from typing import Optional
 
 from sqlmodel import select, Session
 from sqlalchemy.exc import NoResultFound, MultipleResultsFound
 
 from tinymotion_backend.services.base import BaseService
 from tinymotion_backend.models import Infant, InfantCreate, InfantUpdate
+from tinymotion_backend.core.exc import NotFoundError, UniqueConstraintError
 
 
 logger = logging.getLogger(__name__)
@@ -15,7 +15,7 @@ class InfantService(BaseService[Infant, InfantCreate, InfantUpdate]):
     def __init__(self, db_session: Session):
         super(InfantService, self).__init__(Infant, db_session)
 
-    def get_by_nhi_number(self, nhi_number: str) -> Optional[Infant]:
+    def get_by_nhi_number(self, nhi_number: str) -> Infant:
         """
         Get Infant by NHI number
 
@@ -26,9 +26,9 @@ class InfantService(BaseService[Infant, InfantCreate, InfantUpdate]):
             ).one()
         except NoResultFound:
             logger.error("Could not find any infant with the given NHI number")
-            infant = None
+            raise NotFoundError("Could not find any infant with the given NHI number")
         except MultipleResultsFound:
             logger.error("Found multiple infants with the given NHI number")
-            infant = None
+            raise UniqueConstraintError("Found multiple infants with the given NHI number")
 
         return infant

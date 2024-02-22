@@ -11,6 +11,7 @@ from tinymotion_backend.core.config import settings
 from tinymotion_backend import database
 from tinymotion_backend.services.user_service import UserService
 from tinymotion_backend.services.infant_service import InfantService
+from tinymotion_backend.services.consent_service import ConsentService
 
 
 logger = logging.getLogger(__name__)
@@ -68,3 +69,10 @@ def get_current_active_user(
     if current_user.disabled:
         raise HTTPException(status_code=400, detail="Inactive user")
     return current_user
+
+
+def get_consent_service(
+    session: Session = Depends(get_session),
+    current_user: models.User = Depends(get_current_active_user),
+) -> ConsentService:
+    return ConsentService(session, created_by=current_user.user_id)

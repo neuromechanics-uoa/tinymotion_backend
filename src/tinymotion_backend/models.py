@@ -31,7 +31,7 @@ class UserBase(SQLModel):
 
 class User(UserBase, table=True):
     user_id: Optional[int] = Field(default=None, primary_key=True)
-    access_key: str = Field(unique=True)
+    access_key: str = Field(unique=True, index=True)
 
 
 class UserCreate(UserBase):
@@ -56,13 +56,13 @@ class InfantBase(SQLModel):
     full_name: str
     birth_date: datetime.date
     due_date: datetime.date
-    nhi_number: str = Field(unique=True, description="The NHI number must be unique")
+    nhi_number: str = Field(unique=True, description="The NHI number must be unique", index=True)
 
 
 class Infant(InfantBase, table=True):
     infant_id: Optional[int] = Field(default=None, primary_key=True)
 
-    consent: "Consent" = Relationship(back_populates="infant")
+    consents: list["Consent"] = Relationship(back_populates="infant")
     videos: list["Video"] = Relationship(back_populates="infant")
 
 
@@ -77,7 +77,7 @@ class InfantUpdate(SQLModel):
     nhi_number: Optional[str]
 
 
-class InfantRead(InfantBase):
+class InfantOut(InfantBase):
     infant_id: int
 
 
@@ -86,24 +86,41 @@ class InfantRead(InfantBase):
 ##############################################################################
 
 class ConsentBase(SQLModel):
-    consent_giver_name: str
-    created_at: datetime.datetime = Field(default=datetime.datetime.utcnow)
-    created_by: int = Field(foreign_key="user.user_id")
-    infant_id: int = Field(foreign_key="infant.infant_id")
+    consent_giver_name: Optional[str] = Field(default=None)
+    consent_giver_email: Optional[EmailStr] = Field(default=None, sa_type=AutoString)
+    collected_physically: bool = Field(
+        default=False,
+        description="An electronic consent is not required because a physical consent exists",
+    )
 
 
 class Consent(ConsentBase, table=True):
     consent_id: Optional[int] = Field(default=None, primary_key=True)
+    infant_id: int = Field(foreign_key="infant.infant_id")
+    created_at: datetime.datetime = Field(default_factory=datetime.datetime.utcnow)
+    created_by: int = Field(default=None, foreign_key="user.user_id")
 
-    infant: Infant = Relationship(back_populates="consent")
+    infant: Infant = Relationship(back_populates="consents")
+
+
+class ConsentCreateViaNHI(ConsentBase):
+    nhi_number: str
 
 
 class ConsentCreate(ConsentBase):
-    pass
+    infant_id: int
 
 
-class ConsentRead(SQLModel):
+class ConsentUpdate(SQLModel):
+    consent_giver_name: Optional[str]
+    collected_physically: Optional[bool]
+
+
+class ConsentOut(ConsentBase):
     consent_id: int
+    infant_id: int
+    created_at: datetime.datetime
+    created_by: int
 
 
 ##############################################################################
