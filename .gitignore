@@ -1,5 +1,7 @@
 data/tinymotion_backend/
 !data/tinymotion_backend/.gitkeep
+data/tinymotion_backend_test/
+!data/tinymotion_backend_test/.gitkeep
 data/swag-config/
 !data/swag-config/.gitkeep
 __pycache__/

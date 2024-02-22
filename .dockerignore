@@ -2,6 +2,7 @@
 deploy/data/
 !deploy/data/swag-config/.gitkeep
 !deploy/data/tinymotion_backend/.gitkeep
+!deploy/data/tinymotion_backend_test/.gitkeep
 .coverage
 cov_html/
 __pycache__/
