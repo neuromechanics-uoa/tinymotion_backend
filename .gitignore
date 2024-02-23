@@ -14,3 +14,4 @@ cov_html/
 .coverage
 .pytest_cache/
 .DS_Store
+videos/

@@ -25,3 +25,7 @@ class NotFoundError(TinyMotionException):
 
 class InvalidInputError(TinyMotionException):
     """Input data is not valid"""
+
+
+class NoConsentError(TinyMotionException):
+    """No consent exists for the infant"""

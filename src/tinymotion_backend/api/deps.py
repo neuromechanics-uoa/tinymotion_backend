@@ -12,6 +12,7 @@ from tinymotion_backend import database
 from tinymotion_backend.services.user_service import UserService
 from tinymotion_backend.services.infant_service import InfantService
 from tinymotion_backend.services.consent_service import ConsentService
+from tinymotion_backend.services.video_service import VideoService
 
 
 logger = logging.getLogger(__name__)
@@ -76,3 +77,10 @@ def get_consent_service(
     current_user: models.User = Depends(get_current_active_user),
 ) -> ConsentService:
     return ConsentService(session, created_by=current_user.user_id)
+
+
+def get_video_service(
+    session: Session = Depends(get_session),
+    current_user: models.User = Depends(get_current_active_user),
+) -> VideoService:
+    return VideoService(session, created_by=current_user.user_id)

@@ -38,6 +38,8 @@ class ConsentService(BaseService[Consent, ConsentCreate, ConsentUpdate]):
                 logger.error(msg)
                 raise InvalidInputError(msg)
 
+        # TODO: send email?
+
         return super(ConsentService, self).create(obj)
 
     def create_using_nhi_number(self, obj: ConsentCreateViaNHI) -> Consent:
@@ -54,7 +56,5 @@ class ConsentService(BaseService[Consent, ConsentCreate, ConsentUpdate]):
             collected_physically=obj.collected_physically,
         )
         created_consent = self.create(consent_obj)
-
-        # TODO: send email?
 
         return created_consent

@@ -128,22 +128,33 @@ class ConsentOut(ConsentBase):
 ##############################################################################
 
 class VideoBase(SQLModel):
-    file_name: str
-    sha256sum: str = Field(min_length=32, max_length=32)
-    infant_id: int = Field(foreign_key="infant.infant_id")
-    created_at: datetime.datetime = Field(default=datetime.datetime.utcnow)
-    created_by: int = Field(foreign_key="user.user_id")
+    video_name: str = Field(unique=True, index=True)
+    sha256sum: str = Field(min_length=64, max_length=64)
 
 
 class Video(VideoBase, table=True):
-    video_id: int = Field(default=None, primary_key=True)
+    video_id: Optional[int] = Field(default=None, primary_key=True)
+    infant_id: int = Field(foreign_key="infant.infant_id")
+    created_at: datetime.datetime = Field(default_factory=datetime.datetime.utcnow)
+    created_by: int = Field(foreign_key="user.user_id")
 
     infant: Infant = Relationship(back_populates="videos")
 
 
 class VideoCreate(VideoBase):
+    infant_id: int
+
+
+class VideoCreateViaNHI(VideoBase):
+    nhi_number: str
+
+
+class VideoUpdate(SQLModel):
     pass
 
 
-class VideoRead(SQLModel):
+class VideoOut(VideoBase):
     video_id: int
+    infant_id: int
+    created_at: datetime.datetime
+    created_by: int

@@ -3,11 +3,10 @@ import pytest
 
 from fastapi.testclient import TestClient
 from sqlmodel import Session
-from pydantic import ValidationError
 from freezegun import freeze_time
 
 from tinymotion_backend.services.consent_service import ConsentService
-from tinymotion_backend.models import ConsentCreate, ConsentCreateViaNHI, Infant
+from tinymotion_backend.models import ConsentCreateViaNHI, Infant
 from tinymotion_backend.core.exc import NotFoundError
 
 

@@ -1,4 +1,6 @@
+import os
 import logging
+from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 
@@ -14,9 +16,18 @@ logging.basicConfig(
 logging.getLogger('tinymotion_backend').setLevel(logging.DEBUG)
 logger = logging.getLogger(__name__)
 
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # ensure video library exists
+    os.makedirs(settings.VIDEO_LIBRARY_PATH, exist_ok=True)
+    yield
+
+
 app = FastAPI(
     title=settings.PROJECT_NAME,
     version=tinymotion_backend_version,
+    lifespan=lifespan,
 )
 
 app.include_router(api_v1_router, prefix=settings.API_V1_STR)

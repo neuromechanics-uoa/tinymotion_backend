@@ -18,6 +18,8 @@ class Settings(BaseSettings):
 
     DATABASE_URI: str = "sqlite:///tinymotion.db"
 
+    VIDEO_LIBRARY_PATH: str = "./videos"
+
     model_config = SettingsConfigDict(case_sensitive=True, env_prefix="TINYMOTION_")
 
 
