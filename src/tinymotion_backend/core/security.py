@@ -16,18 +16,22 @@ class OAuth2PasswordAndRefreshRequestForm(OAuth2PasswordRequestForm):
 
     def __init__(
         self,
-        grant_type: str = Form(default="password", pattern="password|refresh_token"),
-        access_key: str = Form(default=""),
+        grant_type: str = Form(default=None, pattern="password|refresh_token"),
+        username: str = Form(default=""),
+        password: str = Form(default=""),
         refresh_token: str = Form(default=""),
+        scope: str = Form(default=""),
+        client_id: str | None = Form(default=None),
+        client_secret: str | None = Form(default=None),
     ):
         super().__init__(
             grant_type=grant_type,
-            username=access_key,
-            password="",
-            client_id=None,
-            client_secret=None,
+            username=username,
+            password=password,
+            client_id=client_id,
+            client_secret=client_secret,
         )
-        self.scopes = []
+        self.scopes = scope.split()
         self.refresh_token = refresh_token
 
 

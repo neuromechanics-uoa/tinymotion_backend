@@ -40,8 +40,10 @@ def login_for_tokens(
     """
     Login to get access and refresh tokens to use with future requests:
 
-    - if `grant_type` is "password" then `access_key` must be present
-    - if `grant_type` is "refresh_token" then `refresh_token` must be present
+    - if `grant_type` is "password" then the access key must be passed in the `username` field,
+      all other fields can be blank
+    - if `grant_type` is "refresh_token" then `refresh_token` must be present, all other fields
+      can be blank
 
     """
     if form_data.grant_type == "refresh_token":

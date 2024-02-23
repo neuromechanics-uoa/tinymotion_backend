@@ -12,7 +12,7 @@ def test_v1_login_access_token(session: Session, client: TestClient):
 
     # call token endpoint
     data = {
-        "access_key": "secretkey",
+        "username": "secretkey",
     }
     response = client.post("/v1/token", data=data)
     assert response.status_code == 200
@@ -29,7 +29,7 @@ def test_v1_login_access_token_wrong(session: Session, client: TestClient):
 
     # call token endpoint
     data = {
-        "access_key": "badkey",
+        "username": "badkey",
     }
     response = client.post("/v1/token", data=data)
     assert response.status_code == 401
@@ -45,7 +45,7 @@ def test_v1_login_access_token_disabled(session: Session, client: TestClient):
 
     # call token endpoint
     data = {
-        "access_key": "secretkey",
+        "username": "secretkey",
     }
     response = client.post("/v1/token", data=data)
     assert response.status_code == 400
@@ -61,7 +61,7 @@ def test_v1_login_refresh_token(session: Session, client: TestClient):
 
     # call token endpoint
     data = {
-        "access_key": "secretkey",
+        "username": "secretkey",
     }
     response = client.post("/v1/token", data=data)
     assert response.status_code == 200
@@ -91,7 +91,7 @@ def test_v1_login_refresh_token_user_deleted(session: Session, client: TestClien
 
     # call token endpoint
     data = {
-        "access_key": "secretkey",
+        "username": "secretkey",
     }
     response = client.post("/v1/token", data=data)
     assert response.status_code == 200
@@ -124,7 +124,7 @@ def test_v1_login_refresh_token_user_disabled(session: Session, client: TestClie
 
     # call token endpoint
     data = {
-        "access_key": "secretkey",
+        "username": "secretkey",
     }
     response = client.post("/v1/token", data=data)
     assert response.status_code == 200

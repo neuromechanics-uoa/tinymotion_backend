@@ -34,7 +34,7 @@ def client_fixture(session: Session):
 @pytest.fixture(scope="function")
 def access_token_headers(client: TestClient) -> dict[str, str]:
     login_data = {
-        "access_key": mock_data.MOCK_USERS[0]["access_key"],
+        "username": mock_data.MOCK_USERS[0]["access_key"],
     }
     r = client.post("/v1/token", data=login_data)
     tokens = r.json()
