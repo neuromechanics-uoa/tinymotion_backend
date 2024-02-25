@@ -107,6 +107,10 @@ def upload_video(
                 detail=f"Verification of the SHA256 checksum of the uploaded video failed ({sha256_hash.hexdigest()})",
             )
 
+        # now we update the video size in the database
+        update_obj = models.VideoUpdate(video_size=os.path.getsize(stored_file))
+        video_service.update(video_record.video_id, update_obj)
+
         logger.debug("Finished receiving video file")
 
     except HTTPException:

@@ -137,6 +137,7 @@ class Video(VideoBase, table=True):
     infant_id: int = Field(foreign_key="infant.infant_id")
     created_at: datetime.datetime = Field(default_factory=datetime.datetime.utcnow)
     created_by: int = Field(foreign_key="user.user_id")
+    video_size: Optional[int] = Field(default=None)
 
     infant: Infant = Relationship(back_populates="videos")
 
@@ -150,7 +151,7 @@ class VideoCreateViaNHI(VideoBase):
 
 
 class VideoUpdate(SQLModel):
-    pass
+    video_size: Optional[int]
 
 
 class VideoOut(VideoBase):
@@ -158,3 +159,4 @@ class VideoOut(VideoBase):
     infant_id: int
     created_at: datetime.datetime
     created_by: int
+    video_size: int
