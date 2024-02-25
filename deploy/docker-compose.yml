@@ -14,6 +14,7 @@ services:
       - TINYMOTION_VIDEO_LIBRARY_PATH=${TINYMOTION_VIDEO_LIBRARY_PATH}
     volumes:
       - ./data/tinymotion_backend:/var/lib/tinymotion_backend
+      - ./logs/tinymotion_backend:/var/log/tinymotion_backend
 
   tinymotion_backend_test:
     image: ghcr.io/neuromechanics-uoa/tinymotion-backend:${TINYMOTION_TEST_TAG}
@@ -28,6 +29,7 @@ services:
       - TINYMOTION_VIDEO_LIBRARY_PATH=${TINYMOTION_VIDEO_LIBRARY_PATH}
     volumes:
       - ./data/tinymotion_backend_test:/var/lib/tinymotion_backend
+      - ./logs/tinymotion_backend_test:/var/log/tinymotion_backend
 
   swag:
     image: lscr.io/linuxserver/swag

@@ -22,16 +22,10 @@ RUN python3.11 -m pip --no-cache-dir install /opt/tinymotion_backend \
     && mkdir -p /var/lib/tinymotion_migrations \
     && mv /opt/tinymotion_backend/alembic /var/lib/tinymotion_migrations/alembic \
     && mv /opt/tinymotion_backend/alembic.ini /var/lib/tinymotion_migrations/alembic.ini \
-    && rm -rf /opt/tinymotion_backend
+    && cp /opt/tinymotion_backend/docker/entrypoint.sh /entrypoint.sh \
+    && chmod +x /entrypoint.sh \
+    && rm -rf /opt/tinymotion_backend \
+    && mkdir -p /var/log/tinymotion_backend
 
 WORKDIR /var/lib/tinymotion_backend
-# run database migrations first, then start the server
-CMD cd /var/lib/tinymotion_migrations \
-    && alembic upgrade head \
-    && cd /var/lib/tinymotion_backend \
-    && gunicorn \
-        --workers 4 \
-        --worker-class uvicorn.workers.UvicornWorker \
-        --bind 0.0.0.0:8000 \
-        --access-logfile="-" \
-        tinymotion_backend.main:app
+CMD /entrypoint.sh
