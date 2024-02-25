@@ -13,5 +13,5 @@ gunicorn \
     --workers 4 \
     --worker-class tinymotion_backend.custom_uvicorn_worker.CustomUvicornWorker \
     --bind 0.0.0.0:8000 \
-    --access-logfile="/var/log/tinymotion_backend/access.log" \
+    --access-logfile="-" \
     tinymotion_backend.main:app

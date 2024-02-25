@@ -24,8 +24,7 @@ RUN python3.11 -m pip --no-cache-dir install /opt/tinymotion_backend \
     && mv /opt/tinymotion_backend/alembic.ini /var/lib/tinymotion_migrations/alembic.ini \
     && cp /opt/tinymotion_backend/docker/entrypoint.sh /entrypoint.sh \
     && chmod +x /entrypoint.sh \
-    && rm -rf /opt/tinymotion_backend \
-    && mkdir -p /var/log/tinymotion_backend
+    && rm -rf /opt/tinymotion_backend
 
 WORKDIR /var/lib/tinymotion_backend
 CMD /entrypoint.sh

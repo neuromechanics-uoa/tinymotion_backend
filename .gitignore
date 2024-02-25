@@ -2,10 +2,6 @@ data/tinymotion_backend/
 !data/tinymotion_backend/.gitkeep
 data/tinymotion_backend_test/
 !data/tinymotion_backend_test/.gitkeep
-logs/tinymotion_backend/
-!logs/tinymotion_backend/.gitkeep
-logs/tinymotion_backend_test/
-!logs/tinymotion_backend_test/.gitkeep
 data/swag-config/
 !data/swag-config/.gitkeep
 __pycache__/
