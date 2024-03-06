@@ -46,7 +46,6 @@ def test_create_video(
     with upload_file.open('rb') as f:
         fbytes = f.read()
         sha256sum = hashlib.sha256(fbytes).hexdigest()
-    expected_video_size = upload_file.stat().st_size
 
     # add video
     data_in = {
@@ -63,9 +62,8 @@ def test_create_video(
     assert data["created_at"] is not None  # TODO: change this to use freezetime
     assert data["infant_id"] == 1
     assert data["video_name"] is not None
-    assert os.path.splitext(data["video_name"])[1] == ".mp4"
+    assert os.path.splitext(data["video_name"])[1] == ".enc"
     assert os.path.exists(os.path.join(settings.VIDEO_LIBRARY_PATH, data["video_name"]))
-    assert data["video_size"] == expected_video_size
 
 
 def test_create_video_wrong_nhi(

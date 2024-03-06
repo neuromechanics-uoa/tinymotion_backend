@@ -34,7 +34,6 @@ class BaseService(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         # add created by if exists
         if self.created_by is not None:
             db_obj.created_by = self.created_by
-            print(f"Adding created_by: {db_obj!r}")
 
         # add to database
         self.db_session.add(db_obj)

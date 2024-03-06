@@ -138,6 +138,7 @@ class Video(VideoBase, table=True):
     created_at: datetime.datetime = Field(default_factory=datetime.datetime.utcnow)
     created_by: int = Field(foreign_key="user.user_id")
     video_size: Optional[int] = Field(default=None)
+    sha256sum_enc: Optional[str] = Field(min_length=64, max_length=64)
 
     infant: Infant = Relationship(back_populates="videos")
 
@@ -152,6 +153,7 @@ class VideoCreateViaNHI(VideoBase):
 
 class VideoUpdate(SQLModel):
     video_size: Optional[int]
+    sha256sum_enc: Optional[str] = Field(min_length=64, max_length=64)
 
 
 class VideoOut(VideoBase):

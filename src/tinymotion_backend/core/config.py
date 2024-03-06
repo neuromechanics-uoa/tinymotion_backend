@@ -1,6 +1,7 @@
 import secrets
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
+from cryptography.fernet import Fernet
 
 
 class Settings(BaseSettings):
@@ -14,13 +15,14 @@ class Settings(BaseSettings):
     PROJECT_NAME: str = "TinyMotion"
     API_V1_STR: str = "/v1"
 
-    FILE_CHUNK_SIZE_BYTES: int = 1024 * 1024
+    FILE_CHUNK_SIZE_BYTES: int = 1024 * 1024 * 200  # default to 200 MB
 
     DATABASE_URI: str = "sqlite:///tinymotion.db"
 
     VIDEO_LIBRARY_PATH: str = "./videos"
+    VIDEO_SECRET_KEY: str = Fernet.generate_key().decode('ascii')
 
-    model_config = SettingsConfigDict(case_sensitive=True, env_prefix="TINYMOTION_")
+    model_config = SettingsConfigDict(case_sensitive=True, env_prefix="TINYMOTION_", env_file=".tinymotion.env")
 
 
 settings = Settings()

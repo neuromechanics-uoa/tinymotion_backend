@@ -1,7 +1,6 @@
 import os
 import logging
 import uuid
-import hashlib
 from typing import Annotated
 
 from fastapi import UploadFile, File, Form, Depends, HTTPException, APIRouter
@@ -11,6 +10,7 @@ from tinymotion_backend import models
 from tinymotion_backend.api import deps
 from tinymotion_backend.services.video_service import VideoService
 from tinymotion_backend.core.exc import NotFoundError, NoConsentError
+from tinymotion_backend.core.encryption import encrypt_file
 
 
 logger = logging.getLogger(__name__)
@@ -57,7 +57,7 @@ def upload_video(
 
     """
     # first we create a record in the db for this video
-    video_name = str(uuid.uuid4()) + os.path.splitext(video.filename)[1]
+    video_name = str(uuid.uuid4()) + os.path.splitext(video.filename)[1] + ".enc"
     try:
         video_in = models.VideoCreateViaNHI(
             sha256sum=checksum_sha256,
@@ -80,21 +80,19 @@ def upload_video(
             detail="No consent exists",
         )
 
+    # path to the stored file on disk
     stored_file = os.path.join(settings.VIDEO_LIBRARY_PATH, video_name)
+
+    # if anything goes wrong we want to delete the database entry
     try:
-        # next we store the video file to disk
-        logger.debug(f"Storing video locally: {stored_file}")
-        # TODO: write to tmpdir instead until checksum verified, then move to storage (but would have to check checksum again?)
+        # next we store the (encrypted) video file to disk
         logger.debug(f"Receiving video: {video.filename} (size: {video.size}; content_type: {video.content_type})")
-        sha256_hash = hashlib.sha256()
-        with open(stored_file, "wb") as out_file:
-            while content := video.file.read(settings.FILE_CHUNK_SIZE_BYTES):
-                out_file.write(content)
-                sha256_hash.update(content)
+        logger.debug(f"Storing video locally: {stored_file}")
+        stored_hash_orig, stored_hash_enc = encrypt_file(video.file, stored_file)
 
         # now we verify the checksum
-        if checksum_sha256 != sha256_hash.hexdigest():
-            logger.error(f"Checksums do not match (theirs: {checksum_sha256} ; ours: {sha256_hash.hexdigest()})")
+        if checksum_sha256 != stored_hash_orig:
+            logger.error(f"Checksums do not match (theirs: {checksum_sha256} ; ours: {stored_hash_orig})")
 
             # delete the record in the database
             video_service.delete(video_record.video_id)
@@ -104,11 +102,14 @@ def upload_video(
 
             raise HTTPException(
                 status_code=409,
-                detail=f"Verification of the SHA256 checksum of the uploaded video failed ({sha256_hash.hexdigest()})",
+                detail=f"Verification of the SHA256 checksum of the uploaded video failed ({stored_hash_orig})",
             )
 
         # now we update the video size in the database
-        update_obj = models.VideoUpdate(video_size=os.path.getsize(stored_file))
+        update_obj = models.VideoUpdate(
+            video_size=os.path.getsize(stored_file),
+            sha256sum_enc=stored_hash_enc,
+        )
         video_service.update(video_record.video_id, update_obj)
 
         logger.debug("Finished receiving video file")
