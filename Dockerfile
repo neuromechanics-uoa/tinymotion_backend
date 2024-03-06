@@ -20,6 +20,8 @@ COPY .dockerignore /opt/tinymotion_backend/.dockerignore
 COPY .flake8 /opt/tinymotion_backend/.flake8
 RUN python3.11 -m venv /var/lib/tinymotion_env \
     && . /var/lib/tinymotion_env/bin/activate \
+    && echo ". /var/lib/tinymotion_env/bin/activate" > /etc/profile.d/tinymotion.sh \
+    && echo ". /var/lib/tinymotion_env/bin/activate" > /etc/bash.bashrc \
     && python -m pip --no-cache-dir install /opt/tinymotion_backend \
     && mkdir -p /var/lib/tinymotion_migrations \
     && mv /opt/tinymotion_backend/alembic /var/lib/tinymotion_migrations/alembic \
