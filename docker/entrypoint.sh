@@ -1,5 +1,8 @@
 #!/bin/bash -e
 
+# activate virtual env
+. /var/lib/tinymotion_env/bin/activate
+
 # run the database migrations
 echo "Running database migrations..."
 cd /var/lib/tinymotion_migrations
