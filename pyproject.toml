@@ -40,14 +40,15 @@ write_to = "src/tinymotion_backend/_version.py"
 
 [project.optional-dependencies]
 dev = [
-    "httpx",
-    "pyls-flake8",
-    "pytest",
-    "pytest-cov",
     "freezegun",
+    "httpx",
     "mkdocs",
     "mkdocs-material",
     "mkdocstrings[python] >=0.19",
+    "pyls-flake8",
+    "pytest",
+    "pytest-cov",
+    "typer-cli",
 ]
 
 [tool.setuptools.packages.find]

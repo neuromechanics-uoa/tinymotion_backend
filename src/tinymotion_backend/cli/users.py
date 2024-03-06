@@ -1,22 +1,22 @@
 import typer
+from typing import Annotated
 from sqlmodel import Session
 
 from tinymotion_backend import database
 from tinymotion_backend.services.user_service import UserService
 from tinymotion_backend.models import UserCreate
-from tinymotion_backend._version import __version__
 
 
 app = typer.Typer()
 
 
 @app.command()
-def version():
-    print(f"TinyMotionBackend v{__version__}")
-
-
-@app.command()
-def create_user(email: str, access_key: str, disabled: bool = False):
+def create_user(
+    email: Annotated[str, typer.Argument(help="The new user's email", default=None)],
+    access_key: Annotated[str, typer.Argument(help="The new user's access key that they will use to login", default=None)],
+    disabled: Annotated[bool, typer.Option(help="Whether the account should be disabled on creation", default=False)] = False,
+):
+    """Create a new user."""
     new_user = UserCreate(
         email=email,
         access_key=access_key,
@@ -32,9 +32,13 @@ def create_user(email: str, access_key: str, disabled: bool = False):
 
 @app.command()
 def list_users():
+    """
+    List existing users.
+
+    """
     with Session(database.engine) as session:
         user_service = UserService(session)
         users = user_service.list()
-        print(f"Found {len(users)} users:")
+        print(f"Found {len(users)} users")
         for user in users:
             print(repr(user))
