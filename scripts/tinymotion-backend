@@ -1,0 +1,4 @@
+#!/bin/bash -e
+
+. /var/lib/tinymotion_env/bin/activate
+/var/lib/tinymotion_env/bin/tinymotion-backend "$@"

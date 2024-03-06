@@ -10,8 +10,7 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
         git \
         python3.11 \
         python3.11-venv \
-    && rm -rf /var/lib/apt/lists/* \
-    && python3.11 -m ensurepip
+    && rm -rf /var/lib/apt/lists/*
 
 COPY . /opt/tinymotion_backend
 COPY .git/ /opt/tinymotion_backend/.git/
@@ -26,8 +25,10 @@ RUN python3.11 -m venv /var/lib/tinymotion_env \
     && mkdir -p /var/lib/tinymotion_migrations \
     && mv /opt/tinymotion_backend/alembic /var/lib/tinymotion_migrations/alembic \
     && mv /opt/tinymotion_backend/alembic.ini /var/lib/tinymotion_migrations/alembic.ini \
-    && cp /opt/tinymotion_backend/docker/entrypoint.sh /entrypoint.sh \
+    && cp /opt/tinymotion_backend/scripts/entrypoint.sh /entrypoint.sh \
     && chmod +x /entrypoint.sh \
+    && cp /opt/tinymotion_backend/scripts/tinymotion-backend /usr/local/bin/tinymotion-backend \
+    && chmod +x /usr/local/bin/tinymotion-backend \
     && rm -rf /opt/tinymotion_backend
 
 WORKDIR /var/lib/tinymotion_backend
