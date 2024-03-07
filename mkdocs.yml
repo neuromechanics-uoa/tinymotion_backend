@@ -1,9 +1,7 @@
 site_name: TinyMotion Backend
 
-plugins:
-  - gen-files:
-      scripts:
-        - scripts/gen_cli_docs.py
-
 theme:
   name: "material"
+
+markdown_extensions:
+  - mkdocs-click

@@ -1,21 +1,21 @@
-import typer
+import click
 
 from tinymotion_backend._version import __version__
-from tinymotion_backend.cli.users import app as users_app
-from tinymotion_backend.cli.videos import app as videos_app
+from tinymotion_backend.cli.users import users
+from tinymotion_backend.cli.videos import videos
 
 
-app = typer.Typer()
+@click.group(name="tinymotion-backend")
+def cli():
+    """Command line interface to TinyMotion Backend"""
+    pass
 
 
-@app.command()
+cli.add_command(users)
+cli.add_command(videos)
+
+
+@cli.command()
 def version():
-    """
-    Print the version of the TinyMotion backend and exit.
-
-    """
-    print(f"TinyMotionBackend v{__version__}")
-
-
-app.registered_commands += users_app.registered_commands
-app.registered_commands += videos_app.registered_commands
+    """Print the version of the TinyMotion backend and exit."""
+    print(f"TinyMotion Backend v{__version__}")

@@ -17,6 +17,7 @@ classifiers = [
 ]
 dependencies = [
     "alembic",
+    "click",
     "cryptography",
     "fastapi >=0.109.0",
     "gunicorn",
@@ -27,13 +28,12 @@ dependencies = [
     "sqlmodel >= 0.0.16",
     "python-jose",
     "python-multipart",
-    "typer[all]",
     "uvicorn[standard]",
 ]
 dynamic = ["version"]
 
 [project.scripts]
-tinymotion-backend = "tinymotion_backend.cli:app"
+tinymotion-backend = "tinymotion_backend.cli:cli"
 
 [tool.setuptools_scm]
 write_to = "src/tinymotion_backend/_version.py"
@@ -43,13 +43,13 @@ dev = [
     "freezegun",
     "httpx",
     "mkdocs",
+    "mkdocs-click",
     "mkdocs-gen-files",
     "mkdocs-material",
     "mkdocstrings[python] >=0.19",
     "pyls-flake8",
     "pytest",
     "pytest-cov",
-    "typer-cli",
 ]
 
 [tool.setuptools.packages.find]
