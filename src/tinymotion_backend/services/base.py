@@ -3,7 +3,7 @@ from typing import Any, Generic, Optional, Type, TypeVar
 import sqlalchemy
 from sqlmodel import Session, SQLModel
 
-from tinymotion_backend.core.exc import UniqueConstraintError
+from tinymotion_backend.core.exc import UniqueConstraintError, NotFoundError
 
 
 ModelType = TypeVar("ModelType", bound=SQLModel)
@@ -19,6 +19,9 @@ class BaseService(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
 
     def get(self, id: Any) -> Optional[ModelType]:
         obj: Optional[ModelType] = self.db_session.get(self.model, id)
+
+        if not obj:
+            raise NotFoundError("Record with specified id not found")
 
         return obj
 
@@ -58,7 +61,7 @@ class BaseService(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         return db_obj
 
     def delete(self, id: Any) -> None:
-        db_obj = self.db_session.get(self.model, id)
+        db_obj = self.get(id)
         self.db_session.delete(db_obj)
         self.db_session.commit()
 

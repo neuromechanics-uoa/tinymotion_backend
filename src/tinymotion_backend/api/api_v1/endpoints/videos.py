@@ -1,4 +1,5 @@
 import os
+import time
 import logging
 import uuid
 from typing import Annotated
@@ -56,6 +57,8 @@ def upload_video(
     Upload a video associated with an infant
 
     """
+    upload_time = time.perf_counter()
+
     # first we create a record in the db for this video
     video_name = str(uuid.uuid4()) + os.path.splitext(video.filename)[1] + ".enc"
     try:
@@ -126,5 +129,8 @@ def upload_video(
         raise
 
     # TODO: option to use object storage?
+
+    upload_time = time.perf_counter() - upload_time
+    logger.debug(f"Received video file in {upload_time:.3f} seconds")
 
     return video_record

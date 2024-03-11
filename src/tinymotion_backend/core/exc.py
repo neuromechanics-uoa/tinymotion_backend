@@ -29,3 +29,7 @@ class InvalidInputError(TinyMotionException):
 
 class NoConsentError(TinyMotionException):
     """No consent exists for the infant"""
+
+
+class InvalidAccessKeyError(TinyMotionException):
+    """No user exists with the given access key"""

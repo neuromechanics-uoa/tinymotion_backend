@@ -15,7 +15,7 @@ class Settings(BaseSettings):
     PROJECT_NAME: str = "TinyMotion"
     API_V1_STR: str = "/v1"
 
-    FILE_CHUNK_SIZE_BYTES: int = 1024 * 1024 * 200  # default to 200 MB
+    FILE_CHUNK_SIZE_BYTES: int = 1024 * 1024 * 10  # default to 10 MB
 
     DATABASE_URI: str = "sqlite:///tinymotion.db"
 

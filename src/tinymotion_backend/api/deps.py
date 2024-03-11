@@ -8,6 +8,7 @@ from sqlmodel import Session
 
 from tinymotion_backend import models
 from tinymotion_backend.core.config import settings
+from tinymotion_backend.core.exc import NotFoundError
 from tinymotion_backend import database
 from tinymotion_backend.services.user_service import UserService
 from tinymotion_backend.services.infant_service import InfantService
@@ -57,8 +58,9 @@ def get_current_user(
     user_service: UserService = Depends(get_user_service),
 ) -> models.UserRead:
     token_data = get_token_data(token, settings.ACCESS_TOKEN_SECRET_KEY)
-    user = user_service.get(token_data.user_id)
-    if not user:
+    try:
+        user = user_service.get(token_data.user_id)
+    except NotFoundError:
         raise HTTPException(status_code=404, detail="User not found")
 
     return user

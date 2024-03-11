@@ -6,6 +6,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from tinymotion_backend.api import deps
 from tinymotion_backend.core import security
 from tinymotion_backend.core.config import settings
+from tinymotion_backend.core.exc import InvalidAccessKeyError, UniqueConstraintError, NotFoundError
 from tinymotion_backend import models
 from tinymotion_backend.services.user_service import UserService
 
@@ -38,12 +39,7 @@ def login_for_tokens(
     user_service: UserService = Depends(deps.get_user_service)
 ):
     """
-    Login to get access and refresh tokens to use with future requests:
-
-    - if `grant_type` is "password" then the access key must be passed in the `username` field,
-      all other fields can be blank
-    - if `grant_type` is "refresh_token" then `refresh_token` must be present, all other fields
-      can be blank
+    Login to get access and refresh tokens to use with future requests.
 
     """
     if form_data.grant_type == "refresh_token":
@@ -52,15 +48,18 @@ def login_for_tokens(
             token=form_data.refresh_token,
             secret_key=settings.REFRESH_TOKEN_SECRET_KEY,
         )
-        user = user_service.get(token_data.user_id)
-        if not user:
+        try:
+            user = user_service.get(token_data.user_id)
+        except NotFoundError:
             raise HTTPException(status_code=404, detail="User not found")
 
     else:
         logger.debug("Running login grant_type=password ...")
         # the username in the form is the access key
-        user = user_service.authenticate(form_data.username)
-        if not user:
+        try:
+            user = user_service.authenticate(form_data.username)
+        except (InvalidAccessKeyError, UniqueConstraintError) as exc:
+            logger.error(f"Failed to authenticate user: {exc}")
             raise HTTPException(
                 status_code=401,
                 detail="Incorrect access key",
