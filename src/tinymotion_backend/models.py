@@ -38,7 +38,7 @@ class UserCreate(UserBase):
     access_key: str
 
 
-class UserUpdate(UserBase):
+class UserUpdate(SQLModel):
     email: Optional[EmailStr]
     access_key: Optional[str]
     disabled: Optional[bool]

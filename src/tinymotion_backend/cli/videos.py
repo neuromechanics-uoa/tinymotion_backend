@@ -32,7 +32,7 @@ def delete(
 ):
     """Delete the specified video and the associated record in the database.
 
-    VIDEO_ID is the id of of the video to delete.
+    VIDEO_ID is the id of the video to delete.
     """
     with Session(database.engine) as session:
         video_service = VideoService(session, 0)
