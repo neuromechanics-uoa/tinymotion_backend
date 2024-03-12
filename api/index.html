@@ -5,10 +5,11 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
-<link href="../api/" rel="prev"/>
+<link href=".." rel="prev"/>
+<link href="../cli/" rel="next"/>
 <link href="../assets/images/favicon.png" rel="icon"/>
 <meta content="mkdocs-1.5.3, mkdocs-material-9.5.13" name="generator"/>
-<title>CLI Reference - TinyMotion Backend</title>
+<title>API Reference - TinyMotion Backend</title>
 <link href="../assets/stylesheets/main.7e359304.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -20,7 +21,7 @@
 <input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
 <label class="md-overlay" for="__drawer"></label>
 <div data-md-component="skip">
-<a class="md-skip" href="#cli-reference">
+<a class="md-skip" href="#api-reference">
           Skip to content
         </a>
 </div>
@@ -44,7 +45,7 @@
 <div class="md-header__topic" data-md-component="header-topic">
 <span class="md-ellipsis">
             
-              CLI Reference
+              API Reference
             
           </span>
 </div>
@@ -74,16 +75,16 @@
   </span>
 </a>
 </li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../api/">
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" id="__toc" type="checkbox"/>
+<a class="md-nav__link md-nav__link--active" href="./">
 <span class="md-ellipsis">
     API Reference
   </span>
 </a>
 </li>
-<li class="md-nav__item md-nav__item--active">
-<input class="md-nav__toggle md-toggle" id="__toc" type="checkbox"/>
-<a class="md-nav__link md-nav__link--active" href="./">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../cli/">
 <span class="md-ellipsis">
     CLI Reference
   </span>
@@ -104,98 +105,9 @@
 </div>
 <div class="md-content" data-md-component="content">
 <article class="md-content__inner md-typeset">
-<h1 id="cli-reference">CLI Reference</h1>
-<p>This page provides documentation for the command line interface.</p>
-<h1 id="tinymotion-backend">tinymotion-backend</h1>
-<p>Command line interface to TinyMotion Backend</p>
-<p><strong>Usage:</strong></p>
-<pre><code class="language-text">tinymotion-backend [OPTIONS] COMMAND [ARGS]...
-</code></pre>
-<p><strong>Options:</strong></p>
-<pre><code class="language-text">  --help  Show this message and exit.
-</code></pre>
-<h2 id="users">users</h2>
-<p>Commands to interact with users in the backend.</p>
-<p><strong>Usage:</strong></p>
-<pre><code class="language-text">tinymotion-backend users [OPTIONS] COMMAND [ARGS]...
-</code></pre>
-<p><strong>Options:</strong></p>
-<pre><code class="language-text">  --help  Show this message and exit.
-</code></pre>
-<h3 id="create">create</h3>
-<p>Create a new user.</p>
-<p><strong>Usage:</strong></p>
-<pre><code class="language-text">tinymotion-backend users create [OPTIONS]
-</code></pre>
-<p><strong>Options:</strong></p>
-<pre><code class="language-text">  -e, --email TEXT       The new user's email  [required]
-  -k, --access-key TEXT  The new user's access key that they will use to login
-                         [required]
-  -d, --disabled         Disable the user's account on creation
-  --help                 Show this message and exit.
-</code></pre>
-<h3 id="delete">delete</h3>
-<p>Delete the specified User.</p>
-<p>USER_ID is the id of the user to delete.</p>
-<p><strong>Usage:</strong></p>
-<pre><code class="language-text">tinymotion-backend users delete [OPTIONS] USER_ID
-</code></pre>
-<p><strong>Options:</strong></p>
-<pre><code class="language-text">  --help  Show this message and exit.
-</code></pre>
-<h3 id="list">list</h3>
-<p>List existing users.</p>
-<p><strong>Usage:</strong></p>
-<pre><code class="language-text">tinymotion-backend users list [OPTIONS]
-</code></pre>
-<p><strong>Options:</strong></p>
-<pre><code class="language-text">  --help  Show this message and exit.
-</code></pre>
-<h3 id="update">update</h3>
-<p>Update the specified User.</p>
-<p>USER_ID is the id of the user to update.</p>
-<p><strong>Usage:</strong></p>
-<pre><code class="language-text">tinymotion-backend users update [OPTIONS] USER_ID
-</code></pre>
-<p><strong>Options:</strong></p>
-<pre><code class="language-text">  -e, --email TEXT        Update the user's email
-  -k, --access-key TEXT   Update the user's access key
-  -d, --disabled BOOLEAN  Update whether the user is disabled
-  --help                  Show this message and exit.
-</code></pre>
-<h2 id="version">version</h2>
-<p>Print the version of the TinyMotion backend and exit.</p>
-<p><strong>Usage:</strong></p>
-<pre><code class="language-text">tinymotion-backend version [OPTIONS]
-</code></pre>
-<p><strong>Options:</strong></p>
-<pre><code class="language-text">  --help  Show this message and exit.
-</code></pre>
-<h2 id="videos">videos</h2>
-<p>Commands to interact with videos in the backend.</p>
-<p><strong>Usage:</strong></p>
-<pre><code class="language-text">tinymotion-backend videos [OPTIONS] COMMAND [ARGS]...
-</code></pre>
-<p><strong>Options:</strong></p>
-<pre><code class="language-text">  --help  Show this message and exit.
-</code></pre>
-<h3 id="delete_1">delete</h3>
-<p>Delete the specified video and the associated record in the database.</p>
-<p>VIDEO_ID is the id of the video to delete.</p>
-<p><strong>Usage:</strong></p>
-<pre><code class="language-text">tinymotion-backend videos delete [OPTIONS] VIDEO_ID
-</code></pre>
-<p><strong>Options:</strong></p>
-<pre><code class="language-text">  --help  Show this message and exit.
-</code></pre>
-<h3 id="list_1">list</h3>
-<p>List stored videos.</p>
-<p><strong>Usage:</strong></p>
-<pre><code class="language-text">tinymotion-backend videos list [OPTIONS]
-</code></pre>
-<p><strong>Options:</strong></p>
-<pre><code class="language-text">  --help  Show this message and exit.
-</code></pre>
+<h1 id="api-reference">API Reference</h1>
+<p>This page provides documentation for the application programming interface.</p>
+<p><iframe class="redoc-iframe" frameborder="0" id="95b28993" src="redoc-95b28993.html" style="overflow:hidden;width:100%;height:80vh;" width="100%"></iframe></p>
 </article>
 </div>
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
