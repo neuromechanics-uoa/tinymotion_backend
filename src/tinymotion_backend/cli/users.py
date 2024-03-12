@@ -96,3 +96,4 @@ def delete(
         else:
             # delete the user
             user_service.delete(user_id)
+            print("Deleted user.")

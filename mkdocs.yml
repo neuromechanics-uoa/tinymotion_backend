@@ -3,5 +3,11 @@ site_name: TinyMotion Backend
 theme:
   name: "material"
 
+plugins:
+  - gen-files:
+      scripts:
+        - scripts/gen_api_docs.py
+  - redoc-tag
+
 markdown_extensions:
   - mkdocs-click

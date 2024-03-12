@@ -1,7 +1,7 @@
 from typing import Any, Generic, Optional, Type, TypeVar
 
 import sqlalchemy
-from sqlmodel import Session, SQLModel
+from sqlmodel import Session, SQLModel, select
 
 from tinymotion_backend.core.exc import UniqueConstraintError, NotFoundError
 
@@ -26,7 +26,7 @@ class BaseService(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         return obj
 
     def list(self) -> list[ModelType]:
-        objs: list[ModelType] = self.db_session.query(self.model).all()
+        objs: list[ModelType] = self.db_session.exec(select(self.model)).all()
 
         return objs
 

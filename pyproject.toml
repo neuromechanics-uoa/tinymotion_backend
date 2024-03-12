@@ -46,6 +46,7 @@ dev = [
     "mkdocs-click",
     "mkdocs-gen-files",
     "mkdocs-material",
+    "mkdocs-redoc-tag",
     "mkdocstrings[python] >=0.19",
     "pyls-flake8",
     "pytest",
