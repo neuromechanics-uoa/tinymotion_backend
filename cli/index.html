@@ -292,8 +292,17 @@
 <pre><code class="language-text">  -e, --email TEXT       The new user's email  [required]
   -k, --access-key TEXT  The new user's access key that they will use to login
                          [required]
-  -d, --disabled TEXT    Disable the user's account on creation  [required]
+  -d, --disabled         Disable the user's account on creation
   --help                 Show this message and exit.
+</code></pre>
+<h3 id="delete">delete</h3>
+<p>Delete the specified User.</p>
+<p>USER_ID is the id of the user to delete.</p>
+<p><strong>Usage:</strong></p>
+<pre><code class="language-text">tinymotion-backend users delete [OPTIONS] USER_ID
+</code></pre>
+<p><strong>Options:</strong></p>
+<pre><code class="language-text">  --help  Show this message and exit.
 </code></pre>
 <h3 id="list">list</h3>
 <p>List existing users.</p>
@@ -302,6 +311,18 @@
 </code></pre>
 <p><strong>Options:</strong></p>
 <pre><code class="language-text">  --help  Show this message and exit.
+</code></pre>
+<h3 id="update">update</h3>
+<p>Update the specified User.</p>
+<p>USER_ID is the id of the user to update.</p>
+<p><strong>Usage:</strong></p>
+<pre><code class="language-text">tinymotion-backend users update [OPTIONS] USER_ID
+</code></pre>
+<p><strong>Options:</strong></p>
+<pre><code class="language-text">  -e, --email TEXT        Update the user's email
+  -k, --access-key TEXT   Update the user's access key
+  -d, --disabled BOOLEAN  Update whether the user is disabled
+  --help                  Show this message and exit.
 </code></pre>
 <h2 id="version">version</h2>
 <p>Print the version of the TinyMotion backend and exit.</p>
@@ -319,9 +340,9 @@
 <p><strong>Options:</strong></p>
 <pre><code class="language-text">  --help  Show this message and exit.
 </code></pre>
-<h3 id="delete">delete</h3>
+<h3 id="delete_1">delete</h3>
 <p>Delete the specified video and the associated record in the database.</p>
-<p>VIDEO_ID is the id of of the video to delete.</p>
+<p>VIDEO_ID is the id of the video to delete.</p>
 <p><strong>Usage:</strong></p>
 <pre><code class="language-text">tinymotion-backend videos delete [OPTIONS] VIDEO_ID
 </code></pre>
