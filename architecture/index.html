@@ -345,7 +345,7 @@
 <p>Database backups can be achieved by copying the SQLite database file. Encrypted information in the backups will not be understandable without the secret key that was used to encrypt them.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>SQLite should be sufficient while running at a small scale although it is recommended to switch to another database engine, such as postgres, when scaling up. This should be relatively simple as the database engine is abstracted away by SQLAlchemy.</p>
+<p>SQLite should be sufficient while running at a small scale, and is good for speed of development, but could be worth considering switching to another database engine, such as PostgreSQL, when scaling up. This should be relatively simple as the database engine is abstracted away by SQLAlchemy.</p>
 </div>
 <h2 id="video-files">Video files</h2>
 <p>Video files are encrypted as they are received and written to disk on the VM in encrypted form only. Videos are encrypted using <a href="https://cryptography.io/en/latest/fernet/">Fernet</a> (symmetric encryption, i.e. requiring the same secret key to decrypt them as was used to encrypt them). Encrypted video files are approximately 1/3 bigger than the unencrypted version would be. Video file names on disk are randomly generated UUIDs, these names are stored as <em>video_name</em> in the <em>VIDEO</em> table in the database.</p>
