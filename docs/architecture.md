@@ -89,7 +89,7 @@ Database backups can be achieved by copying the SQLite database file. Encrypted 
 
 !!! note
     
-    SQLite should be sufficient while running at a small scale although it is recommended to switch to another database engine, such as postgres, when scaling up. This should be relatively simple as the database engine is abstracted away by SQLAlchemy.
+    SQLite should be sufficient while running at a small scale, and is good for speed of development, but could be worth considering switching to another database engine, such as PostgreSQL, when scaling up. This should be relatively simple as the database engine is abstracted away by SQLAlchemy.
 
 
 ## Video files
