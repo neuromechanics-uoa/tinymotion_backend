@@ -1,0 +1,37 @@
+version: '3.4'
+
+services:
+  tinymotion:
+    image: ghcr.io/neuromechanics-uoa/tinymotion-backend:${TINYMOTION_TAG}
+    container_name: tinymotion_backend
+    restart: unless-stopped
+    user: 1000:1000
+    environment:
+      - TZ=Pacific/Auckland
+      - TINYMOTION_ACCESS_TOKEN_SECRET_KEY=${TINYMOTION_ACCESS_TOKEN_SECRET_KEY}
+      - TINYMOTION_REFRESH_TOKEN_SECRET_KEY=${TINYMOTION_REFRESH_TOKEN_SECRET_KEY}
+      - TINYMOTION_DATABASE_URI=${TINYMOTION_DATABASE_URI}
+      - TINYMOTION_VIDEO_LIBRARY_PATH=${TINYMOTION_VIDEO_LIBRARY_PATH}
+      - TINYMOTION_VIDEO_SECRET_KEY=${TINYMOTION_VIDEO_SECRET_KEY}
+    volumes:
+      - ./data/tinymotion_backend:/var/lib/tinymotion_backend
+
+  swag:
+    image: lscr.io/linuxserver/swag
+    container_name: swag
+    cap_add:
+      - NET_ADMIN
+    restart: unless-stopped
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Pacific/Auckland
+      - URL={{ tinymotion_url }}
+      - SUBDOMAINS=wildcard
+      - VALIDATION=http
+    volumes:
+      - ./data/swag_config:/config
+      - ./config/tinymotion_backend.subdomain.conf:/config/nginx/proxy-confs/tinymotion_backend.subdomain.conf:ro
+    ports:
+      - 80:80/tcp
+      - 443:443/tcp

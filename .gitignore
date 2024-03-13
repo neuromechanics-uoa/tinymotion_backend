@@ -16,3 +16,7 @@ cov_html/
 .DS_Store
 videos/
 site/
+terraform.tfvars
+host.ini
+terraform.tfstate*
+.terraform*

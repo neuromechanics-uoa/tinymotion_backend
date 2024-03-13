@@ -1,0 +1,96 @@
+---
+- name: Wait for hosts to respond
+  hosts: all
+  gather_facts: false
+  any_errors_fatal: true
+  tasks:
+    - name: Wait for hosts to respond
+      ansible.builtin.wait_for_connection:
+        sleep: 10
+        timeout: 600
+
+- name: Upgrade systems
+  hosts: all
+  become: yes
+  tasks:
+    - name: Full system upgrade
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+        upgrade: dist
+
+    - name: Check if reboot required
+      stat:
+        path: /var/run/reboot-required
+      register: reboot_required_file
+
+    - name: Reboot after upgrade
+      reboot:
+      when: reboot_required_file.stat.exists == true
+
+- name: Set timezone
+  hosts: all
+  become: yes
+  tasks:
+    - name: Set timezone
+      community.general.timezone:
+        name: Pacific/Auckland
+
+- name: Install docker
+  hosts: all
+  become: yes
+  roles:
+    - geerlingguy.docker
+
+- name: Setup tinymotion backend
+  hosts: all
+  vars_files:
+    - backend.yml
+  tasks:
+    - name: Create directory for deployment
+      ansible.builtin.file:
+        path: "/home/{{ ansible_user }}/tinymotion_backend"
+        state: directory
+        mode: '0755'
+
+    - name: Create subdirectory for config
+      ansible.builtin.file:
+        path: "/home/{{ ansible_user }}/tinymotion_backend/config"
+        state: directory
+        mode: '0755'
+
+    - name: Create subdirectory for data
+      ansible.builtin.file:
+        path: "/home/{{ ansible_user }}/tinymotion_backend/data"
+        state: directory
+        mode: '0755'
+
+    - name: Create data subdirectory for swag config
+      ansible.builtin.file:
+        path: "/home/{{ ansible_user }}/tinymotion_backend/data/swag_config"
+        state: directory
+        mode: '0755'
+
+    - name: Create data subdirectory for tinymotion_backend
+      ansible.builtin.file:
+        path: "/home/{{ ansible_user }}/tinymotion_backend/data/tinymotion_backend"
+        state: directory
+        mode: '0755'
+
+    - name: Configure docker-compose.yml
+      ansible.builtin.template:
+        src: docker-compose.yml.j2
+        dest: "/home/{{ ansible_user }}/tinymotion_backend/docker-compose.yml"
+        mode: '0644'
+
+    - name: Configure nginx subdomain
+      ansible.builtin.template:
+        src: tinymotion_backend.subdomain.conf.j2
+        dest: "/home/{{ ansible_user }}/tinymotion_backend/config/tinymotion_backend.subdomain.conf"
+        mode: '0644'
+
+    - name: Copy example .env file
+      ansible.builtin.copy:
+        src: dot_env_example
+        dest: "/home/{{ ansible_user }}/tinymotion_backend/.env.example"
+        mode: '0600'
