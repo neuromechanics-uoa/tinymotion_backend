@@ -75,7 +75,7 @@ erDiagram
         int created_by FK
     }
 
-    INFANT ||--o{ CONSENT : "covered by"
+    INFANT ||--o{ CONSENT : "is covered by"
     INFANT ||--o{ VIDEO : "features in"
     USER ||--o{ CONSENT : creates
     USER ||--o{ VIDEO : creates
