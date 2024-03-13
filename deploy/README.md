@@ -69,3 +69,5 @@ sudo docker compose exec tinymotion tinymotion-backend --help
 ## TODO
 
 - not sure why we need to authenticate with github to pull the images
+- setup firewall
+- store terraform state file in object storage

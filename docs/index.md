@@ -1,4 +1,4 @@
-# Introduction
+# Overview
 
 Documentation for the backend system for the tinymotion General Movements Assessment data collection app.
 

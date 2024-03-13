@@ -1,0 +1,93 @@
+# Architecture
+
+## Overview
+
+The backend is written in Python using:
+
+- the [FastAPI](https://fastapi.tiangolo.com/) framework
+- [Pydantic](https://docs.pydantic.dev/latest/) and [SQLAlchemy](https://www.sqlalchemy.org/) (via [SQLModel](https://sqlmodel.tiangolo.com/))
+- [click](https://click.palletsprojects.com/) for the command line interface
+- [SQLite](https://www.sqlite.org/) database
+- [pytest](https://docs.pytest.org/) for testing
+- [mkdocs](https://www.mkdocs.org/) for documentation
+
+Deployment is achieved using [Terraform](https://www.terraform.io/) and [Ansible](https://www.ansible.com/) to create and configure a VM on an OpenStack cloud ([NeSI RDC](https://support.cloud.nesi.org.nz/)). The TinyMotion backend software is containerised using docker and run using [Docker compose](https://docs.docker.com/compose/). [SWAG](https://docs.linuxserver.io/general/swag/) (simple web access gateway) is used in front of the API and handles generating SSL certificates.
+
+## API authentication
+
+An access key is created for each user and shared with them. The access key is entered into the app and an API endpoint called to exchange the access key for access and refresh JWT tokens. The access token is passed in the Authorization header with subsequent API requests. If the access token expires, the refresh token can be used to generate a new access token. If the refresh token expires the access key must be entered again.
+
+## Database
+
+The initial version uses an SQLite database with the following structure:
+
+```mermaid
+erDiagram
+    USER {
+        int user_id PK
+        string email "Must be unique; encrypted"
+        string access_key "Must be unique; encrypted"
+        boolean disabled
+    }
+
+    INFANT {
+        int infant_id PK
+        string nhi_number "Must be unique; encrypted"
+        string full_name "Encrypted"
+        date birth_date "Encrypted"
+        date due_date "Encrypted"
+        int created_by FK
+        datetime created_at
+    }
+
+    CONSENT {
+        int consent_id PK
+        string consent_giver_name "Can be null if consent collected physically; encrypted"
+        string consent_giver_email "Can be null if consent collected physically; encrypted"
+        boolean collected_physically
+        int infant_id FK
+        datetime created_at
+        int created_by FK
+    }
+
+    VIDEO {
+        int video_id PK
+        int infant_id FK
+        string video_name "Name of stored video, a randomly generated UUID"
+        int video_size "Size of the encrypted video in bytes"
+        string sha256sum "SHA-256 checksum of the original video"
+        string sha256sum_enc "SHA-256 checksum of the encrypted video"
+        date created_at
+        int created_by FK
+    }
+
+    INFANT ||--o{ CONSENT : "covered by"
+    INFANT ||--o{ VIDEO : "features in"
+    USER ||--o{ CONSENT : creates
+    USER ||--o{ VIDEO : creates
+    USER ||--o{ INFANT : creates
+
+```
+
+Fields marked as encrypted are encrypted at rest using `StringEncryptedType` (symmetric encryption) from [SQLAlchemy-Utils](https://sqlalchemy-utils.readthedocs.io/en/latest/data_types.html) (IN PROGRESS).
+
+Database backups can be achieved by copying the SQLite database file. Encrypted information in the backups will not be understandable without the secret key.
+
+!!! note
+    
+    SQLite should be sufficient while running at a small scale although it is recommended to switch to another database engine, such as postgres, when scaling up. This should be relatively simple as the database engine is abstracted away by SQLAlchemy.
+
+
+## Video files
+
+Video files are encrypted as they are received and written to disk on the VM in encrypted form only. Videos are encrypted using [Fernet](https://cryptography.io/en/latest/fernet/) (symmetric encryption, i.e. requiring the same secret key to decrypt them as was used to encrypt them). Encrypted video files are approximately 1/3 bigger than the unencrypted version would be. Video file names on disk are randomly generated UUIDs, these names are stored as *video_name* in the *VIDEO* table in the database.
+
+Encrypted video files will be stored on object storage (TODO). Once they have been pushed to object storage they will be removed from VM disk.
+
+## Secrets management
+
+TODO
+
+## Administration
+
+Administration (e.g. creating/updating users, accessing videos and information in the database) is done through SSH and a command line interface (IN PROGRESS). SSH to the VM is by public key only.

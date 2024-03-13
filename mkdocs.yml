@@ -4,6 +4,8 @@ theme:
   name: "material"
 
 plugins:
+  - search
+  - mermaid2
   - gen-files:
       scripts:
         - scripts/gen_api_docs.py
@@ -11,3 +13,18 @@ plugins:
 
 markdown_extensions:
   - mkdocs-click
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences:
+        # make exceptions to highlighting of code:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:mermaid2.fence_mermaid_custom
+
+nav:
+  - "Overview": "index.md"
+  - "Architecture": "architecture.md"
+  - "Reference":
+#    - "API Reference": "api.md"
+    - "CLI Reference": "cli.md"
