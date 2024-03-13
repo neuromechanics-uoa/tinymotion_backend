@@ -17,6 +17,12 @@ Deployment is achieved using [Terraform](https://www.terraform.io/) and [Ansible
 
 The API provides endpoints to authenticate, create an infant, create a consent and upload a video. There are no endpoints to retrieve information in the initial version of the API.
 
+An infant must be created first. Once an infant has been created a consent must be created for that infant. The consent is linked to the infant by NHI number. Once a consent has been created, videos can be created for the infant. Videos are linked to an infant by NHI number. The API will return errors in the following cases (not exclusive, see also API docs TODO):
+
+- a consent is added with an NHI number that does not match an infant in the database
+- a video is added with an NHI number that does not match an infant in the database
+- a video is added for an infant that has no consent recorded in the database
+
 ## Authentication
 
 An access key is created for each user and shared with them. The access key is entered into the app and an API endpoint called to exchange the access key for access and refresh JWT tokens. The access token is passed in the Authorization header with subsequent API requests. If the access token expires, the refresh token can be used to generate a new access token. If the refresh token expires the access key must be entered again.
@@ -50,8 +56,8 @@ erDiagram
         string full_name "Encrypted"
         date birth_date "Encrypted"
         date due_date "Encrypted"
-        int created_by FK
         datetime created_at
+        int created_by FK
     }
 
     CONSENT {
@@ -71,7 +77,7 @@ erDiagram
         int video_size "Size of the encrypted video in bytes"
         string sha256sum "SHA-256 checksum of the original video"
         string sha256sum_enc "SHA-256 checksum of the encrypted video"
-        date created_at
+        datetime created_at
         int created_by FK
     }
 
