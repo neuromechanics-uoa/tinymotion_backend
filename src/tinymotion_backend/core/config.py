@@ -18,9 +18,12 @@ class Settings(BaseSettings):
     FILE_CHUNK_SIZE_BYTES: int = 1024 * 1024 * 10  # default to 10 MB
 
     DATABASE_URI: str = "sqlite:///tinymotion.db"
+#    DATABASE_SECRET_KEY: str = Fernet.generate_key().decode('ascii')
+    DATABASE_SECRET_KEY: str = "gDfjEDjlwkiGWV9NI4wA1iH_9XQG6t4Ct0JQvW7xDro="
 
     VIDEO_LIBRARY_PATH: str = "./videos"
     VIDEO_SECRET_KEY: str = Fernet.generate_key().decode('ascii')
+
 
     model_config = SettingsConfigDict(case_sensitive=True, env_prefix="TINYMOTION_", env_file=".tinymotion.env")
 

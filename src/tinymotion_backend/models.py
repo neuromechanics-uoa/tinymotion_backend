@@ -1,8 +1,13 @@
 import datetime
 from typing import Optional
 
+import sqlalchemy
+from sqlalchemy_utils import StringEncryptedType
+from sqlalchemy_utils.types.encrypted.encrypted_type import AesEngine
 from pydantic import EmailStr
-from sqlmodel import Field, SQLModel, Relationship, AutoString
+from sqlmodel import Field, SQLModel, Relationship, AutoString, Column
+
+from tinymotion_backend.core.config import settings
 
 
 ##############################################################################
@@ -25,16 +30,35 @@ class TokenData(SQLModel):
 ##############################################################################
 
 class UserBase(SQLModel):
-    email: EmailStr = Field(sa_type=AutoString)
     disabled: Optional[bool] = Field(default=None)
 
 
 class User(UserBase, table=True):
     user_id: Optional[int] = Field(default=None, primary_key=True)
-    access_key: str = Field(unique=True, index=True)
+    email: EmailStr = Field(sa_column=Column(
+        StringEncryptedType(
+            sqlalchemy.VARCHAR,
+            settings.DATABASE_SECRET_KEY,
+            AesEngine,
+            'pkcs5',
+        ),
+        nullable=False,
+    ))
+    access_key: str = Field(sa_column=Column(
+        StringEncryptedType(
+            sqlalchemy.VARCHAR,
+            settings.DATABASE_SECRET_KEY,
+            AesEngine,
+            'pkcs5',
+        ),
+        index=True,
+        unique=True,
+        nullable=False,
+    ))
 
 
 class UserCreate(UserBase):
+    email: EmailStr
     access_key: str
 
 
@@ -46,6 +70,7 @@ class UserUpdate(SQLModel):
 
 class UserRead(UserBase):
     user_id: int
+    email: EmailStr
 
 
 ##############################################################################
