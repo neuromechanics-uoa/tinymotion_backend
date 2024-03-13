@@ -13,9 +13,23 @@ The backend is written in Python using:
 
 Deployment is achieved using [Terraform](https://www.terraform.io/) and [Ansible](https://www.ansible.com/) to create and configure a VM on an OpenStack cloud ([NeSI RDC](https://support.cloud.nesi.org.nz/)). The TinyMotion backend software is containerised using docker and run using [Docker compose](https://docs.docker.com/compose/). [SWAG](https://docs.linuxserver.io/general/swag/) (simple web access gateway) is used in front of the API and handles generating SSL certificates.
 
-## API authentication
+## API
+
+The API provides endpoints to authenticate, create an infant, create a consent and upload a video. There are no endpoints to retrieve information in the initial version of the API.
+
+## Authentication
 
 An access key is created for each user and shared with them. The access key is entered into the app and an API endpoint called to exchange the access key for access and refresh JWT tokens. The access token is passed in the Authorization header with subsequent API requests. If the access token expires, the refresh token can be used to generate a new access token. If the refresh token expires the access key must be entered again.
+
+Initially, all users of the app will be treated the same (authorisation). All users will be able to upload (POST) information via the API. There are no API endpoints to retrieve information.
+
+!!! note
+
+    This approach to authentication was chosen as a compromise between security and ease of use for the early access users of the app.
+
+## Administration
+
+Administration (e.g. creating/updating users, accessing videos and information in the database) is done through SSH and a command line interface (IN PROGRESS). SSH to the VM is by public key only.
 
 ## Database
 
@@ -71,7 +85,7 @@ erDiagram
 
 Fields marked as encrypted are encrypted at rest using `StringEncryptedType` (symmetric encryption) from [SQLAlchemy-Utils](https://sqlalchemy-utils.readthedocs.io/en/latest/data_types.html) (IN PROGRESS).
 
-Database backups can be achieved by copying the SQLite database file. Encrypted information in the backups will not be understandable without the secret key.
+Database backups can be achieved by copying the SQLite database file. Encrypted information in the backups will not be understandable without the secret key that was used to encrypt them.
 
 !!! note
     
@@ -87,7 +101,3 @@ Encrypted video files will be stored on object storage (TODO). Once they have be
 ## Secrets management
 
 TODO
-
-## Administration
-
-Administration (e.g. creating/updating users, accessing videos and information in the database) is done through SSH and a command line interface (IN PROGRESS). SSH to the VM is by public key only.
