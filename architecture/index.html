@@ -132,9 +132,23 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#api-authentication">
+<a class="md-nav__link" href="#api">
 <span class="md-ellipsis">
-      API authentication
+      API
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#authentication">
+<span class="md-ellipsis">
+      Authentication
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#administration">
+<span class="md-ellipsis">
+      Administration
     </span>
 </a>
 </li>
@@ -156,13 +170,6 @@
 <a class="md-nav__link" href="#secrets-management">
 <span class="md-ellipsis">
       Secrets management
-    </span>
-</a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#administration">
-<span class="md-ellipsis">
-      Administration
     </span>
 </a>
 </li>
@@ -215,9 +222,23 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#api-authentication">
+<a class="md-nav__link" href="#api">
 <span class="md-ellipsis">
-      API authentication
+      API
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#authentication">
+<span class="md-ellipsis">
+      Authentication
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#administration">
+<span class="md-ellipsis">
+      Administration
     </span>
 </a>
 </li>
@@ -242,13 +263,6 @@
     </span>
 </a>
 </li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#administration">
-<span class="md-ellipsis">
-      Administration
-    </span>
-</a>
-</li>
 </ul>
 </nav>
 </div>
@@ -268,8 +282,17 @@
 <li><a href="https://www.mkdocs.org/">mkdocs</a> for documentation</li>
 </ul>
 <p>Deployment is achieved using <a href="https://www.terraform.io/">Terraform</a> and <a href="https://www.ansible.com/">Ansible</a> to create and configure a VM on an OpenStack cloud (<a href="https://support.cloud.nesi.org.nz/">NeSI RDC</a>). The TinyMotion backend software is containerised using docker and run using <a href="https://docs.docker.com/compose/">Docker compose</a>. <a href="https://docs.linuxserver.io/general/swag/">SWAG</a> (simple web access gateway) is used in front of the API and handles generating SSL certificates.</p>
-<h2 id="api-authentication">API authentication</h2>
+<h2 id="api">API</h2>
+<p>The API provides endpoints to authenticate, create an infant, create a consent and upload a video. There are no endpoints to retrieve information in the initial version of the API.</p>
+<h2 id="authentication">Authentication</h2>
 <p>An access key is created for each user and shared with them. The access key is entered into the app and an API endpoint called to exchange the access key for access and refresh JWT tokens. The access token is passed in the Authorization header with subsequent API requests. If the access token expires, the refresh token can be used to generate a new access token. If the refresh token expires the access key must be entered again.</p>
+<p>Initially, all users of the app will be treated the same (authorisation). All users will be able to upload (POST) information via the API. There are no API endpoints to retrieve information.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This approach to authentication was chosen as a compromise between security and ease of use for the early access users of the app.</p>
+</div>
+<h2 id="administration">Administration</h2>
+<p>Administration (e.g. creating/updating users, accessing videos and information in the database) is done through SSH and a command line interface (IN PROGRESS). SSH to the VM is by public key only.</p>
 <h2 id="database">Database</h2>
 <p>The initial version uses an SQLite database with the following structure:</p>
 <pre class="mermaid"><code>erDiagram
@@ -319,7 +342,7 @@
 
 </code></pre>
 <p>Fields marked as encrypted are encrypted at rest using <code>StringEncryptedType</code> (symmetric encryption) from <a href="https://sqlalchemy-utils.readthedocs.io/en/latest/data_types.html">SQLAlchemy-Utils</a> (IN PROGRESS).</p>
-<p>Database backups can be achieved by copying the SQLite database file. Encrypted information in the backups will not be understandable without the secret key.</p>
+<p>Database backups can be achieved by copying the SQLite database file. Encrypted information in the backups will not be understandable without the secret key that was used to encrypt them.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>SQLite should be sufficient while running at a small scale although it is recommended to switch to another database engine, such as postgres, when scaling up. This should be relatively simple as the database engine is abstracted away by SQLAlchemy.</p>
@@ -329,8 +352,6 @@
 <p>Encrypted video files will be stored on object storage (TODO). Once they have been pushed to object storage they will be removed from VM disk.</p>
 <h2 id="secrets-management">Secrets management</h2>
 <p>TODO</p>
-<h2 id="administration">Administration</h2>
-<p>Administration (e.g. creating/updating users, accessing videos and information in the database) is done through SSH and a command line interface (IN PROGRESS). SSH to the VM is by public key only.</p>
 </article>
 </div>
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
