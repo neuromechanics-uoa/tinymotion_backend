@@ -7,12 +7,12 @@ from tinymotion_backend.models import UserCreate, UserUpdate
 
 
 @click.group()
-def users():
+def user():
     """Commands to interact with users in the backend."""
     pass
 
 
-@users.command()
+@user.command()
 @click.option('-e', '--email', required=True, type=str, help="The new user's email")
 @click.option('-k', '--access-key', required=True, type=str, help="The new user's access key that they will use to login")
 @click.option('-d', '--disabled', is_flag=True, default=False, show_default=True, help="Disable the user's account on creation")
@@ -35,7 +35,7 @@ def create(
     click.echo(f"Successfully added new user: {user_added!r}")
 
 
-@users.command()
+@user.command()
 def list():
     """List existing users."""
     with Session(database.engine) as session:
@@ -46,7 +46,7 @@ def list():
             click.echo(repr(user))
 
 
-@users.command()
+@user.command()
 @click.argument('user_id', type=click.INT)
 @click.option('-e', '--email', required=False, default=None, type=str, help="Update the user's email")
 @click.option('-k', '--access-key', required=False, default=None, type=str, help="Update the user's access key")
@@ -74,7 +74,7 @@ def update(
         click.echo(f"Updated user: {updated_user!r}")
 
 
-@users.command()
+@user.command()
 @click.argument('user_id', type=click.INT)
 def delete(
     user_id: int,

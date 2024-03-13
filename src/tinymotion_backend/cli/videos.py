@@ -9,12 +9,12 @@ from tinymotion_backend.core.config import settings
 
 
 @click.group()
-def videos():
+def video():
     """Commands to interact with videos in the backend."""
     pass
 
 
-@videos.command()
+@video.command()
 def list():
     """List stored videos."""
     with Session(database.engine) as session:
@@ -25,7 +25,7 @@ def list():
             click.echo(repr(video))
 
 
-@videos.command()
+@video.command()
 @click.argument('video_id', type=click.INT)
 def delete(
     video_id: int,

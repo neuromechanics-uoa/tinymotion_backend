@@ -19,7 +19,7 @@ def test_cli_user_create(monkeypatch, session: Session, email, key, disabled, ex
     engine = session.get_bind()
     monkeypatch.setattr('tinymotion_backend.database.engine', engine)
 
-    args = ["users", "create"]
+    args = ["user", "create"]
     if email is not None:
         args.extend(["--email", email])
     if key is not None:
@@ -50,7 +50,7 @@ def test_cli_user_update(monkeypatch, session: Session, email, key, disabled, ex
     monkeypatch.setattr('tinymotion_backend.database.engine', engine)
 
     user_id = "1"  # the user added via mock data
-    args = ["users", "update"]
+    args = ["user", "update"]
     if email is not None:
         args.extend(["--email", email])
     if key is not None:
@@ -85,7 +85,7 @@ def test_cli_user_delete(monkeypatch, session: Session, input_value, exit_code):
     # check the user exists first
     user = session.get(User, user_id)
 
-    args = ["users", "delete", user_id]
+    args = ["user", "delete", user_id]
     runner = CliRunner()
     result = runner.invoke(cli, args, input=input_value)
 
@@ -117,7 +117,7 @@ def test_cli_user_list(monkeypatch, session: Session, num_add):
         session.commit()
 
     runner = CliRunner()
-    result = runner.invoke(cli, ["users", "list"])
+    result = runner.invoke(cli, ["user", "list"])
 
     assert result.exit_code == 0
     assert f"Found {num_add + 1} users" in result.output

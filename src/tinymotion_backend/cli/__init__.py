@@ -1,8 +1,8 @@
 import click
 
 from tinymotion_backend._version import __version__
-from tinymotion_backend.cli.users import users
-from tinymotion_backend.cli.videos import videos
+from tinymotion_backend.cli.users import user
+from tinymotion_backend.cli.videos import video
 
 
 @click.group(name="tinymotion-backend")
@@ -11,8 +11,8 @@ def cli():
     pass
 
 
-cli.add_command(users)
-cli.add_command(videos)
+cli.add_command(user)
+cli.add_command(video)
 
 
 @cli.command()
