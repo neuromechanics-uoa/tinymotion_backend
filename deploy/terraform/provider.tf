@@ -8,18 +8,18 @@ required_version = ">= 0.14.0"
     }
   }
 
-#  backend "s3" {
-#    bucket = "terraform"
-#    key    = "state/tinymotion-backend.terraform.tfstate"
-#    region = "us-east-1"
-#    use_path_style = "true"
-#    skip_credentials_validation = "true"    
-#    endpoints = {
-#      s3 = "https://object.akl-1.cloud.nesi.org.nz/"
-#    }
-#    skip_requesting_account_id = "true"
-#    skip_s3_checksum = "true"
-#  }
+  backend "s3" {
+    bucket = "tinymotion_terraform"
+    key    = "state/tinymotion-backend.terraform.tfstate"
+    region = "us-east-1"
+    use_path_style = "true"
+    skip_credentials_validation = "true"
+    endpoints = {
+      s3 = "https://object.akl-1.cloud.nesi.org.nz/"
+    }
+    skip_requesting_account_id = "true"
+    skip_s3_checksum = "true"
+  }
 }
 
 # Configure the OpenStack Provider
