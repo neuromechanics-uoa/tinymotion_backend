@@ -49,10 +49,6 @@ def get_user_service(session: Session = Depends(get_session)) -> UserService:
     return UserService(session)
 
 
-def get_infant_service(session: Session = Depends(get_session)) -> InfantService:
-    return InfantService(session)
-
-
 def get_current_user(
     token: Annotated[str, Depends(oauth2_scheme)],
     user_service: UserService = Depends(get_user_service),
@@ -72,6 +68,13 @@ def get_current_active_user(
     if current_user.disabled:
         raise HTTPException(status_code=400, detail="Inactive user")
     return current_user
+
+
+def get_infant_service(
+    session: Session = Depends(get_session),
+    current_user: models.User = Depends(get_current_active_user),
+) -> InfantService:
+    return InfantService(session, current_user.user_id)
 
 
 def get_consent_service(

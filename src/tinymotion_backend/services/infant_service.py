@@ -12,8 +12,8 @@ logger = logging.getLogger(__name__)
 
 
 class InfantService(BaseService[Infant, InfantCreate, InfantUpdate]):
-    def __init__(self, db_session: Session):
-        super(InfantService, self).__init__(Infant, db_session)
+    def __init__(self, db_session: Session, created_by: int):
+        super(InfantService, self).__init__(Infant, db_session, created_by=created_by)
 
     def get_by_nhi_number(self, nhi_number: str) -> Infant:
         """

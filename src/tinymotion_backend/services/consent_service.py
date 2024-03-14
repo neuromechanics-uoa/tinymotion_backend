@@ -45,7 +45,7 @@ class ConsentService(BaseService[Consent, ConsentCreate, ConsentUpdate]):
     def create_using_nhi_number(self, obj: ConsentCreateViaNHI) -> Consent:
         """Create consent using the NHI number to identify the Infant"""
         # get the Infant
-        infant_service = InfantService(self.db_session)
+        infant_service = InfantService(self.db_session, self.created_by)
         infant = infant_service.get_by_nhi_number(obj.nhi_number)
 
         # now create the consent

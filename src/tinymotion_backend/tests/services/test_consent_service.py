@@ -17,6 +17,7 @@ def test_consent_service_create_consent_nhi(session: Session, client: TestClient
         birth_date=datetime.date(2023, 6, 1),
         due_date=datetime.date(2023, 7, 1),
         nhi_number="abcdefg",
+        created_by=1,
     )
     session.add(infant)
     session.commit()
@@ -48,6 +49,7 @@ def test_consent_service_create_consent_invalid_nhi(session: Session, client: Te
         birth_date=datetime.date(2023, 6, 1),
         due_date=datetime.date(2023, 7, 1),
         nhi_number="abcdefg",
+        created_by=1,
     )
     session.add(infant)
     session.commit()

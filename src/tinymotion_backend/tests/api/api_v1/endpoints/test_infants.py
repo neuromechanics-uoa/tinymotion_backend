@@ -29,6 +29,7 @@ def test_create_infant_duplicate(session: Session, client: TestClient, access_to
         birth_date=datetime.date(2024, 2, 1),
         due_date=datetime.date(2024, 2, 1),
         nhi_number="123xyz",
+        created_by=1,
     )
     session.add(infant_add)
     session.commit()

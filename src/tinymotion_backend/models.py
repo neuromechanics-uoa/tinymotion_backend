@@ -84,8 +84,48 @@ class InfantBase(SQLModel):
     nhi_number: str = Field(unique=True, description="The NHI number must be unique", index=True)
 
 
-class Infant(InfantBase, table=True):
+class Infant(SQLModel, table=True):
     infant_id: Optional[int] = Field(default=None, primary_key=True)
+    created_at: datetime.datetime = Field(default_factory=datetime.datetime.utcnow)
+    created_by: int = Field(default=None, foreign_key="user.user_id")
+    full_name: str = Field(sa_column=Column(
+        StringEncryptedType(
+            sqlalchemy.VARCHAR,
+            settings.DATABASE_SECRET_KEY,
+            AesEngine,
+            'pkcs5',
+        ),
+        nullable=False,
+    ))
+    nhi_number: str = Field(sa_column=Column(
+        StringEncryptedType(
+            sqlalchemy.VARCHAR,
+            settings.DATABASE_SECRET_KEY,
+            AesEngine,
+            'pkcs5',
+        ),
+        index=True,
+        unique=True,
+        nullable=False,
+    ))
+    birth_date: datetime.date = Field(sa_column=Column(
+        StringEncryptedType(
+            sqlalchemy.DATE,
+            settings.DATABASE_SECRET_KEY,
+            AesEngine,
+            'pkcs5',
+        ),
+        nullable=False,
+    ))
+    due_date: datetime.date = Field(sa_column=Column(
+        StringEncryptedType(
+            sqlalchemy.DATE,
+            settings.DATABASE_SECRET_KEY,
+            AesEngine,
+            'pkcs5',
+        ),
+        nullable=False,
+    ))
 
     consents: list["Consent"] = Relationship(back_populates="infant")
     videos: list["Video"] = Relationship(back_populates="infant")
@@ -104,6 +144,8 @@ class InfantUpdate(SQLModel):
 
 class InfantOut(InfantBase):
     infant_id: int
+    created_at: datetime.datetime
+    created_by: int
 
 
 ##############################################################################
@@ -119,11 +161,33 @@ class ConsentBase(SQLModel):
     )
 
 
-class Consent(ConsentBase, table=True):
+class Consent(SQLModel, table=True):
     consent_id: Optional[int] = Field(default=None, primary_key=True)
     infant_id: int = Field(foreign_key="infant.infant_id")
     created_at: datetime.datetime = Field(default_factory=datetime.datetime.utcnow)
     created_by: int = Field(default=None, foreign_key="user.user_id")
+    consent_giver_name: str = Field(sa_column=Column(
+        StringEncryptedType(
+            sqlalchemy.VARCHAR,
+            settings.DATABASE_SECRET_KEY,
+            AesEngine,
+            'pkcs5',
+        ),
+        nullable=True,
+    ))
+    consent_giver_email: EmailStr = Field(sa_column=Column(
+        StringEncryptedType(
+            sqlalchemy.VARCHAR,
+            settings.DATABASE_SECRET_KEY,
+            AesEngine,
+            'pkcs5',
+        ),
+        nullable=True,
+    ))
+    collected_physically: bool = Field(
+        default=False,
+        description="An electronic consent is not required because a physical consent exists",
+    )
 
     infant: Infant = Relationship(back_populates="consents")
 

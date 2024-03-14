@@ -13,6 +13,7 @@ def test_create_consent(session: Session, client: TestClient, access_token_heade
         birth_date=datetime.date(2024, 2, 1),
         due_date=datetime.date(2024, 1, 1),
         nhi_number="123xyz",
+        created_by=1,
     )
     session.add(infant)
     session.commit()
@@ -44,6 +45,7 @@ def test_create_consent_2(session: Session, client: TestClient, access_token_hea
         birth_date=datetime.date(2024, 2, 1),
         due_date=datetime.date(2024, 1, 1),
         nhi_number="123xyz",
+        created_by=1,
     )
     session.add(infant)
     # add another infant
@@ -52,6 +54,7 @@ def test_create_consent_2(session: Session, client: TestClient, access_token_hea
         birth_date=datetime.date(2023, 2, 1),
         due_date=datetime.date(2023, 1, 1),
         nhi_number="abcdefg",
+        created_by=1,
     )
     session.add(infant)
     session.commit()
@@ -82,6 +85,7 @@ def test_create_consent_wrong_nhi(session: Session, client: TestClient, access_t
         birth_date=datetime.date(2024, 2, 1),
         due_date=datetime.date(2024, 1, 1),
         nhi_number="123xyz",
+        created_by=1,
     )
     session.add(infant)
     session.commit()
@@ -107,6 +111,7 @@ def test_create_consent_not_authenticated(session: Session, client: TestClient):
         birth_date=datetime.date(2024, 2, 1),
         due_date=datetime.date(2024, 1, 1),
         nhi_number="123xyz",
+        created_by=1,
     )
     session.add(infant)
     session.commit()
@@ -131,6 +136,7 @@ def test_create_consent_physically(session: Session, client: TestClient, access_
         birth_date=datetime.date(2024, 2, 1),
         due_date=datetime.date(2024, 1, 1),
         nhi_number="123xyz",
+        created_by=1,
     )
     session.add(infant)
     session.commit()
@@ -160,6 +166,7 @@ def test_create_consent_missing_nhi(session: Session, client: TestClient, access
         birth_date=datetime.date(2024, 2, 1),
         due_date=datetime.date(2024, 1, 1),
         nhi_number="123xyz",
+        created_by=1,
     )
     session.add(infant)
     session.commit()
@@ -181,6 +188,7 @@ def test_create_consent_missing_email(session: Session, client: TestClient, acce
         birth_date=datetime.date(2024, 2, 1),
         due_date=datetime.date(2024, 1, 1),
         nhi_number="123xyz",
+        created_by=1,
     )
     session.add(infant)
     session.commit()
@@ -203,6 +211,7 @@ def test_create_consent_missing_name(session: Session, client: TestClient, acces
         birth_date=datetime.date(2024, 2, 1),
         due_date=datetime.date(2024, 1, 1),
         nhi_number="123xyz",
+        created_by=1,
     )
     session.add(infant)
     session.commit()

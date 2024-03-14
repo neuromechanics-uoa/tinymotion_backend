@@ -17,6 +17,7 @@ def test_video_service_create_video_nhi(session: Session, client: TestClient):
         birth_date=datetime.date(2023, 6, 1),
         due_date=datetime.date(2023, 7, 1),
         nhi_number="abcdefg",
+        created_by=1,
     )
     session.add(infant)
     session.commit()
@@ -56,6 +57,7 @@ def test_video_service_create_video_invalid_nhi(session: Session, client: TestCl
         birth_date=datetime.date(2023, 6, 1),
         due_date=datetime.date(2023, 7, 1),
         nhi_number="abcdefg",
+        created_by=1,
     )
     session.add(infant)
     session.commit()
@@ -90,6 +92,7 @@ def test_video_service_create_video_no_consent(session: Session, client: TestCli
         birth_date=datetime.date(2023, 6, 1),
         due_date=datetime.date(2023, 7, 1),
         nhi_number="abcdefg",
+        created_by=1,
     )
     session.add(infant)
     session.commit()

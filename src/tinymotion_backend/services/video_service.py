@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 class VideoService(BaseService[Video, VideoCreate, VideoUpdate]):
     def __init__(self, db_session: Session, created_by: int):
         super(VideoService, self).__init__(Video, db_session, created_by=created_by)
-        self._infant_service = InfantService(db_session)
+        self._infant_service = InfantService(db_session, created_by)
 
     def create(self, obj: VideoCreate) -> Video:
         # TODO: override to push to object storage, send email etc

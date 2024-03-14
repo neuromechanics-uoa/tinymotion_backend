@@ -21,6 +21,7 @@ def test_create_video(
         birth_date=datetime.date(2024, 2, 1),
         due_date=datetime.date(2024, 1, 1),
         nhi_number="123xyz",
+        created_by=1,
     )
     session.add(infant)
     session.commit()
@@ -78,6 +79,7 @@ def test_create_video_wrong_nhi(
         birth_date=datetime.date(2024, 2, 1),
         due_date=datetime.date(2024, 1, 1),
         nhi_number="123xyz",
+        created_by=1,
     )
     session.add(infant)
     session.commit()
@@ -128,6 +130,7 @@ def test_create_video_no_consent(
         birth_date=datetime.date(2024, 2, 1),
         due_date=datetime.date(2024, 1, 1),
         nhi_number="123xyz",
+        created_by=1,
     )
     session.add(infant)
     session.commit()
@@ -167,6 +170,7 @@ def test_create_video_not_authenticated(
         birth_date=datetime.date(2024, 2, 1),
         due_date=datetime.date(2024, 1, 1),
         nhi_number="123xyz",
+        created_by=1,
     )
     session.add(infant)
     session.commit()
@@ -217,6 +221,7 @@ def test_create_video_missing_sha256(
         birth_date=datetime.date(2024, 2, 1),
         due_date=datetime.date(2024, 1, 1),
         nhi_number="123xyz",
+        created_by=1,
     )
     session.add(infant)
     session.commit()
@@ -264,6 +269,7 @@ def test_create_video_checksum_mismatch(
         birth_date=datetime.date(2024, 2, 1),
         due_date=datetime.date(2024, 1, 1),
         nhi_number="123xyz",
+        created_by=1,
     )
     session.add(infant)
     session.commit()
