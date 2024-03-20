@@ -73,7 +73,7 @@ def test_cli_user_update(monkeypatch, session: Session, email, key, disabled, ex
 
 
 @pytest.mark.parametrize("input_value,exit_code", [
-    pytest.param("y", 0, marks=pytest.mark.xfail(reason="Still able to get User")),
+    ("y", 0),
     ("n", 1),
 ])
 def test_cli_user_delete(monkeypatch, session: Session, input_value, exit_code):
@@ -84,6 +84,7 @@ def test_cli_user_delete(monkeypatch, session: Session, input_value, exit_code):
 
     # check the user exists first
     user = session.get(User, user_id)
+    assert user is not None
 
     args = ["user", "delete", user_id]
     runner = CliRunner()
@@ -91,11 +92,10 @@ def test_cli_user_delete(monkeypatch, session: Session, input_value, exit_code):
 
     if input_value == "y":
         assert result.exit_code == exit_code
-        with pytest.raises(NotFoundError):
-            session.get(User, user_id)
+        assert session.get(User, user_id) is None
     else:
         assert result.exit_code == exit_code
-        session.get(User, user_id)
+        assert session.get(User, user_id) is not None
 
 
 @pytest.mark.parametrize("num_add", [

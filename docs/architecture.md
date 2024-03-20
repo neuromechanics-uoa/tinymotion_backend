@@ -11,7 +11,7 @@ The backend is written in Python using:
 - [pytest](https://docs.pytest.org/) for testing
 - [mkdocs](https://www.mkdocs.org/) for documentation
 
-Deployment is achieved using [Terraform](https://www.terraform.io/) and [Ansible](https://www.ansible.com/) to create and configure a VM on an OpenStack cloud ([NeSI RDC](https://support.cloud.nesi.org.nz/)). The TinyMotion backend software is containerised using docker and run using [Docker compose](https://docs.docker.com/compose/). [SWAG](https://docs.linuxserver.io/general/swag/) (simple web access gateway) is used in front of the API and handles generating SSL certificates.
+Deployment is achieved using [Terraform](https://www.terraform.io/) and [Ansible](https://www.ansible.com/) to create and configure a VM on an OpenStack cloud ([NeSI RDC](https://support.cloud.nesi.org.nz/)). The TinyMotion backend software is containerised using docker and run using [Docker compose](https://docs.docker.com/compose/). [SWAG](https://docs.linuxserver.io/general/swag/) (secure web access gateway) is used in front of the API and handles generating SSL certificates.
 
 ## API
 
