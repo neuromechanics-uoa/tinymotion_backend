@@ -7,9 +7,9 @@
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <link href="../architecture/" rel="prev"/>
 <link href="../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.5.3, mkdocs-material-9.5.13" name="generator"/>
+<meta content="mkdocs-1.5.3, mkdocs-material-9.5.14" name="generator"/>
 <title>CLI Reference - TinyMotion Backend</title>
-<link href="../assets/stylesheets/main.7e359304.min.css" rel="stylesheet"/>
+<link href="../assets/stylesheets/main.10ba22f1.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
 <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
@@ -161,6 +161,44 @@
 <p><strong>Options:</strong></p>
 <div class="highlight"><pre><span></span><code>  --help  Show this message and exit.
 </code></pre></div>
+<h2 id="infant">infant</h2>
+<p>Commands to interact with infants in the backend.</p>
+<p><strong>Usage:</strong></p>
+<div class="highlight"><pre><span></span><code>tinymotion-backend infant [OPTIONS] COMMAND [ARGS]...
+</code></pre></div>
+<p><strong>Options:</strong></p>
+<div class="highlight"><pre><span></span><code>  --help  Show this message and exit.
+</code></pre></div>
+<h3 id="create">create</h3>
+<p>Create a new infant.</p>
+<p><strong>Usage:</strong></p>
+<div class="highlight"><pre><span></span><code>tinymotion-backend infant create [OPTIONS]
+</code></pre></div>
+<p><strong>Options:</strong></p>
+<div class="highlight"><pre><span></span><code>  -u, --user-id INTEGER        ID of the User to create the Infant  [required]
+  -f, --full-name TEXT         The infant's full name  [required]
+  -n, --nhi-number TEXT        The infant's NHI number  [required]
+  -b, --birth-date [%Y-%m-%d]  The infant's date of birth  [required]
+  -d, --due-date [%Y-%m-%d]    The infant's expected date of birth  [required]
+  --help                       Show this message and exit.
+</code></pre></div>
+<h3 id="delete">delete</h3>
+<p>Delete the specified Infant.</p>
+<p>INFANT_ID is the id of the infant to delete.</p>
+<p><strong>Usage:</strong></p>
+<div class="highlight"><pre><span></span><code>tinymotion-backend infant delete [OPTIONS] INFANT_ID
+</code></pre></div>
+<p><strong>Options:</strong></p>
+<div class="highlight"><pre><span></span><code>  --help  Show this message and exit.
+</code></pre></div>
+<h3 id="list">list</h3>
+<p>List existing infants.</p>
+<p><strong>Usage:</strong></p>
+<div class="highlight"><pre><span></span><code>tinymotion-backend infant list [OPTIONS]
+</code></pre></div>
+<p><strong>Options:</strong></p>
+<div class="highlight"><pre><span></span><code>  --help  Show this message and exit.
+</code></pre></div>
 <h2 id="user">user</h2>
 <p>Commands to interact with users in the backend.</p>
 <p><strong>Usage:</strong></p>
@@ -169,7 +207,7 @@
 <p><strong>Options:</strong></p>
 <div class="highlight"><pre><span></span><code>  --help  Show this message and exit.
 </code></pre></div>
-<h3 id="create">create</h3>
+<h3 id="create_1">create</h3>
 <p>Create a new user.</p>
 <p><strong>Usage:</strong></p>
 <div class="highlight"><pre><span></span><code>tinymotion-backend user create [OPTIONS]
@@ -181,7 +219,7 @@
   -d, --disabled         Disable the user's account on creation
   --help                 Show this message and exit.
 </code></pre></div>
-<h3 id="delete">delete</h3>
+<h3 id="delete_1">delete</h3>
 <p>Delete the specified User.</p>
 <p>USER_ID is the id of the user to delete.</p>
 <p><strong>Usage:</strong></p>
@@ -190,7 +228,7 @@
 <p><strong>Options:</strong></p>
 <div class="highlight"><pre><span></span><code>  --help  Show this message and exit.
 </code></pre></div>
-<h3 id="list">list</h3>
+<h3 id="list_1">list</h3>
 <p>List existing users.</p>
 <p><strong>Usage:</strong></p>
 <div class="highlight"><pre><span></span><code>tinymotion-backend user list [OPTIONS]
@@ -226,7 +264,7 @@
 <p><strong>Options:</strong></p>
 <div class="highlight"><pre><span></span><code>  --help  Show this message and exit.
 </code></pre></div>
-<h3 id="delete_1">delete</h3>
+<h3 id="delete_2">delete</h3>
 <p>Delete the specified video and the associated record in the database.</p>
 <p>VIDEO_ID is the id of the video to delete.</p>
 <p><strong>Usage:</strong></p>
@@ -235,7 +273,7 @@
 <p><strong>Options:</strong></p>
 <div class="highlight"><pre><span></span><code>  --help  Show this message and exit.
 </code></pre></div>
-<h3 id="list_1">list</h3>
+<h3 id="list_2">list</h3>
 <p>List stored videos.</p>
 <p><strong>Usage:</strong></p>
 <div class="highlight"><pre><span></span><code>tinymotion-backend video list [OPTIONS]
@@ -267,7 +305,7 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"base": "..", "features": [], "search": "../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
-<script src="../assets/javascripts/bundle.c8d2eff1.min.js"></script>
+<script src="../assets/javascripts/bundle.bd41221c.min.js"></script>
 <script>document$.subscribe(() => {
             const dark_scheme_name = "slate"
             
