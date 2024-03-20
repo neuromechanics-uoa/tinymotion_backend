@@ -45,8 +45,6 @@
 - name: Setup tinymotion backend
   hosts: all
   become: yes
-  vars_files:
-    - backend.yml
   tasks:
     - name: Create directory for deployment
       ansible.builtin.file:
@@ -119,3 +117,8 @@
         owner: root
         group: root
         mode: '0755'
+
+
+# TODO:
+# - pull images (need public repo first)
+# - run services (need secrets first)

@@ -2,7 +2,7 @@ version: '3.4'
 
 services:
   tinymotion:
-    image: ghcr.io/neuromechanics-uoa/tinymotion-backend:${TINYMOTION_TAG}
+    image: ghcr.io/neuromechanics-uoa/tinymotion-backend:{{ tinymotion_image_tag }}
     container_name: tinymotion_backend
     restart: unless-stopped
     user: 1000:1000
@@ -10,8 +10,8 @@ services:
       - TZ=Pacific/Auckland
       - TINYMOTION_ACCESS_TOKEN_SECRET_KEY=${TINYMOTION_ACCESS_TOKEN_SECRET_KEY}
       - TINYMOTION_REFRESH_TOKEN_SECRET_KEY=${TINYMOTION_REFRESH_TOKEN_SECRET_KEY}
-      - TINYMOTION_DATABASE_URI=${TINYMOTION_DATABASE_URI}
-      - TINYMOTION_VIDEO_LIBRARY_PATH=${TINYMOTION_VIDEO_LIBRARY_PATH}
+      - TINYMOTION_DATABASE_URI=sqlite:////var/lib/tinymotion_backend/tinymotion.db
+      - TINYMOTION_VIDEO_LIBRARY_PATH=/var/lib/tinymotion_backend/videos
       - TINYMOTION_VIDEO_SECRET_KEY=${TINYMOTION_VIDEO_SECRET_KEY}
     volumes:
       - ./data/tinymotion_backend:/var/lib/tinymotion_backend

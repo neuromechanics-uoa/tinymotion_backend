@@ -1,1 +1,2 @@
-vars/backend.yml
+vars/*.yml
+!vars/example.yml
