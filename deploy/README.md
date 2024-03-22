@@ -1,5 +1,12 @@
 # TinyMotion Backend deployment
 
+## Prerequisites
+
+- Account on NeSI RDC
+- Install Ansible
+- Install Terraform
+- Get a duckdns account and create a subdomain to use with each deployment
+
 ## Configuration
 
 You will need to downloaded your *clouds.yaml* from NeSI RDC and ensure it is located in *~/.config/openstack/*.
@@ -28,6 +35,14 @@ The above is the bare minimum configuration required. See file *variables.tf*
 to see other available parameters, such as the flavor (size) of the VM and size
 of the volume attached to it.
 
+Further configuration is required for Ansible. You should create a yml file named like *vars/<environment_name>.yml*, where *<environment_name>* is the name of the environment you are deploying (*dev* in the example below). Refer to *vars/example.yml* to see which variables should be set. Secrets could be generated using a command like:
+
+```
+python3 -c "import secrets; print(secrets.token_urlsafe())"
+```
+
+Note: the above yml file contains secrets and should be protected
+
 ## Deployment
 
 Run the deployment for the *dev* environment:
@@ -36,38 +51,9 @@ Run the deployment for the *dev* environment:
 ./deployment.sh create dev
 ```
 
-After that completes successfully, SSH into the node (IP address in *host.ini*) and run:
-
-```
-cd tinymotion_backend
-cp .env.example .env
-
-# edit .env appropriately
-
-# get a personal access token from github and store as CR_PAT
-echo $CR_PAT | sudo docker login ghcr.io -u USERNAME --password-stdin
-
-# pull the images
-sudo docker compose pull
-
-# run the services
-sudo docker compose up -d
-
-# check the status
-sudo docker compose ps
-
-# check the swag logs
-sudo docker compose logs -tf swag
-
-# check the tinymotion logs
-sudo docker compose logs -tf tinymotion
-
-# check the tinymotion cli is working
-sudo docker compose exec tinymotion tinymotion-backend --help
-```
+If this runs successfully this should bring up the tinymotion service and point your duckdns to the floating IP associated with the VM that was created by terraform.
 
 ## TODO
 
-- not sure why we need to authenticate with github to pull the images
 - setup firewall
-- store terraform state file in object storage
+- separate playbook that updates (including stop swag, remove config, pull and start again - to get new config)

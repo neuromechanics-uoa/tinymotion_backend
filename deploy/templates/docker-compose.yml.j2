@@ -1,5 +1,3 @@
-version: '3.4'
-
 services:
   tinymotion:
     image: ghcr.io/neuromechanics-uoa/tinymotion-backend:{{ tinymotion_image_tag }}
@@ -10,9 +8,10 @@ services:
       - TZ=Pacific/Auckland
       - TINYMOTION_ACCESS_TOKEN_SECRET_KEY=${TINYMOTION_ACCESS_TOKEN_SECRET_KEY}
       - TINYMOTION_REFRESH_TOKEN_SECRET_KEY=${TINYMOTION_REFRESH_TOKEN_SECRET_KEY}
+      - TINYMOTION_VIDEO_SECRET_KEY=${TINYMOTION_VIDEO_SECRET_KEY}
+      - TINYMOTION_DATABASE_SECRET_KEY=${TINYMOTION_DATABASE_SECRET_KEY}
       - TINYMOTION_DATABASE_URI=sqlite:////var/lib/tinymotion_backend/tinymotion.db
       - TINYMOTION_VIDEO_LIBRARY_PATH=/var/lib/tinymotion_backend/videos
-      - TINYMOTION_VIDEO_SECRET_KEY=${TINYMOTION_VIDEO_SECRET_KEY}
     volumes:
       - ./data/tinymotion_backend:/var/lib/tinymotion_backend
 
@@ -27,7 +26,6 @@ services:
       - PGID=1000
       - TZ=Pacific/Auckland
       - URL={{ tinymotion_url }}
-      - SUBDOMAINS=wildcard
       - VALIDATION=http
     volumes:
       - ./data/swag_config:/config

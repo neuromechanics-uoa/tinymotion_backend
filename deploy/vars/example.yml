@@ -1,2 +1,7 @@
 tinymotion_url: api.tinymotion.example.com
-tinymotion_image_tag: v0.5.0
+duckdns_token: myduckdnstoken
+duckdns_domain: my.domain
+access_token_secret: secretkey1
+refresh_token_secret: secretkey2
+video_secret: secretkey3
+database_secret: secretkey4
