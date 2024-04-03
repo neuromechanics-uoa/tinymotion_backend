@@ -35,10 +35,17 @@ The above is the bare minimum configuration required. See file *variables.tf*
 to see other available parameters, such as the flavor (size) of the VM and size
 of the volume attached to it.
 
-Further configuration is required for Ansible. You should create a yml file named like *vars/<environment_name>.yml*, where *<environment_name>* is the name of the environment you are deploying (*dev* in the example below). Refer to *vars/example.yml* to see which variables should be set. Secrets could be generated using a command like:
+Further configuration is required for Ansible. You should create a yml file named like *vars/<environment_name>.yml*, where *<environment_name>* is the name of the environment you are deploying (*dev* in the example below). Refer to *vars/example.yml* to see which variables should be set.
+The secrets `access_token_secret`, `refresh_token_secret` and `database_secret` could be generated using a command like:
 
 ```
 python3 -c "import secrets; print(secrets.token_urlsafe())"
+```
+
+The `video_secret` should be generated using:
+
+```
+python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode('ascii'))"
 ```
 
 Note: the above yml file contains secrets and should be protected
