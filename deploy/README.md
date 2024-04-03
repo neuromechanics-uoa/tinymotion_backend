@@ -5,7 +5,7 @@
 - Account on NeSI RDC
 - Install Ansible
 - Install Terraform
-- Get a duckdns account and create a subdomain to use with each deployment
+- [Optional] Get a duckdns account and create a subdomain to use with each deployment
 
 ## Configuration
 
@@ -45,6 +45,10 @@ Note: the above yml file contains secrets and should be protected
 
 ## Deployment
 
+### Duckdns single step deployment
+
+This section only applies if you are using duckdns and have set `duckdns: true` and configured `duckdns_token` and `duckdns_domain` in the yml config file.
+
 Run the deployment for the *dev* environment:
 
 ```
@@ -52,6 +56,26 @@ Run the deployment for the *dev* environment:
 ```
 
 If this runs successfully this should bring up the tinymotion service and point your duckdns to the floating IP associated with the VM that was created by terraform.
+
+### Two step deployment
+
+If you are not using duckdns then this section applies.
+
+First, provision the infrastructure (create VMs, floating IPs, etc) for the *dev* environment:
+
+```
+./deployment.sh provision dev
+```
+
+Look in the *host.ini* file that should have been created if the above command was successful.
+Locate the IP address of the instance in that file, it should be shown as `ansible_host=XXX.X.XXX.XXX`.
+Update your DNS settings to point the chosen domain name (`tinymotion_url` in the yml config file) to point to the IP address from the *host.ini* file.
+
+Once the DNS change has propagated, setup the infrastructure (install docker, etc) for the dev environment:
+
+```
+./deployment.sh setup dev
+```
 
 ## TODO
 

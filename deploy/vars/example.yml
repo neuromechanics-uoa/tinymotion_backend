@@ -1,4 +1,5 @@
-tinymotion_url: api.tinymotion.example.com
+tinymotion_url: api.tinymotion.example.duckdns.org
+use_duckdns: true
 duckdns_token: myduckdnstoken
 duckdns_domain: my.domain
 access_token_secret: secretkey1

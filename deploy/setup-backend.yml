@@ -36,8 +36,7 @@
       community.general.timezone:
         name: Pacific/Auckland
 
-# TODO: start cron job that updates duckdns, if configured
-- name: Setup duck dns DDNS
+- name: Setup duckdns DDNS
   hosts: all
   become: yes
   tasks:
@@ -47,16 +46,19 @@
           - cron
           - curl
         state: present
+      when: use_duckdns == true
     
     - name: Enable cron service
       service:
         name: cron
         state: started
         enabled: yes
+      when: use_duckdns == true
 
     - name: Create user for running duckdns update
       ansible.builtin.user:
         name: duckdns
+      when: use_duckdns == true
 
     - name: Install duckdns cron job
       ansible.builtin.cron:
@@ -68,6 +70,7 @@
         job: curl -o /home/duckdns/curl.log "https://www.duckdns.org/update?domains={{ duckdns_domain }}&token={{ duckdns_token }}&ip="
         state: present
       no_log: true
+      when: use_duckdns == true
 
 - name: Install docker
   hosts: all
