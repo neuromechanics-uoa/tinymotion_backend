@@ -39,6 +39,8 @@
 - name: Setup duckdns DDNS
   hosts: all
   become: yes
+  vars:
+    use_duckdns: false
   tasks:
     - name: Install cron and curl
       apt:
@@ -85,7 +87,7 @@
   hosts: all
   become: yes
   vars:
-    tinymotion_image_tag: v0.5.0
+    tinymotion_image_tag: v0.6.0
   tasks:
     - name: Create directory for deployment
       ansible.builtin.file:
