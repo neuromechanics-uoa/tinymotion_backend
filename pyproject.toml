@@ -24,6 +24,7 @@ dependencies = [
     "passlib[bcrypt]",
     "pydantic[email] >=2, <3",
     "pydantic-settings",
+    "python-dateutil",
     "sqlalchemy >=2, <3",
     "sqlalchemy-utils",
     "sqlmodel >= 0.0.16",
