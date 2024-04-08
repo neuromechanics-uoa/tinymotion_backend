@@ -40,7 +40,8 @@ def create(
 
 
 @user.command()
-def list():
+@click.option("-p", "--pager", is_flag=True, default=False, help="Display results using a pager")
+def list(pager: bool):
     """List existing users."""
     with Session(database.engine) as session:
         user_service = UserService(session)
@@ -49,7 +50,7 @@ def list():
         users_json = []
         for user in users:
             users_json.append(json.loads(user.json()))
-        if len(users) > 4:
+        if pager:
             echo_command = click.echo_via_pager
         else:
             echo_command = click.echo

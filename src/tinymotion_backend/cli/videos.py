@@ -17,7 +17,8 @@ def video():
 
 
 @video.command()
-def list():
+@click.option("-p", "--pager", is_flag=True, default=False, help="Display results using a pager")
+def list(pager: bool):
     """List stored videos."""
     with Session(database.engine) as session:
         video_service = VideoService(session, 0)
@@ -26,7 +27,7 @@ def list():
         videos_json = []
         for video in videos:
             videos_json.append(json.loads(video.json()))
-        if len(videos) > 4:
+        if pager:
             echo_command = click.echo_via_pager
         else:
             echo_command = click.echo

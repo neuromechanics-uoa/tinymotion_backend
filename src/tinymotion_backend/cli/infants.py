@@ -54,7 +54,8 @@ def create(
 
 
 @infant.command()
-def list():
+@click.option("-p", "--pager", is_flag=True, default=False, help="Display results using a pager")
+def list(pager: bool):
     """List existing infants."""
     with Session(database.engine) as session:
         infant_service = InfantService(session, 0)
@@ -63,7 +64,7 @@ def list():
         infants_json = []
         for infant in infants:
             infants_json.append(json.loads(infant.json()))
-        if len(infants) > 4:
+        if pager:
             echo_command = click.echo_via_pager
         else:
             echo_command = click.echo
