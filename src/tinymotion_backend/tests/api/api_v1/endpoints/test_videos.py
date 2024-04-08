@@ -1,6 +1,7 @@
 import os
 import datetime
 import hashlib
+import uuid
 
 from fastapi.testclient import TestClient
 from sqlmodel import Session
@@ -14,6 +15,7 @@ def test_create_video(
     client: TestClient,
     access_token_headers: dict[str, str],
     tmp_path,
+    mocked_user_id: uuid.UUID,
 ):
     # add an infant first
     infant = models.Infant(
@@ -21,7 +23,7 @@ def test_create_video(
         birth_date=datetime.date(2024, 2, 1),
         due_date=datetime.date(2024, 1, 1),
         nhi_number="123xyz",
-        created_by=1,
+        created_by=mocked_user_id,
     )
     session.add(infant)
     session.commit()
@@ -31,7 +33,7 @@ def test_create_video(
         consent_giver_name="Consent Giver",
         consent_giver_email="consent@test.com",
         infant_id=infant.infant_id,
-        created_by=1,
+        created_by=mocked_user_id,
     )
     session.add(consent)
     session.commit()
@@ -59,9 +61,9 @@ def test_create_video(
     data = response.json()
     assert data["sha256sum"] == sha256sum
     assert data["video_id"] is not None
-    assert data["created_by"] == 1
+    assert data["created_by"] == str(mocked_user_id)
     assert data["created_at"] is not None  # TODO: change this to use freezetime
-    assert data["infant_id"] == 1
+    assert data["infant_id"] == str(infant.infant_id)
     assert data["video_name"] is not None
     assert os.path.splitext(data["video_name"])[1] == ".enc"
     assert os.path.exists(os.path.join(settings.VIDEO_LIBRARY_PATH, data["video_name"]))
@@ -72,6 +74,7 @@ def test_create_video_wrong_nhi(
     client: TestClient,
     access_token_headers: dict[str, str],
     tmp_path,
+    mocked_user_id: uuid.UUID,
 ):
     # add an infant first
     infant = models.Infant(
@@ -79,7 +82,7 @@ def test_create_video_wrong_nhi(
         birth_date=datetime.date(2024, 2, 1),
         due_date=datetime.date(2024, 1, 1),
         nhi_number="123xyz",
-        created_by=1,
+        created_by=mocked_user_id,
     )
     session.add(infant)
     session.commit()
@@ -89,7 +92,7 @@ def test_create_video_wrong_nhi(
         consent_giver_name="Consent Giver",
         consent_giver_email="consent@test.com",
         infant_id=infant.infant_id,
-        created_by=1,
+        created_by=mocked_user_id,
     )
     session.add(consent)
     session.commit()
@@ -123,6 +126,7 @@ def test_create_video_no_consent(
     client: TestClient,
     access_token_headers: dict[str, str],
     tmp_path,
+    mocked_user_id: uuid.UUID,
 ):
     # add an infant first
     infant = models.Infant(
@@ -130,7 +134,7 @@ def test_create_video_no_consent(
         birth_date=datetime.date(2024, 2, 1),
         due_date=datetime.date(2024, 1, 1),
         nhi_number="123xyz",
-        created_by=1,
+        created_by=mocked_user_id,
     )
     session.add(infant)
     session.commit()
@@ -163,6 +167,7 @@ def test_create_video_not_authenticated(
     session: Session,
     client: TestClient,
     tmp_path,
+    mocked_user_id: uuid.UUID,
 ):
     # add an infant first
     infant = models.Infant(
@@ -170,7 +175,7 @@ def test_create_video_not_authenticated(
         birth_date=datetime.date(2024, 2, 1),
         due_date=datetime.date(2024, 1, 1),
         nhi_number="123xyz",
-        created_by=1,
+        created_by=mocked_user_id,
     )
     session.add(infant)
     session.commit()
@@ -180,7 +185,7 @@ def test_create_video_not_authenticated(
         consent_giver_name="Consent Giver",
         consent_giver_email="consent@test.com",
         infant_id=infant.infant_id,
-        created_by=1,
+        created_by=mocked_user_id,
     )
     session.add(consent)
     session.commit()
@@ -214,6 +219,7 @@ def test_create_video_missing_sha256(
     client: TestClient,
     access_token_headers: dict[str, str],
     tmp_path,
+    mocked_user_id: uuid.UUID,
 ):
     # add an infant first
     infant = models.Infant(
@@ -221,7 +227,7 @@ def test_create_video_missing_sha256(
         birth_date=datetime.date(2024, 2, 1),
         due_date=datetime.date(2024, 1, 1),
         nhi_number="123xyz",
-        created_by=1,
+        created_by=mocked_user_id,
     )
     session.add(infant)
     session.commit()
@@ -231,7 +237,7 @@ def test_create_video_missing_sha256(
         consent_giver_name="Consent Giver",
         consent_giver_email="consent@test.com",
         infant_id=infant.infant_id,
-        created_by=1,
+        created_by=mocked_user_id,
     )
     session.add(consent)
     session.commit()
@@ -262,6 +268,7 @@ def test_create_video_checksum_mismatch(
     client: TestClient,
     access_token_headers: dict[str, str],
     tmp_path,
+    mocked_user_id: uuid.UUID,
 ):
     # add an infant first
     infant = models.Infant(
@@ -269,7 +276,7 @@ def test_create_video_checksum_mismatch(
         birth_date=datetime.date(2024, 2, 1),
         due_date=datetime.date(2024, 1, 1),
         nhi_number="123xyz",
-        created_by=1,
+        created_by=mocked_user_id,
     )
     session.add(infant)
     session.commit()
@@ -279,7 +286,7 @@ def test_create_video_checksum_mismatch(
         consent_giver_name="Consent Giver",
         consent_giver_email="consent@test.com",
         infant_id=infant.infant_id,
-        created_by=1,
+        created_by=mocked_user_id,
     )
     session.add(consent)
     session.commit()

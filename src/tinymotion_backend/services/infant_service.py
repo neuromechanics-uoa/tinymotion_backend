@@ -1,4 +1,5 @@
 import logging
+import uuid
 
 from sqlmodel import select, Session
 from sqlalchemy.exc import NoResultFound, MultipleResultsFound
@@ -12,7 +13,7 @@ logger = logging.getLogger(__name__)
 
 
 class InfantService(BaseService[Infant, InfantCreate, InfantUpdate]):
-    def __init__(self, db_session: Session, created_by: int):
+    def __init__(self, db_session: Session, created_by: uuid.UUID):
         super(InfantService, self).__init__(Infant, db_session, created_by=created_by)
 
     def get_by_nhi_number(self, nhi_number: str) -> Infant:

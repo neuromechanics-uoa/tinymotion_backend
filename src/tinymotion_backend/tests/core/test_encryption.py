@@ -2,6 +2,7 @@ import os
 import hashlib
 
 import pytest
+from cryptography.fernet import Fernet, InvalidToken
 
 from tinymotion_backend.core.encryption import encrypt_file, decrypt_file
 from tinymotion_backend.core.config import settings
@@ -80,3 +81,40 @@ def test_file_encryption_decryption_larger(tmp_path, multiplier):
         out_hash2 = hashlib.file_digest(fin, 'sha256').hexdigest()
 
     assert out_hash == out_hash2
+
+
+def test_file_encryption_decryption_fails(tmp_path):
+    # write some contents to a temporary file
+    tmp_file = tmp_path / "myfile.txt"
+    tmp_file.write_text("hello")
+
+    # compute the hash
+    with tmp_file.open('rb') as fin:
+        digest = hashlib.file_digest(fin, 'sha256')
+
+    # set the secret key
+    settings.VIDEO_SECRET_KEY = Fernet.generate_key().decode('ascii')
+
+    # encrypt the file
+    enc_file = tmp_path / "myfile.txt.enc"
+    with tmp_file.open('rb') as fin:
+        orig_hash, enc_hash = encrypt_file(fin, enc_file)
+
+    assert os.path.exists(enc_file)
+    assert digest.hexdigest() == orig_hash
+
+    with open(enc_file, 'rb') as fin:
+        digest_enc = hashlib.file_digest(fin, 'sha256')
+
+    assert digest_enc.hexdigest() == enc_hash
+    assert digest.hexdigest() != digest_enc.hexdigest()
+
+    # change the secret key
+    old_key = settings.VIDEO_SECRET_KEY
+    settings.VIDEO_SECRET_KEY = Fernet.generate_key().decode('ascii')
+    assert old_key != settings.VIDEO_SECRET_KEY
+
+    # decrypt the file
+    out_file = str(tmp_path / "myfile2.txt")
+    with pytest.raises(InvalidToken):
+        decrypt_file(enc_file, out_file)

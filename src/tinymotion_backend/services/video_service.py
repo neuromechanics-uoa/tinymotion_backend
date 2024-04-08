@@ -1,4 +1,5 @@
 import logging
+import uuid
 
 from sqlmodel import Session
 
@@ -12,7 +13,7 @@ logger = logging.getLogger(__name__)
 
 
 class VideoService(BaseService[Video, VideoCreate, VideoUpdate]):
-    def __init__(self, db_session: Session, created_by: int):
+    def __init__(self, db_session: Session, created_by: uuid.UUID):
         super(VideoService, self).__init__(Video, db_session, created_by=created_by)
         self._infant_service = InfantService(db_session, created_by)
 

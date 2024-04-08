@@ -1,4 +1,5 @@
 import datetime
+import uuid
 
 from fastapi.testclient import TestClient
 from sqlmodel import Session
@@ -6,14 +7,14 @@ from sqlmodel import Session
 from tinymotion_backend import models
 
 
-def test_create_consent(session: Session, client: TestClient, access_token_headers: dict[str, str]):
+def test_create_consent(session: Session, client: TestClient, access_token_headers: dict[str, str], mocked_user_id: uuid.UUID):
     # add an infant first
     infant = models.Infant(
         full_name="An Infant",
         birth_date=datetime.date(2024, 2, 1),
         due_date=datetime.date(2024, 1, 1),
         nhi_number="123xyz",
-        created_by=1,
+        created_by=mocked_user_id,
     )
     session.add(infant)
     session.commit()
@@ -33,32 +34,37 @@ def test_create_consent(session: Session, client: TestClient, access_token_heade
     assert data["consent_giver_email"] == "consent@giver.com"
     assert not data["collected_physically"]
     assert data["consent_id"] is not None
-    assert data["created_by"] == 1
+    assert data["created_by"] == str(mocked_user_id)
     assert data["created_at"] is not None  # TODO: change this to use freezetime
-    assert data["infant_id"] == 1
+    assert data["infant_id"] == str(infant.infant_id)
 
 
-def test_create_consent_2(session: Session, client: TestClient, access_token_headers: dict[str, str]):
+def test_create_consent_2(
+    session: Session,
+    client: TestClient,
+    access_token_headers: dict[str, str],
+    mocked_user_id: uuid.UUID,
+):
     # add an infant first
-    infant = models.Infant(
+    infant1 = models.Infant(
         full_name="An Infant",
         birth_date=datetime.date(2024, 2, 1),
         due_date=datetime.date(2024, 1, 1),
         nhi_number="123xyz",
-        created_by=1,
+        created_by=mocked_user_id,
     )
-    session.add(infant)
+    session.add(infant1)
     # add another infant
-    infant = models.Infant(
+    infant2 = models.Infant(
         full_name="Another Infant",
         birth_date=datetime.date(2023, 2, 1),
         due_date=datetime.date(2023, 1, 1),
         nhi_number="abcdefg",
-        created_by=1,
+        created_by=mocked_user_id,
     )
-    session.add(infant)
+    session.add(infant2)
     session.commit()
-    session.refresh(infant)
+    session.refresh(infant2)
 
     # add consent
     consent_in = {
@@ -73,19 +79,24 @@ def test_create_consent_2(session: Session, client: TestClient, access_token_hea
     assert data["consent_giver_email"] == "consent@giver.com"
     assert not data["collected_physically"]
     assert data["consent_id"] is not None
-    assert data["created_by"] == 1
+    assert data["created_by"] == str(mocked_user_id)
     assert data["created_at"] is not None  # TODO: change this to use freezetime
-    assert data["infant_id"] == 2
+    assert data["infant_id"] == str(infant2.infant_id)
 
 
-def test_create_consent_wrong_nhi(session: Session, client: TestClient, access_token_headers: dict[str, str]):
+def test_create_consent_wrong_nhi(
+    session: Session,
+    client: TestClient,
+    access_token_headers: dict[str, str],
+    mocked_user_id: uuid.UUID,
+):
     # add an infant first
     infant = models.Infant(
         full_name="An Infant",
         birth_date=datetime.date(2024, 2, 1),
         due_date=datetime.date(2024, 1, 1),
         nhi_number="123xyz",
-        created_by=1,
+        created_by=mocked_user_id,
     )
     session.add(infant)
     session.commit()
@@ -104,14 +115,14 @@ def test_create_consent_wrong_nhi(session: Session, client: TestClient, access_t
     assert data["detail"] == "An infant with the specified NHI number does not exist"
 
 
-def test_create_consent_not_authenticated(session: Session, client: TestClient):
+def test_create_consent_not_authenticated(session: Session, client: TestClient, mocked_user_id: uuid.UUID):
     # add an infant first
     infant = models.Infant(
         full_name="An Infant",
         birth_date=datetime.date(2024, 2, 1),
         due_date=datetime.date(2024, 1, 1),
         nhi_number="123xyz",
-        created_by=1,
+        created_by=mocked_user_id,
     )
     session.add(infant)
     session.commit()
@@ -129,14 +140,19 @@ def test_create_consent_not_authenticated(session: Session, client: TestClient):
     assert response.json()["detail"] == "Not authenticated"
 
 
-def test_create_consent_physically(session: Session, client: TestClient, access_token_headers: dict[str, str]):
+def test_create_consent_physically(
+    session: Session,
+    client: TestClient,
+    access_token_headers: dict[str, str],
+    mocked_user_id: uuid.UUID,
+):
     # add an infant first
     infant = models.Infant(
         full_name="An Infant",
         birth_date=datetime.date(2024, 2, 1),
         due_date=datetime.date(2024, 1, 1),
         nhi_number="123xyz",
-        created_by=1,
+        created_by=mocked_user_id,
     )
     session.add(infant)
     session.commit()
@@ -154,19 +170,24 @@ def test_create_consent_physically(session: Session, client: TestClient, access_
     assert data["consent_giver_email"] is None
     assert data["collected_physically"]
     assert data["consent_id"] is not None
-    assert data["created_by"] == 1
+    assert data["created_by"] == str(mocked_user_id)
     assert data["created_at"] is not None  # TODO: change this to use freezetime
-    assert data["infant_id"] == 1
+    assert data["infant_id"] == str(infant.infant_id)
 
 
-def test_create_consent_missing_nhi(session: Session, client: TestClient, access_token_headers: dict[str, str]):
+def test_create_consent_missing_nhi(
+    session: Session,
+    client: TestClient,
+    access_token_headers: dict[str, str],
+    mocked_user_id: uuid.UUID,
+):
     # add an infant first
     infant = models.Infant(
         full_name="An Infant",
         birth_date=datetime.date(2024, 2, 1),
         due_date=datetime.date(2024, 1, 1),
         nhi_number="123xyz",
-        created_by=1,
+        created_by=mocked_user_id,
     )
     session.add(infant)
     session.commit()
@@ -181,14 +202,19 @@ def test_create_consent_missing_nhi(session: Session, client: TestClient, access
     # TODO: check nhi missing in detail...
 
 
-def test_create_consent_missing_email(session: Session, client: TestClient, access_token_headers: dict[str, str]):
+def test_create_consent_missing_email(
+    session: Session,
+    client: TestClient,
+    access_token_headers: dict[str, str],
+    mocked_user_id: uuid.UUID,
+):
     # add an infant first
     infant = models.Infant(
         full_name="An Infant",
         birth_date=datetime.date(2024, 2, 1),
         due_date=datetime.date(2024, 1, 1),
         nhi_number="123xyz",
-        created_by=1,
+        created_by=mocked_user_id,
     )
     session.add(infant)
     session.commit()
@@ -204,14 +230,19 @@ def test_create_consent_missing_email(session: Session, client: TestClient, acce
     assert data["detail"] == "Must set `consent_giver_email` when not specifying `collected_physically`"
 
 
-def test_create_consent_missing_name(session: Session, client: TestClient, access_token_headers: dict[str, str]):
+def test_create_consent_missing_name(
+    session: Session,
+    client: TestClient,
+    access_token_headers: dict[str, str],
+    mocked_user_id: uuid.UUID,
+):
     # add an infant first
     infant = models.Infant(
         full_name="An Infant",
         birth_date=datetime.date(2024, 2, 1),
         due_date=datetime.date(2024, 1, 1),
         nhi_number="123xyz",
-        created_by=1,
+        created_by=mocked_user_id,
     )
     session.add(infant)
     session.commit()

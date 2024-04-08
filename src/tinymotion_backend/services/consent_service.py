@@ -1,4 +1,5 @@
 import logging
+import uuid
 
 from sqlmodel import Session
 
@@ -12,7 +13,7 @@ logger = logging.getLogger(__name__)
 
 
 class ConsentService(BaseService[Consent, ConsentCreate, ConsentUpdate]):
-    def __init__(self, db_session: Session, created_by: int):
+    def __init__(self, db_session: Session, created_by: uuid.UUID):
         super(ConsentService, self).__init__(Consent, db_session, created_by=created_by)
 
     def create(self, obj: ConsentCreate) -> Consent:

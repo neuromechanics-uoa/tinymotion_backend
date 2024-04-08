@@ -1,11 +1,13 @@
 import datetime
 from typing import Optional
+import uuid
 
 import sqlalchemy
 from sqlalchemy_utils import StringEncryptedType
 from sqlalchemy_utils.types.encrypted.encrypted_type import AesEngine
+from sqlalchemy_utils import UUIDType
 from pydantic import EmailStr
-from sqlmodel import Field, SQLModel, Relationship, AutoString, Column
+from sqlmodel import Field, SQLModel, Relationship, AutoString, Column, ForeignKey
 
 from tinymotion_backend.core.config import settings
 
@@ -22,7 +24,7 @@ class Token(SQLModel):
 
 
 class TokenData(SQLModel):
-    user_id: int | None = None
+    user_id: uuid.UUID | None = None
 
 
 ##############################################################################
@@ -34,7 +36,11 @@ class UserBase(SQLModel):
 
 
 class User(UserBase, table=True):
-    user_id: Optional[int] = Field(default=None, primary_key=True)
+    user_id: uuid.UUID = Field(sa_column=Column(
+        UUIDType(binary=False),
+        primary_key=True,
+        default=uuid.uuid4,
+    ))
     email: EmailStr = Field(sa_column=Column(
         StringEncryptedType(
             sqlalchemy.VARCHAR,
@@ -69,7 +75,7 @@ class UserUpdate(SQLModel):
 
 
 class UserRead(UserBase):
-    user_id: int
+    user_id: uuid.UUID
     email: EmailStr
 
 
@@ -85,9 +91,17 @@ class InfantBase(SQLModel):
 
 
 class Infant(SQLModel, table=True):
-    infant_id: Optional[int] = Field(default=None, primary_key=True)
+    infant_id: uuid.UUID = Field(sa_column=Column(
+        UUIDType(binary=False),
+        primary_key=True,
+        default=uuid.uuid4,
+    ))
     created_at: datetime.datetime = Field(default_factory=datetime.datetime.utcnow)
-    created_by: int = Field(default=None, foreign_key="user.user_id")
+    created_by: uuid.UUID = Field(sa_column=Column(
+        UUIDType(binary=False),
+        ForeignKey('user.user_id'),
+        nullable=False,
+    ))
     full_name: str = Field(sa_column=Column(
         StringEncryptedType(
             sqlalchemy.VARCHAR,
@@ -143,9 +157,9 @@ class InfantUpdate(SQLModel):
 
 
 class InfantOut(InfantBase):
-    infant_id: int
+    infant_id: uuid.UUID
     created_at: datetime.datetime
-    created_by: int
+    created_by: uuid.UUID
 
 
 ##############################################################################
@@ -162,10 +176,22 @@ class ConsentBase(SQLModel):
 
 
 class Consent(SQLModel, table=True):
-    consent_id: Optional[int] = Field(default=None, primary_key=True)
-    infant_id: int = Field(foreign_key="infant.infant_id")
+    consent_id: uuid.UUID = Field(sa_column=Column(
+        UUIDType(binary=False),
+        primary_key=True,
+        default=uuid.uuid4,
+    ))
+    infant_id: uuid.UUID = Field(sa_column=Column(
+        UUIDType(binary=False),
+        ForeignKey('infant.infant_id'),
+        nullable=False,
+    ))
     created_at: datetime.datetime = Field(default_factory=datetime.datetime.utcnow)
-    created_by: int = Field(default=None, foreign_key="user.user_id")
+    created_by: uuid.UUID = Field(sa_column=Column(
+        UUIDType(binary=False),
+        ForeignKey('user.user_id'),
+        nullable=False,
+    ))
     consent_giver_name: str = Field(sa_column=Column(
         StringEncryptedType(
             sqlalchemy.VARCHAR,
@@ -197,7 +223,7 @@ class ConsentCreateViaNHI(ConsentBase):
 
 
 class ConsentCreate(ConsentBase):
-    infant_id: int
+    infant_id: uuid.UUID
 
 
 class ConsentUpdate(SQLModel):
@@ -206,10 +232,10 @@ class ConsentUpdate(SQLModel):
 
 
 class ConsentOut(ConsentBase):
-    consent_id: int
-    infant_id: int
+    consent_id: uuid.UUID
+    infant_id: uuid.UUID
     created_at: datetime.datetime
-    created_by: int
+    created_by: uuid.UUID
 
 
 ##############################################################################
@@ -222,10 +248,22 @@ class VideoBase(SQLModel):
 
 
 class Video(VideoBase, table=True):
-    video_id: Optional[int] = Field(default=None, primary_key=True)
-    infant_id: int = Field(foreign_key="infant.infant_id")
+    video_id: uuid.UUID = Field(sa_column=Column(
+        UUIDType(binary=False),
+        primary_key=True,
+        default=uuid.uuid4,
+    ))
+    infant_id: uuid.UUID = Field(sa_column=Column(
+        UUIDType(binary=False),
+        ForeignKey('infant.infant_id'),
+        nullable=False,
+    ))
     created_at: datetime.datetime = Field(default_factory=datetime.datetime.utcnow)
-    created_by: int = Field(foreign_key="user.user_id")
+    created_by: uuid.UUID = Field(sa_column=Column(
+        UUIDType(binary=False),
+        ForeignKey('user.user_id'),
+        nullable=False,
+    ))
     video_size: Optional[int] = Field(default=None)
     sha256sum_enc: Optional[str] = Field(min_length=64, max_length=64)
 
@@ -233,7 +271,7 @@ class Video(VideoBase, table=True):
 
 
 class VideoCreate(VideoBase):
-    infant_id: int
+    infant_id: uuid.UUID
 
 
 class VideoCreateViaNHI(VideoBase):
@@ -246,8 +284,8 @@ class VideoUpdate(SQLModel):
 
 
 class VideoOut(VideoBase):
-    video_id: int
-    infant_id: int
+    video_id: uuid.UUID
+    infant_id: uuid.UUID
     created_at: datetime.datetime
-    created_by: int
+    created_by: uuid.UUID
     video_size: int

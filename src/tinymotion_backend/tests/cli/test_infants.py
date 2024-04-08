@@ -1,5 +1,7 @@
-import pytest
+import uuid
 import datetime
+
+import pytest
 from sqlmodel import Session, select
 from click.testing import CliRunner
 
@@ -15,11 +17,17 @@ from tinymotion_backend.core.exc import NotFoundError
     ("1", "An Infant", "abc123", "20240101", "2024-01-02", 2, "Error: Invalid value for '-b' / '--birth-date'"),
     ("1", "An Infant", None, "2024-01-01", "2024-01-02", 2, "Error: Missing option '-n' / '--nhi-number'"),
 ])
-def test_cli_infant_create(monkeypatch, session: Session, user_id: str | None, full_name: str | None,
+def test_cli_infant_create(monkeypatch, session: Session, mocked_user_id: uuid.UUID,
+                           user_id: str | None, full_name: str | None,
                            nhi_number: str | None, birth_date: str | None, due_date: str | None,
                            exit_code: int, expected_output: str | None):
     engine = session.get_bind()
     monkeypatch.setattr('tinymotion_backend.database.engine', engine)
+
+    if user_id == "1":
+        user_id = str(mocked_user_id)
+    else:
+        user_id = str(uuid.uuid4())
 
     args = ["infant", "create"]
     if user_id is not None:
@@ -45,7 +53,7 @@ def test_cli_infant_create(monkeypatch, session: Session, user_id: str | None, f
         assert infant.full_name == full_name
         assert infant.birth_date == datetime.datetime.strptime(birth_date, "%Y-%m-%d").date()
         assert infant.due_date == datetime.datetime.strptime(due_date, "%Y-%m-%d").date()
-        assert infant.created_by == int(user_id)
+        assert infant.created_by == mocked_user_id
 
 
 #@pytest.mark.parametrize("full_name,nhi_number,birth_date,due_date,exit_code,expected_output", [
@@ -107,7 +115,7 @@ def test_cli_infant_create(monkeypatch, session: Session, user_id: str | None, f
     ("y", 0),
     ("n", 1),
 ])
-def test_cli_infant_delete(monkeypatch, session: Session, input_value, exit_code):
+def test_cli_infant_delete(monkeypatch, session: Session, mocked_user_id: uuid.UUID, input_value, exit_code):
     engine = session.get_bind()
     monkeypatch.setattr('tinymotion_backend.database.engine', engine)
 
@@ -117,7 +125,7 @@ def test_cli_infant_delete(monkeypatch, session: Session, input_value, exit_code
         nhi_number="abc12345",
         birth_date=datetime.date(2023, 1, 3),
         due_date=datetime.date(2023, 1, 2),
-        created_by=1,
+        created_by=mocked_user_id,
     )
     session.add(infant)
     session.commit()
@@ -147,7 +155,7 @@ def test_cli_infant_delete(monkeypatch, session: Session, input_value, exit_code
     1,
     4,
 ])
-def test_cli_infant_list(monkeypatch, session: Session, num_add: int):
+def test_cli_infant_list(monkeypatch, session: Session, mocked_user_id: uuid.UUID, num_add: int):
     engine = session.get_bind()
     monkeypatch.setattr('tinymotion_backend.database.engine', engine)
 
@@ -157,7 +165,7 @@ def test_cli_infant_list(monkeypatch, session: Session, num_add: int):
             nhi_number=f"abc{i}",
             birth_date=datetime.date(2024, 3, i + 1),
             due_date=datetime.date(2024, 2, i + 2),
-            created_by=1,
+            created_by=mocked_user_id,
         )
         session.add(infant)
         session.commit()

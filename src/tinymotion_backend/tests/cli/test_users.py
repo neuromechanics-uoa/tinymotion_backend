@@ -1,3 +1,5 @@
+import uuid
+
 import pytest
 from sqlmodel import Session, select
 from click.testing import CliRunner
@@ -45,11 +47,11 @@ def test_cli_user_create(monkeypatch, session: Session, email, key, disabled, ex
     ("cli@test.com", None, None, 0),
     ("notanemail", "clisecretkey", True, 1),
 ])
-def test_cli_user_update(monkeypatch, session: Session, email, key, disabled, exit_code):
+def test_cli_user_update(monkeypatch, session: Session, mocked_user_id: uuid.UUID, email, key, disabled, exit_code):
     engine = session.get_bind()
     monkeypatch.setattr('tinymotion_backend.database.engine', engine)
 
-    user_id = "1"  # the user added via mock data
+    user_id = str(mocked_user_id)  # the user added via mock data
     args = ["user", "update"]
     if email is not None:
         args.extend(["--email", email])
@@ -63,7 +65,7 @@ def test_cli_user_update(monkeypatch, session: Session, email, key, disabled, ex
     assert result.exit_code == exit_code
 
     if exit_code == 0:
-        user = session.get(User, user_id)
+        user = session.get(User, mocked_user_id)
         assert user.email == email if email is not None else user.email == MOCK_USERS[0]["email"]
         assert user.access_key == key if key is not None else user.access_key == MOCK_USERS[0]["access_key"]
         if disabled is not None:
@@ -76,14 +78,14 @@ def test_cli_user_update(monkeypatch, session: Session, email, key, disabled, ex
     ("y", 0),
     ("n", 1),
 ])
-def test_cli_user_delete(monkeypatch, session: Session, input_value, exit_code):
+def test_cli_user_delete(monkeypatch, session: Session, mocked_user_id: uuid.UUID, input_value, exit_code):
     engine = session.get_bind()
     monkeypatch.setattr('tinymotion_backend.database.engine', engine)
 
-    user_id = "1"  # the user added via mock data
+    user_id = str(mocked_user_id)  # the user added via mock data
 
     # check the user exists first
-    user = session.get(User, user_id)
+    user = session.get(User, mocked_user_id)
     assert user is not None
 
     args = ["user", "delete", user_id]
@@ -91,11 +93,12 @@ def test_cli_user_delete(monkeypatch, session: Session, input_value, exit_code):
     result = runner.invoke(cli, args, input=input_value)
 
     if input_value == "y":
+        session.expunge_all()
         assert result.exit_code == exit_code
-        assert session.get(User, user_id) is None
+        assert session.get(User, mocked_user_id) is None
     else:
         assert result.exit_code == exit_code
-        assert session.get(User, user_id) is not None
+        assert session.get(User, mocked_user_id) is not None
 
 
 @pytest.mark.parametrize("num_add", [

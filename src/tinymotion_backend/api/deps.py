@@ -1,5 +1,6 @@
 import logging
 from typing import Annotated
+import uuid
 
 from fastapi import status, HTTPException, Depends
 from fastapi.security import OAuth2PasswordBearer
@@ -38,7 +39,7 @@ def get_token_data(token: str, secret_key: str):
         user_id: str = payload.get("sub")
         if user_id is None:
             raise credentials_exception
-        token_data = models.TokenData(user_id=user_id)
+        token_data = models.TokenData(user_id=uuid.UUID(user_id))
     except JWTError:
         raise credentials_exception
 

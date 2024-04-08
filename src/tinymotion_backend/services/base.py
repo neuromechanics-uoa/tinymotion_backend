@@ -1,3 +1,4 @@
+import uuid
 from typing import Any, Generic, Optional, Type, TypeVar
 
 import sqlalchemy
@@ -12,7 +13,7 @@ UpdateSchemaType = TypeVar("UpdateSchemaType", bound=SQLModel)
 
 
 class BaseService(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
-    def __init__(self, model: Type[ModelType], db_session: Session, created_by: int | None = None):
+    def __init__(self, model: Type[ModelType], db_session: Session, created_by: uuid.UUID | None = None):
         self.model = model
         self.db_session = db_session
         self.created_by = created_by

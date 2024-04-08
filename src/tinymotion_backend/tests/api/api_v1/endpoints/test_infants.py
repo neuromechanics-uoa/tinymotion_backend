@@ -1,4 +1,5 @@
 import datetime
+import uuid
 
 from fastapi.testclient import TestClient
 from sqlmodel import Session
@@ -6,7 +7,7 @@ from sqlmodel import Session
 from tinymotion_backend import models
 
 
-def test_create_infant(client: TestClient, access_token_headers: dict[str, str]):
+def test_create_infant(client: TestClient, access_token_headers: dict[str, str], mocked_user_id: uuid.UUID):
     infant_data = {
         "full_name": "An Infant",
         "birth_date": "2024-02-01",
@@ -21,15 +22,21 @@ def test_create_infant(client: TestClient, access_token_headers: dict[str, str])
     assert data["due_date"] == "2024-01-01"
     assert data["nhi_number"] == "123xyz"
     assert data["infant_id"] is not None
+    assert data["created_by"] == str(mocked_user_id)
 
 
-def test_create_infant_duplicate(session: Session, client: TestClient, access_token_headers: dict[str, str]):
+def test_create_infant_duplicate(
+    session: Session,
+    client: TestClient,
+    access_token_headers: dict[str, str],
+    mocked_user_id: uuid.UUID,
+):
     infant_add = models.Infant(
         full_name="Another infant",
         birth_date=datetime.date(2024, 2, 1),
         due_date=datetime.date(2024, 2, 1),
         nhi_number="123xyz",
-        created_by=1,
+        created_by=mocked_user_id,
     )
     session.add(infant_add)
     session.commit()

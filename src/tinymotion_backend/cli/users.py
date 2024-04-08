@@ -1,3 +1,4 @@
+import uuid
 import click
 from sqlmodel import Session
 
@@ -47,12 +48,12 @@ def list():
 
 
 @user.command()
-@click.argument('user_id', type=click.INT)
+@click.argument('user_id', type=click.UUID)
 @click.option('-e', '--email', required=False, default=None, type=str, help="Update the user's email")
 @click.option('-k', '--access-key', required=False, default=None, type=str, help="Update the user's access key")
 @click.option('-d', '--disabled', required=False, default=None, type=bool, help="Update whether the user is disabled")
 def update(
-    user_id: int,
+    user_id: uuid.UUID,
     email: str | None,
     access_key: str | None,
     disabled: bool | None,
@@ -75,9 +76,9 @@ def update(
 
 
 @user.command()
-@click.argument('user_id', type=click.INT)
+@click.argument('user_id', type=click.UUID)
 def delete(
-    user_id: int,
+    user_id: uuid.UUID,
 ):
     """Delete the specified User.
 

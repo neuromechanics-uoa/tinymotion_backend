@@ -1,3 +1,4 @@
+import uuid
 import datetime
 
 import click
@@ -16,7 +17,7 @@ def infant():
 
 
 @infant.command()
-@click.option("-u", "--user-id", required=True, type=int, help="ID of the User to create the Infant")
+@click.option("-u", "--user-id", required=True, type=click.UUID, help="ID of the User to create the Infant")
 @click.option('-f', '--full-name', required=True, type=str, help="The infant's full name")
 @click.option('-n', '--nhi-number', required=True, type=str, help="The infant's NHI number")
 @click.option('-b', '--birth-date', required=True, type=click.DateTime(formats=["%Y-%m-%d"]),
@@ -24,7 +25,7 @@ def infant():
 @click.option('-d', '--due-date', required=True, type=click.DateTime(formats=["%Y-%m-%d"]),
               help="The infant's expected date of birth")
 def create(
-    user_id: int,
+    user_id: uuid.UUID,
     full_name: str,
     nhi_number: str,
     birth_date: datetime.datetime,
@@ -101,16 +102,16 @@ def list():
 
 
 @infant.command()
-@click.argument('infant_id', type=click.INT)
+@click.argument('infant_id', type=click.UUID)
 def delete(
-    infant_id: int,
+    infant_id: uuid.UUID,
 ):
     """Delete the specified Infant.
 
     INFANT_ID is the id of the infant to delete.
     """
     with Session(database.engine) as session:
-        infant_service = InfantService(session, 0)
+        infant_service = InfantService(session, None)
 
         # first get the infant and confirm deletion
         infant_record = infant_service.get(infant_id)

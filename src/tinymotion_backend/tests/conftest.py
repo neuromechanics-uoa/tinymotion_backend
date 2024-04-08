@@ -1,6 +1,8 @@
+import uuid
+
 import pytest
 from fastapi.testclient import TestClient
-from sqlmodel import Session, SQLModel, create_engine
+from sqlmodel import Session, SQLModel, create_engine, select
 from sqlmodel.pool import StaticPool
 
 from tinymotion_backend.main import app
@@ -42,3 +44,13 @@ def access_token_headers(client: TestClient) -> dict[str, str]:
     headers = {"Authorization": f"Bearer {a_token}"}
 
     return headers
+
+
+@pytest.fixture(scope="function")
+def mocked_user_id(session: Session) -> uuid.UUID:
+    mocked_user_access_key: str = mock_data.MOCK_USERS[0]["access_key"]
+    user: models.User = session.exec(
+        select(models.User).where(models.User.access_key == mocked_user_access_key)
+    ).one()
+
+    return user.user_id
