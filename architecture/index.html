@@ -303,41 +303,41 @@
 <p>The initial version uses an SQLite database with the following structure:</p>
 <pre class="mermaid"><code>erDiagram
     USER {
-        int user_id PK
+        UUID user_id PK
         string email "Must be unique; encrypted"
         string access_key "Must be unique; encrypted"
         boolean disabled
     }
 
     INFANT {
-        int infant_id PK
+        UUID infant_id PK
         string nhi_number "Must be unique; encrypted"
         string full_name "Encrypted"
         date birth_date "Encrypted"
         date due_date "Encrypted"
         datetime created_at
-        int created_by FK
+        UUID created_by FK
     }
 
     CONSENT {
-        int consent_id PK
+        UUID consent_id PK
         string consent_giver_name "Can be null if consent collected physically; encrypted"
         string consent_giver_email "Can be null if consent collected physically; encrypted"
         boolean collected_physically
-        int infant_id FK
+        UUID infant_id FK
         datetime created_at
-        int created_by FK
+        UUID created_by FK
     }
 
     VIDEO {
-        int video_id PK
-        int infant_id FK
+        UUID video_id PK
+        UUID infant_id FK
         string video_name "Name of stored video, a randomly generated UUID"
         int video_size "Size of the encrypted video in bytes"
         string sha256sum "SHA-256 checksum of the original video"
         string sha256sum_enc "SHA-256 checksum of the encrypted video"
         datetime created_at
-        int created_by FK
+        UUID created_by FK
     }
 
     INFANT ||--o{ CONSENT : "is covered by"
