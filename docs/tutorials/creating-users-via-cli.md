@@ -108,6 +108,31 @@ Verify that your new user shows up now when you run:
 tinymotion-backend user list
 ```
 
+This should show the new user you just created along with any pre-existing users (if any), e.g.
+
+```json
+[
+  {
+    "access_key": "mysecretaccesskey",
+    "user_id": "bca7af43-6fc8-456b-b59b-389aeeae3dc4",
+    "disabled": false,
+    "email": "testuser1@example.com"
+  },
+  {
+    "access_key": "anothersecretkey",
+    "user_id": "3203a857-7f11-44b8-96b6-c319ea437d4e",
+    "disabled": false,
+    "email": "testuser2@example.com"
+  },
+  {
+    "access_key": "myuseraccesskey",
+    "user_id": "cbae11b5-1bd0-4686-8784-e1dafd952126",
+    "disabled": false,
+    "email": "myuser@example.com"
+  }
+]
+```
+
 ## Modifying a user's access key
 
 Let's try changing the access key of the user we just created, using the `user update` command.
