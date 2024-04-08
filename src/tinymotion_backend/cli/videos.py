@@ -1,4 +1,6 @@
 import os
+import uuid
+import json
 
 import click
 from sqlmodel import Session
@@ -20,15 +22,21 @@ def list():
     with Session(database.engine) as session:
         video_service = VideoService(session, 0)
         videos = video_service.list()
-        click.echo(f"Found {len(videos)} videos")
+        click.echo(f"Found {len(videos)} videos:")
+        videos_json = []
         for video in videos:
-            click.echo(repr(video))
+            videos_json.append(json.loads(video.json()))
+        if len(videos) > 4:
+            echo_command = click.echo_via_pager
+        else:
+            echo_command = click.echo
+        echo_command(json.dumps(videos_json, indent=2))
 
 
 @video.command()
-@click.argument('video_id', type=click.INT)
+@click.argument('video_id', type=click.UUID)
 def delete(
-    video_id: int,
+    video_id: uuid.UUID,
 ):
     """Delete the specified video and the associated record in the database.
 
@@ -39,9 +47,9 @@ def delete(
 
         # first get the video and confirm deletion
         video_record = video_service.get(video_id)
-        click.echo(f"Deleting {video_record!r}")
+        click.echo("Deleting video:")
+        click.echo(json.dumps(json.loads(video_record.json()), indent=2))
         video_path = os.path.join(settings.VIDEO_LIBRARY_PATH, video_record.video_name)
-        click.echo(f"Video file path: {video_path}")
         if not os.path.exists(video_path):
             raise RuntimeError(f"Cannot find video file to delete ({video_path})")
 

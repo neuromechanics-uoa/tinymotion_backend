@@ -1,3 +1,4 @@
+import json
 import uuid
 import datetime
 
@@ -48,7 +49,8 @@ def create(
         infant_service = InfantService(session, user_id)
         infant_added = infant_service.create(new_infant)
 
-    click.echo(f"Successfully added new infant: {infant_added!r}")
+    click.echo("Successfully created new infant:")
+    click.echo(json.dumps(json.loads(infant_added.json()), indent=2))
 
 
 @infant.command()
@@ -57,13 +59,19 @@ def list():
     with Session(database.engine) as session:
         infant_service = InfantService(session, 0)
         infants = infant_service.list()
-        click.echo(f"Found {len(infants)} infants")
+        click.echo(f"Found {len(infants)} infants:")
+        infants_json = []
         for infant in infants:
-            click.echo(repr(infant))
+            infants_json.append(json.loads(infant.json()))
+        if len(infants) > 4:
+            echo_command = click.echo_via_pager
+        else:
+            echo_command = click.echo
+        echo_command(json.dumps(infants_json, indent=2))
 
 
 #@infant.command()
-#@click.argument('infant_id', type=click.INT)
+#@click.argument('infant_id', type=click.UUID)
 #@click.option('-f', '--full-name', required=False, default=None, type=str, help="The infant's full name")
 #@click.option('-n', '--nhi-number', required=False, default=None, type=str, help="The infant's NHI number")
 #@click.option('-b', '--birth-date', required=False, default=None, type=click.DateTime(formats=["%Y-%m-%d"]),
@@ -71,7 +79,7 @@ def list():
 #@click.option('-d', '--due-date', required=False, default=None, type=click.DateTime(formats=["%Y-%m-%d"]),
 #              help="The infant's expected date of birth")
 #def update(
-#    infant_id: int,
+#    infant_id: uuid.UUID,
 #    full_name: str | None,
 #    nhi_number: str | None,
 #    birth_date: datetime.datetime | None,
@@ -89,13 +97,14 @@ def list():
 #        update_obj = InfantUpdate(
 #            full_name=full_name,
 #            nhi_number=nhi_number,
-##            birth_date=birth_date.date() if birth_date is not None else None,
-##            due_date=due_date.date() if due_date is not None else None,
+#            birth_date=None,
+#            due_date=None,
 #        )
 #        if birth_date is not None:
 #            update_obj.birth_date = birth_date.date()
 #        if due_date is not None:
 #            update_obj.due_date = due_date.date()
+#        print(">>>>>", update_obj)
 #        updated_infant = infant_service.update(infant_id, update_obj)
 #
 #        click.echo(f"Updated infant: {updated_infant!r}")
@@ -115,7 +124,8 @@ def delete(
 
         # first get the infant and confirm deletion
         infant_record = infant_service.get(infant_id)
-        click.echo(f"Deleting {infant_record!r}")
+        click.echo("Deleting infant:")
+        click.echo(json.dumps(json.loads(infant_record.json()), indent=2))
         delete = click.confirm("Are you sure you want to delete it?")
         if not delete:
             click.echo("Not deleting")

@@ -12,7 +12,7 @@ from tinymotion_backend.core.exc import NotFoundError
 
 
 @pytest.mark.parametrize("user_id,full_name,nhi_number,birth_date,due_date,exit_code,expected_output", [
-    ("1", "An Infant", "abc123", "2024-01-01", "2024-01-02", 0, "Successfully added new infant"),
+    ("1", "An Infant", "abc123", "2024-01-01", "2024-01-02", 0, "Successfully created new infant"),
     ("0", "An Infant", "abc123", "2024-01-01", "2024-01-02", 1, "Error: specified user id is not valid"),
     ("1", "An Infant", "abc123", "20240101", "2024-01-02", 2, "Error: Invalid value for '-b' / '--birth-date'"),
     ("1", "An Infant", None, "2024-01-01", "2024-01-02", 2, "Error: Missing option '-n' / '--nhi-number'"),

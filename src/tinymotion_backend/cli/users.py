@@ -1,4 +1,6 @@
 import uuid
+import json
+
 import click
 from sqlmodel import Session
 
@@ -33,7 +35,8 @@ def create(
         user_service = UserService(session)
         user_added = user_service.create(new_user)
 
-    click.echo(f"Successfully added new user: {user_added!r}")
+    click.echo("Successfully created new user:")
+    click.echo(json.dumps(json.loads(user_added.json()), indent=2))
 
 
 @user.command()
@@ -42,9 +45,15 @@ def list():
     with Session(database.engine) as session:
         user_service = UserService(session)
         users = user_service.list()
-        click.echo(f"Found {len(users)} users")
+        click.echo(f"Found {len(users)} users:")
+        users_json = []
         for user in users:
-            click.echo(repr(user))
+            users_json.append(json.loads(user.json()))
+        if len(users) > 4:
+            echo_command = click.echo_via_pager
+        else:
+            echo_command = click.echo
+        echo_command(json.dumps(users_json, indent=2))
 
 
 @user.command()
@@ -72,7 +81,8 @@ def update(
         )
         updated_user = user_service.update(user_id, update_obj)
 
-        click.echo(f"Updated user: {updated_user!r}")
+        click.echo("Updated user:")
+        click.echo(json.dumps(json.loads(updated_user.json()), indent=2))
 
 
 @user.command()
@@ -89,7 +99,8 @@ def delete(
 
         # first get the user and confirm deletion
         user_record = user_service.get(user_id)
-        click.echo(f"Deleting {user_record!r}")
+        click.echo("Deleting user:")
+        click.echo(json.dumps(json.loads(user_record.json()), indent=2))
         delete = click.confirm("Are you sure you want to delete it?")
         if not delete:
             click.echo("Not deleting")
