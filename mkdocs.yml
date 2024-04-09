@@ -26,6 +26,7 @@ nav:
   - "Overview": "index.md"
   - "Architecture": "architecture.md"
   - "Tutorials":
+    - "Deploying the backend": "tutorials/deploy-backend.md"
     - "Creating a user via the command line interface": "tutorials/creating-users-via-cli.md"
   - "Reference":
 #    - "API Reference": "api.md"
