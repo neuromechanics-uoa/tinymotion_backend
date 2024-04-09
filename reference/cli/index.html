@@ -185,6 +185,39 @@
 <p><strong>Options:</strong></p>
 <div class="highlight"><pre><span></span><code>  --help  Show this message and exit.
 </code></pre></div>
+<h2 id="consent">consent</h2>
+<p>Commands to interact with consents in the backend.</p>
+<p><strong>Usage:</strong></p>
+<div class="highlight"><pre><span></span><code>tinymotion-backend consent [OPTIONS] COMMAND [ARGS]...
+</code></pre></div>
+<p><strong>Options:</strong></p>
+<div class="highlight"><pre><span></span><code>  --help  Show this message and exit.
+</code></pre></div>
+<h3 id="create">create</h3>
+<p>Create a new consent.</p>
+<p><strong>Usage:</strong></p>
+<div class="highlight"><pre><span></span><code>tinymotion-backend consent create [OPTIONS]
+</code></pre></div>
+<p><strong>Options:</strong></p>
+<div class="highlight"><pre><span></span><code>  -u, --user-id UUID              ID of the User to create the Consent
+                                  [required]
+  -i, --infant-id UUID            The infant_id of the infant this Consent
+                                  relates to  [required]
+  -n, --consent-giver-name TEXT   The Consent giver's name
+  -e, --consent-giver-email TEXT  The Consent giver's email
+  -p, --collected-physically      Flag to indicate if the Consent was
+                                  collected physically
+  --help                          Show this message and exit.
+</code></pre></div>
+<h3 id="list">list</h3>
+<p>List existing consents.</p>
+<p><strong>Usage:</strong></p>
+<div class="highlight"><pre><span></span><code>tinymotion-backend consent list [OPTIONS]
+</code></pre></div>
+<p><strong>Options:</strong></p>
+<div class="highlight"><pre><span></span><code>  -p, --pager  Display results using a pager
+  --help       Show this message and exit.
+</code></pre></div>
 <h2 id="infant">infant</h2>
 <p>Commands to interact with infants in the backend.</p>
 <p><strong>Usage:</strong></p>
@@ -193,7 +226,7 @@
 <p><strong>Options:</strong></p>
 <div class="highlight"><pre><span></span><code>  --help  Show this message and exit.
 </code></pre></div>
-<h3 id="create">create</h3>
+<h3 id="create_1">create</h3>
 <p>Create a new infant.</p>
 <p><strong>Usage:</strong></p>
 <div class="highlight"><pre><span></span><code>tinymotion-backend infant create [OPTIONS]
@@ -215,13 +248,14 @@
 <p><strong>Options:</strong></p>
 <div class="highlight"><pre><span></span><code>  --help  Show this message and exit.
 </code></pre></div>
-<h3 id="list">list</h3>
+<h3 id="list_1">list</h3>
 <p>List existing infants.</p>
 <p><strong>Usage:</strong></p>
 <div class="highlight"><pre><span></span><code>tinymotion-backend infant list [OPTIONS]
 </code></pre></div>
 <p><strong>Options:</strong></p>
-<div class="highlight"><pre><span></span><code>  --help  Show this message and exit.
+<div class="highlight"><pre><span></span><code>  -p, --pager  Display results using a pager
+  --help       Show this message and exit.
 </code></pre></div>
 <h2 id="user">user</h2>
 <p>Commands to interact with users in the backend.</p>
@@ -231,7 +265,7 @@
 <p><strong>Options:</strong></p>
 <div class="highlight"><pre><span></span><code>  --help  Show this message and exit.
 </code></pre></div>
-<h3 id="create_1">create</h3>
+<h3 id="create_2">create</h3>
 <p>Create a new user.</p>
 <p><strong>Usage:</strong></p>
 <div class="highlight"><pre><span></span><code>tinymotion-backend user create [OPTIONS]
@@ -252,13 +286,14 @@
 <p><strong>Options:</strong></p>
 <div class="highlight"><pre><span></span><code>  --help  Show this message and exit.
 </code></pre></div>
-<h3 id="list_1">list</h3>
+<h3 id="list_2">list</h3>
 <p>List existing users.</p>
 <p><strong>Usage:</strong></p>
 <div class="highlight"><pre><span></span><code>tinymotion-backend user list [OPTIONS]
 </code></pre></div>
 <p><strong>Options:</strong></p>
-<div class="highlight"><pre><span></span><code>  --help  Show this message and exit.
+<div class="highlight"><pre><span></span><code>  -p, --pager  Display results using a pager
+  --help       Show this message and exit.
 </code></pre></div>
 <h3 id="update">update</h3>
 <p>Update the specified User.</p>
@@ -297,13 +332,14 @@
 <p><strong>Options:</strong></p>
 <div class="highlight"><pre><span></span><code>  --help  Show this message and exit.
 </code></pre></div>
-<h3 id="list_2">list</h3>
+<h3 id="list_3">list</h3>
 <p>List stored videos.</p>
 <p><strong>Usage:</strong></p>
 <div class="highlight"><pre><span></span><code>tinymotion-backend video list [OPTIONS]
 </code></pre></div>
 <p><strong>Options:</strong></p>
-<div class="highlight"><pre><span></span><code>  --help  Show this message and exit.
+<div class="highlight"><pre><span></span><code>  -p, --pager  Display results using a pager
+  --help       Show this message and exit.
 </code></pre></div>
 </article>
 </div>
