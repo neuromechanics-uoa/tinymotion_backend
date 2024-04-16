@@ -17,7 +17,11 @@ ssh-keygen
 ```
 
 Check the options for that command so that you know what you are doing. You may already have one in your *~/.ssh* directory. The file ending in *.pub* is the public key that should be shared, the one with no extension
-is private and should not be shared but will be used to connect to the VM.
+is private and should not be shared but will be used to connect to the VM, e.g. with a command like:
+
+```
+ssh -i ~/.ssh/<private-key-file> <username>@<backend-domain-name>
+```
 
 ## CLI basics
 

@@ -89,7 +89,7 @@ erDiagram
 
 ```
 
-Fields marked as encrypted are encrypted at rest using `StringEncryptedType` (symmetric encryption) from [SQLAlchemy-Utils](https://sqlalchemy-utils.readthedocs.io/en/latest/data_types.html) (IN PROGRESS).
+Fields marked as encrypted are encrypted at rest using `StringEncryptedType` (symmetric encryption) from [SQLAlchemy-Utils](https://sqlalchemy-utils.readthedocs.io/en/latest/data_types.html).
 
 Database backups can be achieved by copying the SQLite database file. Encrypted information in the backups will not be understandable without the secret key that was used to encrypt them.
 
