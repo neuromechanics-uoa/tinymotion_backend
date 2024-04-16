@@ -55,8 +55,8 @@ class BaseService(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
 
     def update(self, id: Any, obj: UpdateSchemaType) -> Optional[ModelType]:
         db_obj = self.get(id)
-        for column, value in obj.model_dump(mode="json", exclude_unset=True, exclude_none=True).items():
-            setattr(db_obj, column, value)
+        obj_data = obj.model_dump(exclude_unset=True)
+        db_obj.sqlmodel_update(obj_data)
         self.db_session.commit()
         self.db_session.refresh(db_obj)
 

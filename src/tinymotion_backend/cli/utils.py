@@ -1,4 +1,5 @@
 import uuid
+import datetime
 
 import click
 from sqlmodel import Session
@@ -31,3 +32,13 @@ def check_infant_id(infant_id: uuid.UUID):
         except NotFoundError:
             click.echo(f"Error: specified infant id is not valid ({infant_id})!")
             raise click.Abort()
+
+
+def convert_json(arg):
+    """Convert uuid, datetime, etc to string for serialising"""
+    if isinstance(arg, uuid.UUID):
+        return str(arg)
+    elif isinstance(arg, datetime.datetime) or isinstance(arg, datetime.date):
+        return arg.isoformat()
+    else:
+        raise NotImplementedError(f"conversion not implemented for {type(arg)}")

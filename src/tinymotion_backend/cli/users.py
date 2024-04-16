@@ -7,6 +7,7 @@ from sqlmodel import Session
 from tinymotion_backend import database
 from tinymotion_backend.services.user_service import UserService
 from tinymotion_backend.models import UserCreate, UserUpdate
+from tinymotion_backend.cli.utils import convert_json
 
 
 @click.group()
@@ -36,7 +37,7 @@ def create(
         user_added = user_service.create(new_user)
 
     click.echo("Successfully created new user:")
-    click.echo(json.dumps(json.loads(user_added.json()), indent=2))
+    click.echo(user_added.model_dump_json(indent=2))
 
 
 @user.command()
@@ -49,12 +50,12 @@ def list(pager: bool):
         click.echo(f"Found {len(users)} users:")
         users_json = []
         for user in users:
-            users_json.append(json.loads(user.json()))
+            users_json.append(user.model_dump())
         if pager:
             echo_command = click.echo_via_pager
         else:
             echo_command = click.echo
-        echo_command(json.dumps(users_json, indent=2))
+        echo_command(json.dumps(users_json, indent=2, default=convert_json))
 
 
 @user.command()
@@ -62,7 +63,9 @@ def list(pager: bool):
 @click.option('-e', '--email', required=False, default=None, type=str, help="Update the user's email")
 @click.option('-k', '--access-key', required=False, default=None, type=str, help="Update the user's access key")
 @click.option('-d', '--disabled', required=False, default=None, type=bool, help="Update whether the user is disabled")
+@click.pass_context
 def update(
+    ctx: click.Context,
     user_id: uuid.UUID,
     email: str | None,
     access_key: str | None,
@@ -72,18 +75,25 @@ def update(
 
     USER_ID is the id of the user to update.
     """
+    # only update values that were passed, ignore those that are defaults
+    update_obj_dict = {}
+    if ctx.get_parameter_source("email").name != "DEFAULT":
+        update_obj_dict["email"] = email
+    if ctx.get_parameter_source("access_key").name != "DEFAULT":
+        update_obj_dict["access_key"] = access_key
+    if ctx.get_parameter_source("disabled").name != "DEFAULT":
+        update_obj_dict["disabled"] = disabled
+
+    # validate passed in values
+    update_obj = UserUpdate.model_validate(update_obj_dict)
+
+    # now update the stored record
     with Session(database.engine) as session:
         user_service = UserService(session)
-
-        update_obj = UserUpdate(
-            email=email,
-            access_key=access_key,
-            disabled=disabled,
-        )
         updated_user = user_service.update(user_id, update_obj)
 
         click.echo("Updated user:")
-        click.echo(json.dumps(json.loads(updated_user.json()), indent=2))
+        click.echo(updated_user.model_dump_json(indent=2))
 
 
 @user.command()
@@ -101,7 +111,7 @@ def delete(
         # first get the user and confirm deletion
         user_record = user_service.get(user_id)
         click.echo("Deleting user:")
-        click.echo(json.dumps(json.loads(user_record.json()), indent=2))
+        click.echo(user_record.model_dump_json(indent=2))
         delete = click.confirm("Are you sure you want to delete it?")
         if not delete:
             click.echo("Not deleting")

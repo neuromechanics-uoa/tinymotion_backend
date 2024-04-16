@@ -1,5 +1,4 @@
 import datetime
-from typing import Optional
 import uuid
 
 import sqlalchemy
@@ -10,6 +9,35 @@ from pydantic import EmailStr
 from sqlmodel import Field, SQLModel, Relationship, AutoString, Column, ForeignKey
 
 from tinymotion_backend.core.config import settings
+
+
+##############################################################################
+# Custom types to use in models
+##############################################################################
+
+class StringDate(sqlalchemy.types.TypeDecorator):
+    """
+    Helper that converts dates to string for storing in StringEncryptedType and
+    back to date again when retrieving.
+
+    """
+    impl = sqlalchemy.types.Date
+
+    def process_bind_param(self, value: datetime.date | str | None, dialect):
+        """Convert to string if not string already"""
+        if value is not None:
+            if isinstance(value, datetime.date):
+                value = value.isoformat()
+
+        return value
+
+    def process_result_value(self, value: datetime.date | str | None, dialect):
+        """Convert back to date if not date already"""
+        if value is not None:
+            if isinstance(value, str):
+                value = datetime.date.fromisoformat(value)
+
+        return value
 
 
 ##############################################################################
@@ -32,7 +60,7 @@ class TokenData(SQLModel):
 ##############################################################################
 
 class UserBase(SQLModel):
-    disabled: Optional[bool] = Field(default=None)
+    disabled: bool | None = Field(default=None)
 
 
 class User(UserBase, table=True):
@@ -69,9 +97,9 @@ class UserCreate(UserBase):
 
 
 class UserUpdate(SQLModel):
-    email: Optional[EmailStr]
-    access_key: Optional[str]
-    disabled: Optional[bool]
+    email: EmailStr | None = Field(default=None)
+    access_key: str | None = None
+    disabled: bool | None = None
 
 
 class UserRead(UserBase):
@@ -124,7 +152,7 @@ class Infant(SQLModel, table=True):
     ))
     birth_date: datetime.date = Field(sa_column=Column(
         StringEncryptedType(
-            sqlalchemy.DATE,
+            StringDate,
             settings.DATABASE_SECRET_KEY,
             AesEngine,
             'pkcs5',
@@ -133,7 +161,7 @@ class Infant(SQLModel, table=True):
     ))
     due_date: datetime.date = Field(sa_column=Column(
         StringEncryptedType(
-            sqlalchemy.DATE,
+            StringDate,
             settings.DATABASE_SECRET_KEY,
             AesEngine,
             'pkcs5',
@@ -150,10 +178,10 @@ class InfantCreate(InfantBase):
 
 
 class InfantUpdate(SQLModel):
-    full_name: Optional[str]
-    birth_date: Optional[datetime.date]
-    due_date: Optional[datetime.date]
-    nhi_number: Optional[str]
+    full_name: str | None = None
+    birth_date: datetime.date | None = None
+    due_date: datetime.date | None = None
+    nhi_number: str | None = None
 
 
 class InfantOut(InfantBase):
@@ -167,8 +195,8 @@ class InfantOut(InfantBase):
 ##############################################################################
 
 class ConsentBase(SQLModel):
-    consent_giver_name: Optional[str] = Field(default=None)
-    consent_giver_email: Optional[EmailStr] = Field(default=None, sa_type=AutoString)
+    consent_giver_name: str | None = Field(default=None)
+    consent_giver_email: EmailStr | None = Field(default=None, sa_type=AutoString)
     collected_physically: bool = Field(
         default=False,
         description="An electronic consent is not required because a physical consent exists",
@@ -227,8 +255,8 @@ class ConsentCreate(ConsentBase):
 
 
 class ConsentUpdate(SQLModel):
-    consent_giver_name: Optional[str]
-    collected_physically: Optional[bool]
+    consent_giver_name: str | None = None
+    collected_physically: bool | None = None
 
 
 class ConsentOut(ConsentBase):
@@ -264,8 +292,8 @@ class Video(VideoBase, table=True):
         ForeignKey('user.user_id'),
         nullable=False,
     ))
-    video_size: Optional[int] = Field(default=None)
-    sha256sum_enc: Optional[str] = Field(min_length=64, max_length=64)
+    video_size: int | None = Field(default=None)
+    sha256sum_enc: str | None = Field(min_length=64, max_length=64)
 
     infant: Infant = Relationship(back_populates="videos")
 
@@ -279,8 +307,8 @@ class VideoCreateViaNHI(VideoBase):
 
 
 class VideoUpdate(SQLModel):
-    video_size: Optional[int]
-    sha256sum_enc: Optional[str] = Field(min_length=64, max_length=64)
+    video_size: int | None = None
+    sha256sum_enc: str | None = Field(min_length=64, max_length=64, default=None)
 
 
 class VideoOut(VideoBase):

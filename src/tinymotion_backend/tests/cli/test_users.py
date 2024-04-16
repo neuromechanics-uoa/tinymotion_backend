@@ -41,10 +41,10 @@ def test_cli_user_create(monkeypatch, session: Session, email, key, disabled, ex
 
 
 @pytest.mark.parametrize("email,key,disabled,exit_code", [
-    ("cli@test.com", "clisecretkey", None, 0),
+    ("cli@test.com", "clisecretkey", "NOTSET", 0),
     ("cli@test.com", "clisecretkey", True, 0),
-    (None, "clisecretkey", False, 0),
-    ("cli@test.com", None, None, 0),
+    ("NOTSET", "clisecretkey", False, 0),
+    ("cli@test.com", "NOTSET", "NOTSET", 0),
     ("notanemail", "clisecretkey", True, 1),
 ])
 def test_cli_user_update(monkeypatch, session: Session, mocked_user_id: uuid.UUID, email, key, disabled, exit_code):
@@ -53,22 +53,23 @@ def test_cli_user_update(monkeypatch, session: Session, mocked_user_id: uuid.UUI
 
     user_id = str(mocked_user_id)  # the user added via mock data
     args = ["user", "update"]
-    if email is not None:
+    if email != "NOTSET":
         args.extend(["--email", email])
-    if key is not None:
+    if key != "NOTSET":
         args.extend(["-k", key])
-    if disabled is not None:
+    if disabled != "NOTSET":
         args.extend(["--disabled", "1" if disabled else "0"])
     args.append(user_id)
+    print(args)
     runner = CliRunner()
     result = runner.invoke(cli, args)
     assert result.exit_code == exit_code
 
     if exit_code == 0:
         user = session.get(User, mocked_user_id)
-        assert user.email == email if email is not None else user.email == MOCK_USERS[0]["email"]
-        assert user.access_key == key if key is not None else user.access_key == MOCK_USERS[0]["access_key"]
-        if disabled is not None:
+        assert user.email == email if email != "NOTSET" else user.email == MOCK_USERS[0]["email"]
+        assert user.access_key == key if key != "NOTSET" else user.access_key == MOCK_USERS[0]["access_key"]
+        if disabled != "NOTSET":
             assert user.disabled is disabled
         else:
             assert user.disabled is MOCK_USERS[0]["disabled"]

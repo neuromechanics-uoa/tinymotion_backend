@@ -8,7 +8,7 @@ from sqlmodel import Session
 from tinymotion_backend import database
 from tinymotion_backend.services.infant_service import InfantService
 from tinymotion_backend.models import InfantCreate, InfantUpdate
-from tinymotion_backend.cli.utils import check_user_id
+from tinymotion_backend.cli.utils import check_user_id, convert_json
 
 
 @click.group()
@@ -50,7 +50,7 @@ def create(
         infant_added = infant_service.create(new_infant)
 
     click.echo("Successfully created new infant:")
-    click.echo(json.dumps(json.loads(infant_added.json()), indent=2))
+    click.echo(infant_added.model_dump_json(indent=2))
 
 
 @infant.command()
@@ -63,52 +63,54 @@ def list(pager: bool):
         click.echo(f"Found {len(infants)} infants:")
         infants_json = []
         for infant in infants:
-            infants_json.append(json.loads(infant.json()))
+            infants_json.append(infant.model_dump())
         if pager:
             echo_command = click.echo_via_pager
         else:
             echo_command = click.echo
-        echo_command(json.dumps(infants_json, indent=2))
+        echo_command(json.dumps(infants_json, indent=2, default=convert_json))
 
 
-#@infant.command()
-#@click.argument('infant_id', type=click.UUID)
-#@click.option('-f', '--full-name', required=False, default=None, type=str, help="The infant's full name")
-#@click.option('-n', '--nhi-number', required=False, default=None, type=str, help="The infant's NHI number")
-#@click.option('-b', '--birth-date', required=False, default=None, type=click.DateTime(formats=["%Y-%m-%d"]),
-#              help="The infant's date of birth")
-#@click.option('-d', '--due-date', required=False, default=None, type=click.DateTime(formats=["%Y-%m-%d"]),
-#              help="The infant's expected date of birth")
-#def update(
-#    infant_id: uuid.UUID,
-#    full_name: str | None,
-#    nhi_number: str | None,
-#    birth_date: datetime.datetime | None,
-#    due_date: datetime.datetime | None,
-#):
-#    """Update the specified Infant.
-#
-#    INFANT_ID is the id of the infant to update.
-#    """
-#    print(">>>>", birth_date, due_date)
-#
-#    with Session(database.engine) as session:
-#        infant_service = InfantService(session, 0)
-#
-#        update_obj = InfantUpdate(
-#            full_name=full_name,
-#            nhi_number=nhi_number,
-#            birth_date=None,
-#            due_date=None,
-#        )
-#        if birth_date is not None:
-#            update_obj.birth_date = birth_date.date()
-#        if due_date is not None:
-#            update_obj.due_date = due_date.date()
-#        print(">>>>>", update_obj)
-#        updated_infant = infant_service.update(infant_id, update_obj)
-#
-#        click.echo(f"Updated infant: {updated_infant!r}")
+@infant.command()
+@click.argument('infant_id', type=click.UUID)
+@click.option('-f', '--full-name', required=False, default=None, type=str, help="The infant's full name")
+@click.option('-n', '--nhi-number', required=False, default=None, type=str, help="The infant's NHI number")
+@click.option('-b', '--birth-date', required=False, default=None, type=click.DateTime(formats=["%Y-%m-%d"]),
+              help="The infant's date of birth")
+@click.option('-d', '--due-date', required=False, default=None, type=click.DateTime(formats=["%Y-%m-%d"]),
+              help="The infant's expected date of birth")
+@click.pass_context
+def update(
+    ctx: click.Context,
+    infant_id: uuid.UUID,
+    full_name: str | None,
+    nhi_number: str | None,
+    birth_date: datetime.datetime | None,
+    due_date: datetime.datetime | None,
+):
+    """Update the specified Infant.
+
+    INFANT_ID is the id of the infant to update.
+    """
+    update_infant_dict = {}
+    if ctx.get_parameter_source("full_name").name != "DEFAULT":
+        update_infant_dict["full_name"] = full_name
+    if ctx.get_parameter_source("nhi_number").name != "DEFAULT":
+        update_infant_dict["nhi_number"] = nhi_number
+    if ctx.get_parameter_source("birth_date").name != "DEFAULT":
+        update_infant_dict["birth_date"] = birth_date.date()
+    if ctx.get_parameter_source("due_date").name != "DEFAULT":
+        update_infant_dict["due_date"] = due_date.date()
+
+    # validate passed in values
+    update_obj = InfantUpdate.model_validate(update_infant_dict)
+
+    with Session(database.engine) as session:
+        infant_service = InfantService(session, 0)
+        updated_infant = infant_service.update(infant_id, update_obj)
+
+        click.echo("Updated infant")
+        click.echo(updated_infant.model_dump_json(indent=2))
 
 
 @infant.command()
@@ -126,7 +128,7 @@ def delete(
         # first get the infant and confirm deletion
         infant_record = infant_service.get(infant_id)
         click.echo("Deleting infant:")
-        click.echo(json.dumps(json.loads(infant_record.json()), indent=2))
+        click.echo(infant_record.model_dump_json(indent=2))
         delete = click.confirm("Are you sure you want to delete it?")
         if not delete:
             click.echo("Not deleting")
