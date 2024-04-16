@@ -264,6 +264,19 @@
 <div class="highlight"><pre><span></span><code>  -p, --pager  Display results using a pager
   --help       Show this message and exit.
 </code></pre></div>
+<h3 id="update">update</h3>
+<p>Update the specified Infant.</p>
+<p>INFANT_ID is the id of the infant to update.</p>
+<p><strong>Usage:</strong></p>
+<div class="highlight"><pre><span></span><code>tinymotion-backend infant update [OPTIONS] INFANT_ID
+</code></pre></div>
+<p><strong>Options:</strong></p>
+<div class="highlight"><pre><span></span><code>  -f, --full-name TEXT         The infant's full name
+  -n, --nhi-number TEXT        The infant's NHI number
+  -b, --birth-date [%Y-%m-%d]  The infant's date of birth
+  -d, --due-date [%Y-%m-%d]    The infant's expected date of birth
+  --help                       Show this message and exit.
+</code></pre></div>
 <h2 id="user">user</h2>
 <p>Commands to interact with users in the backend.</p>
 <p><strong>Usage:</strong></p>
@@ -302,7 +315,7 @@
 <div class="highlight"><pre><span></span><code>  -p, --pager  Display results using a pager
   --help       Show this message and exit.
 </code></pre></div>
-<h3 id="update">update</h3>
+<h3 id="update_1">update</h3>
 <p>Update the specified User.</p>
 <p>USER_ID is the id of the user to update.</p>
 <p><strong>Usage:</strong></p>
