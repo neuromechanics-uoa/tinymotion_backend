@@ -40,6 +40,35 @@ class StringDate(sqlalchemy.types.TypeDecorator):
         return value
 
 
+class StringDateTimeAware(sqlalchemy.types.TypeDecorator):
+    """
+    Helper that converts incoming DateTime to UTC and converts to string for
+    use with StringEncryptedType, then converts back to DateTime with timezone
+    set to UTC when retrieving.
+
+    """
+    impl = sqlalchemy.types.DateTime
+
+    def process_bind_param(self, value: datetime.datetime | str | None, dialect):
+        """Convert to UTC and remove timeezone info then to string"""
+        if value is not None:
+            if isinstance(value, str):
+                value = datetime.datetime.fromisoformat(value)
+            value.astimezone(datetime.timezone.UTC).replace(tzinfo=None)
+            value = value.isoformat()
+
+        return value
+
+    def process_result_value(self, value: datetime.datetime | str | None, dialect):
+        """Convert back to date and add timezone"""
+        if value is not None:
+            if isinstance(value, str):
+                value = datetime.datetime.fromisoformat(value)
+            value = value.replace(tzinfo=datetime.timezone.UTC)
+
+        return value
+
+
 ##############################################################################
 # Token models
 ##############################################################################
