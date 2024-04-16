@@ -378,7 +378,7 @@
     USER ||--o{ INFANT : creates
 
 </code></pre>
-<p>Fields marked as encrypted are encrypted at rest using <code>StringEncryptedType</code> (symmetric encryption) from <a href="https://sqlalchemy-utils.readthedocs.io/en/latest/data_types.html">SQLAlchemy-Utils</a> (IN PROGRESS).</p>
+<p>Fields marked as encrypted are encrypted at rest using <code>StringEncryptedType</code> (symmetric encryption) from <a href="https://sqlalchemy-utils.readthedocs.io/en/latest/data_types.html">SQLAlchemy-Utils</a>.</p>
 <p>Database backups can be achieved by copying the SQLite database file. Encrypted information in the backups will not be understandable without the secret key that was used to encrypt them.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>

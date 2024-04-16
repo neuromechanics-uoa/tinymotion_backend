@@ -298,7 +298,9 @@ on the VM.</p>
 <div class="highlight"><pre><span></span><code>ssh-keygen
 </code></pre></div>
 <p>Check the options for that command so that you know what you are doing. You may already have one in your <em>~/.ssh</em> directory. The file ending in <em>.pub</em> is the public key that should be shared, the one with no extension
-is private and should not be shared but will be used to connect to the VM.</p>
+is private and should not be shared but will be used to connect to the VM, e.g. with a command like:</p>
+<div class="highlight"><pre><span></span><code>ssh -i ~/.ssh/&lt;private-key-file&gt; &lt;username&gt;@&lt;backend-domain-name&gt;
+</code></pre></div>
 <h2 id="cli-basics">CLI basics</h2>
 <p>On the VM, you should be able to use the CLI with the command <code>tinymotion-backend</code>, for example you could print the version of the backend using:</p>
 <div class="highlight"><pre><span></span><code>tinymotion-backend version
