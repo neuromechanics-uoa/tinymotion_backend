@@ -1,3 +1,4 @@
+import os
 import logging
 import uuid
 
@@ -7,6 +8,7 @@ from sqlalchemy.exc import NoResultFound, MultipleResultsFound
 from tinymotion_backend.services.base import BaseService
 from tinymotion_backend.models import Infant, InfantCreate, InfantUpdate
 from tinymotion_backend.core.exc import NotFoundError, UniqueConstraintError
+from tinymotion_backend.core.config import settings
 
 
 logger = logging.getLogger(__name__)
@@ -33,3 +35,25 @@ class InfantService(BaseService[Infant, InfantCreate, InfantUpdate]):
             raise UniqueConstraintError("Found multiple infants with the given NHI number")
 
         return infant
+
+    def delete(self, infant_id: uuid.UUID) -> None:
+        """Delete the infant including video files"""
+        logger.debug(f"Deleting infant: {infant_id}")
+
+        # first list all video files belonging to this infant
+        db_obj = self.get(infant_id)
+        logger.debug(f"Infant has {len(db_obj.consents)} consents and {len(db_obj.videos)} videos")
+        infant_videos = [video.video_name for video in db_obj.videos]
+
+        # delete the infant (and all consent and video records) from the database
+        self.db_session.delete(db_obj)
+        self.db_session.commit()
+
+        # delete the video files too
+        for video_name in infant_videos:
+            video_path = os.path.join(settings.VIDEO_LIBRARY_PATH, video_name)
+            if os.path.exists(video_path):
+                logger.debug(f"Deleting video: {video_path}")
+                os.unlink(video_path)
+            else:
+                logger.error(f"Could not delete video file: {video_path} (file does not exist)")

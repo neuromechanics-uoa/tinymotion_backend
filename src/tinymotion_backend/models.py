@@ -197,8 +197,14 @@ class Infant(SQLModel, table=True):
         nullable=False,
     ))
 
-    consents: list["Consent"] = Relationship(back_populates="infant")
-    videos: list["Video"] = Relationship(back_populates="infant")
+    consents: list["Consent"] = Relationship(
+        back_populates="infant",
+        sa_relationship_kwargs={"cascade": "delete, delete-orphan"},
+    )
+    videos: list["Video"] = Relationship(
+        back_populates="infant",
+        sa_relationship_kwargs={"cascade": "delete, delete-orphan"},
+    )
 
 
 class InfantCreate(InfantBase):

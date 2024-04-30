@@ -125,11 +125,14 @@ def delete(
     with Session(database.engine) as session:
         infant_service = InfantService(session, None)
 
+        click.echo(f"Infant id: {infant_id} ({type(infant_id)})")
+
         # first get the infant and confirm deletion
         infant_record = infant_service.get(infant_id)
         click.echo("Deleting infant:")
         click.echo(infant_record.model_dump_json(indent=2))
-        delete = click.confirm("Are you sure you want to delete it?")
+        click.echo(f"Also deleting {len(infant_record.consents)} consent(s) and {len(infant_record.videos)} video(s) associated with this infant.")
+        delete = click.confirm("Do you wish to proceed?")
         if not delete:
             click.echo("Not deleting")
             raise click.Abort()
