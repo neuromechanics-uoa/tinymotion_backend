@@ -1,5 +1,6 @@
 import datetime
 import uuid
+import functools
 
 import sqlalchemy
 from sqlalchemy_utils import StringEncryptedType
@@ -40,31 +41,26 @@ class StringDate(sqlalchemy.types.TypeDecorator):
         return value
 
 
-class StringDateTimeAware(sqlalchemy.types.TypeDecorator):
+class DateTimeAware(sqlalchemy.types.TypeDecorator):
     """
-    Helper that converts incoming DateTime to UTC and converts to string for
-    use with StringEncryptedType, then converts back to DateTime with timezone
-    set to UTC when retrieving.
+    Helper that converts incoming DateTime to UTC and removes timezone for
+    storing, then converts back to DateTime with timezone set to UTC when
+    retrieving.
 
     """
     impl = sqlalchemy.types.DateTime
 
-    def process_bind_param(self, value: datetime.datetime | str | None, dialect):
-        """Convert to UTC and remove timeezone info then to string"""
+    def process_bind_param(self, value: datetime.datetime | None, dialect):
+        """Convert to UTC and remove timeezone info"""
         if value is not None:
-            if isinstance(value, str):
-                value = datetime.datetime.fromisoformat(value)
-            value.astimezone(datetime.timezone.UTC).replace(tzinfo=None)
-            value = value.isoformat()
+            value.astimezone(datetime.timezone.utc).replace(tzinfo=None)
 
         return value
 
-    def process_result_value(self, value: datetime.datetime | str | None, dialect):
-        """Convert back to date and add timezone"""
+    def process_result_value(self, value: datetime.datetime | None, dialect):
+        """Convert to datetime with timezone set to UTC"""
         if value is not None:
-            if isinstance(value, str):
-                value = datetime.datetime.fromisoformat(value)
-            value = value.replace(tzinfo=datetime.timezone.UTC)
+            value = value.replace(tzinfo=datetime.timezone.utc)
 
         return value
 
@@ -153,7 +149,10 @@ class Infant(SQLModel, table=True):
         primary_key=True,
         default=uuid.uuid4,
     ))
-    created_at: datetime.datetime = Field(default_factory=datetime.datetime.utcnow)
+    created_at: datetime.datetime = Field(
+        sa_type=DateTimeAware,
+        default_factory=functools.partial(datetime.datetime.now, tz=datetime.timezone.utc),
+    )
     created_by: uuid.UUID = Field(sa_column=Column(
         UUIDType(binary=False),
         ForeignKey('user.user_id'),
@@ -243,7 +242,10 @@ class Consent(SQLModel, table=True):
         ForeignKey('infant.infant_id'),
         nullable=False,
     ))
-    created_at: datetime.datetime = Field(default_factory=datetime.datetime.utcnow)
+    created_at: datetime.datetime = Field(
+        sa_type=DateTimeAware,
+        default_factory=functools.partial(datetime.datetime.now, tz=datetime.timezone.utc),
+    )
     created_by: uuid.UUID = Field(sa_column=Column(
         UUIDType(binary=False),
         ForeignKey('user.user_id'),
@@ -315,7 +317,10 @@ class Video(VideoBase, table=True):
         ForeignKey('infant.infant_id'),
         nullable=False,
     ))
-    created_at: datetime.datetime = Field(default_factory=datetime.datetime.utcnow)
+    created_at: datetime.datetime = Field(
+        sa_type=DateTimeAware,
+        default_factory=functools.partial(datetime.datetime.now, tz=datetime.timezone.utc),
+    )
     created_by: uuid.UUID = Field(sa_column=Column(
         UUIDType(binary=False),
         ForeignKey('user.user_id'),
