@@ -1,4 +1,6 @@
 site_name: TinyMotion Backend
+repo_url: https://github.com/neuromechanics-uoa/tinymotion_backend
+repo_name: tinymotion_backend
 
 theme:
   name: "material"
