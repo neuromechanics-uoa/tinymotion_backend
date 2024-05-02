@@ -35,7 +35,7 @@ Initially, all users of the app will be treated the same (authorisation). All us
 
 ## Administration
 
-Administration (e.g. creating/updating users, accessing videos and information in the database) is done through SSH and a command line interface (IN PROGRESS). SSH to the VM is by public key only.
+Administration (e.g. creating/updating users, accessing videos and information in the database) is done through SSH and a [command line interface](reference/cli.md). SSH to the VM is by public key only.
 
 ## Database
 
@@ -102,7 +102,11 @@ Database backups can be achieved by copying the SQLite database file. Encrypted 
 
 Video files are encrypted as they are received and written to disk on the VM in encrypted form only. Videos are encrypted using [Fernet](https://cryptography.io/en/latest/fernet/) (symmetric encryption, i.e. requiring the same secret key to decrypt them as was used to encrypt them). Encrypted video files are approximately 1/3 bigger than the unencrypted version would be. Video file names on disk are randomly generated UUIDs, these names are stored as *video_name* in the *VIDEO* table in the database.
 
-Encrypted video files will be stored on object storage (TODO). Once they have been pushed to object storage they will be removed from VM disk.
+[NOT IMPLEMENTED YET] Encrypted video files will be stored on object storage. Once they have been pushed to object storage they will be removed from VM disk.
+
+!!! note
+
+    If upload of a video file fails part way through the upload you have to start again from scratch. This may not work well, especially in areas with slow/poor connection. If this becomes an issue we may want to consider implementing resumable file upload, for example [tus](https://tus.io/).
 
 ## Secrets management
 
