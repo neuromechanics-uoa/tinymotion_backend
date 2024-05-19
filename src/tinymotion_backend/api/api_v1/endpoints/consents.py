@@ -19,7 +19,22 @@ router = APIRouter()
     responses={
         400: {
             "description": "Bad Request Error",
-            "content": {"application/json": {"example": {"detail": "Must specify `consent_giver_name` when not specifying `collected_physically`"}}},
+            "content": {
+                "application/json": {
+                    "examples": {
+                        "consent_giver_name": {
+                            "value": {
+                                "detail": "Must specify `consent_giver_name` when not specifying `collected_physically`",
+                            },
+                        },
+                        "consent_giver_email": {
+                            "value": {
+                                "detail": "Must specify `consent_giver_email` when not specifying `collected_physically`",
+                            },
+                        },
+                    },
+                },
+            },
         },
         401: {
             "description": "Unauthorized",
