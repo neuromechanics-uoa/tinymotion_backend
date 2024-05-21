@@ -60,11 +60,14 @@ def get_current_user(
     except NotFoundError:
         raise HTTPException(status_code=404, detail="User not found")
 
-    return user
+    # return user without access key
+    user_out = models.UserRead(**user.model_dump())
+
+    return user_out
 
 
 def get_current_active_user(
-    current_user: Annotated[models.User, Depends(get_current_user)],
+    current_user: Annotated[models.UserRead, Depends(get_current_user)],
 ) -> models.UserRead:
     if current_user.disabled:
         raise HTTPException(status_code=400, detail="Inactive user")
