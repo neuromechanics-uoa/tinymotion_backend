@@ -4,6 +4,8 @@ repo_name: tinymotion_backend
 
 theme:
   name: "material"
+  features:
+    - navigation.expand
 
 plugins:
   - search

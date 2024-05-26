@@ -3,6 +3,7 @@ import click
 from tinymotion_backend._version import __version__
 from tinymotion_backend.cli.consents import consent
 from tinymotion_backend.cli.infants import infant
+from tinymotion_backend.cli.secret import secret
 from tinymotion_backend.cli.users import user
 from tinymotion_backend.cli.videos import video
 
@@ -15,6 +16,7 @@ def cli():
 
 cli.add_command(consent)
 cli.add_command(infant)
+cli.add_command(secret)
 cli.add_command(user)
 cli.add_command(video)
 
