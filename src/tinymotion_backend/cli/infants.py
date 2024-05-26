@@ -131,7 +131,8 @@ def delete(
         infant_record = infant_service.get(infant_id)
         click.echo("Deleting infant:")
         click.echo(infant_record.model_dump_json(indent=2))
-        click.echo(f"Also deleting {len(infant_record.consents)} consent(s) and {len(infant_record.videos)} video(s) associated with this infant.")
+        click.echo(f"Also deleting {len(infant_record.consents)} consent(s) and "
+                   f"{len(infant_record.videos)} video(s) associated with this infant.")
         delete = click.confirm("Do you wish to proceed?")
         if not delete:
             click.echo("Not deleting")

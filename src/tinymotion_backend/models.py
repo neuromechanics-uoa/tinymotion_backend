@@ -293,6 +293,7 @@ class ConsentCreate(ConsentBase):
 
 class ConsentUpdate(SQLModel):
     consent_giver_name: str | None = None
+    consent_giver_email: EmailStr | None = Field(default=None, sa_type=AutoString)
     collected_physically: bool | None = None
 
 
