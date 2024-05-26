@@ -132,7 +132,7 @@
 </a>
 </li>
 <li class="md-nav__item md-nav__item--nested">
-<input class="md-nav__toggle md-toggle" id="__nav_3" type="checkbox"/>
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_3" type="checkbox"/>
 <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
 <span class="md-ellipsis">
     Tutorials
@@ -219,9 +219,23 @@
 </a>
 </li>
 <li class="md-nav__item">
+<a class="md-nav__link" href="#tinymotion-backend-consent-delete">
+<span class="md-ellipsis">
+      delete
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
 <a class="md-nav__link" href="#tinymotion-backend-consent-list">
 <span class="md-ellipsis">
       list
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#tinymotion-backend-consent-update">
+<span class="md-ellipsis">
+      update
     </span>
 </a>
 </li>
@@ -261,6 +275,24 @@
 <a class="md-nav__link" href="#tinymotion-backend-infant-update">
 <span class="md-ellipsis">
       update
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#tinymotion-backend-secret">
+<span class="md-ellipsis">
+      secret
+    </span>
+</a>
+<nav aria-label="secret" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#tinymotion-backend-secret-generate">
+<span class="md-ellipsis">
+      generate
     </span>
 </a>
 </li>
@@ -385,9 +417,23 @@
 </a>
 </li>
 <li class="md-nav__item">
+<a class="md-nav__link" href="#tinymotion-backend-consent-delete">
+<span class="md-ellipsis">
+      delete
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
 <a class="md-nav__link" href="#tinymotion-backend-consent-list">
 <span class="md-ellipsis">
       list
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#tinymotion-backend-consent-update">
+<span class="md-ellipsis">
+      update
     </span>
 </a>
 </li>
@@ -427,6 +473,24 @@
 <a class="md-nav__link" href="#tinymotion-backend-infant-update">
 <span class="md-ellipsis">
       update
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#tinymotion-backend-secret">
+<span class="md-ellipsis">
+      secret
+    </span>
+</a>
+<nav aria-label="secret" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#tinymotion-backend-secret-generate">
+<span class="md-ellipsis">
+      generate
     </span>
 </a>
 </li>
@@ -544,6 +608,7 @@
 <ul>
 <li><em><a href="#tinymotion-backend-consent">consent</a></em>: Commands to interact with consents in the backend.</li>
 <li><em><a href="#tinymotion-backend-infant">infant</a></em>: Commands to interact with infants in the backend.</li>
+<li><em><a href="#tinymotion-backend-secret">secret</a></em>: Commands related to secrets</li>
 <li><em><a href="#tinymotion-backend-user">user</a></em>: Commands to interact with users in the backend.</li>
 <li><em><a href="#tinymotion-backend-version">version</a></em>: Print the version of the TinyMotion backend and exit.</li>
 <li><em><a href="#tinymotion-backend-video">video</a></em>: Commands to interact with videos in the backend.</li>
@@ -575,7 +640,9 @@
 <p><strong>Subcommands</strong></p>
 <ul>
 <li><em><a href="#tinymotion-backend-consent-create">create</a></em>: Create a new consent.</li>
+<li><em><a href="#tinymotion-backend-consent-delete">delete</a></em>: Delete the specified Consent.</li>
 <li><em><a href="#tinymotion-backend-consent-list">list</a></em>: List existing consents.</li>
+<li><em><a href="#tinymotion-backend-consent-update">update</a></em>: Update the specified Consent.</li>
 </ul>
 <h4 id="tinymotion-backend-consent-create">tinymotion-backend consent create</h4>
 <p>Create a new consent.</p>
@@ -631,6 +698,31 @@
 </tr>
 </tbody>
 </table>
+<h4 id="tinymotion-backend-consent-delete">tinymotion-backend consent delete</h4>
+<p>Delete the specified Consent.</p>
+<p>CONSENT_ID is the id of the Consent to delete.</p>
+<p><strong>Usage:</strong></p>
+<div class="highlight"><pre><span></span><code>tinymotion-backend consent delete [OPTIONS] CONSENT_ID
+</code></pre></div>
+<p><strong>Options:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--help</code></td>
+<td>boolean</td>
+<td>Show this message and exit.</td>
+<td><code>False</code></td>
+</tr>
+</tbody>
+</table>
 <h4 id="tinymotion-backend-consent-list">tinymotion-backend consent list</h4>
 <p>List existing consents.</p>
 <p><strong>Usage:</strong></p>
@@ -652,6 +744,55 @@
 <td>boolean</td>
 <td>Display results using a pager</td>
 <td><code>False</code></td>
+</tr>
+<tr>
+<td><code>-o</code>, <code>--output-file</code></td>
+<td>text</td>
+<td>Write JSON output to file</td>
+<td>None</td>
+</tr>
+<tr>
+<td><code>--help</code></td>
+<td>boolean</td>
+<td>Show this message and exit.</td>
+<td><code>False</code></td>
+</tr>
+</tbody>
+</table>
+<h4 id="tinymotion-backend-consent-update">tinymotion-backend consent update</h4>
+<p>Update the specified Consent.</p>
+<p>CONSENT_ID is the id of the consent to update.</p>
+<p><strong>Usage:</strong></p>
+<div class="highlight"><pre><span></span><code>tinymotion-backend consent update [OPTIONS] CONSENT_ID
+</code></pre></div>
+<p><strong>Options:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>-n</code>, <code>--consent-giver-name</code></td>
+<td>text</td>
+<td>Update the Consent giver's name</td>
+<td>None</td>
+</tr>
+<tr>
+<td><code>-e</code>, <code>--consent-giver-email</code></td>
+<td>text</td>
+<td>Update the Consent giver's email</td>
+<td>None</td>
+</tr>
+<tr>
+<td><code>-p</code>, <code>--collected-physically</code></td>
+<td>boolean</td>
+<td>Update collected physically flag</td>
+<td>None</td>
 </tr>
 <tr>
 <td><code>--help</code></td>
@@ -841,6 +982,76 @@
 <td>datetime (<code>%Y-%m-%d</code>)</td>
 <td>The infant's expected date of birth</td>
 <td>None</td>
+</tr>
+<tr>
+<td><code>--help</code></td>
+<td>boolean</td>
+<td>Show this message and exit.</td>
+<td><code>False</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="tinymotion-backend-secret">tinymotion-backend secret</h3>
+<p>Commands related to secrets</p>
+<p><strong>Usage:</strong></p>
+<div class="highlight"><pre><span></span><code>tinymotion-backend secret [OPTIONS] COMMAND [ARGS]...
+</code></pre></div>
+<p><strong>Options:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--help</code></td>
+<td>boolean</td>
+<td>Show this message and exit.</td>
+<td><code>False</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Subcommands</strong></p>
+<ul>
+<li><em><a href="#tinymotion-backend-secret-generate">generate</a></em>: Generate new secrets</li>
+</ul>
+<h4 id="tinymotion-backend-secret-generate">tinymotion-backend secret generate</h4>
+<p>Generate new secrets</p>
+<p><strong>Usage:</strong></p>
+<div class="highlight"><pre><span></span><code>tinymotion-backend secret generate [OPTIONS]
+</code></pre></div>
+<p><strong>Options:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>-a</code>, <code>--auth</code></td>
+<td>boolean</td>
+<td>Generate access and refresh tokens</td>
+<td><code>False</code></td>
+</tr>
+<tr>
+<td><code>-d</code>, <code>--database</code></td>
+<td>boolean</td>
+<td>Generate database secrets</td>
+<td><code>False</code></td>
+</tr>
+<tr>
+<td><code>-v</code>, <code>--video</code></td>
+<td>boolean</td>
+<td>Generate video secrets</td>
+<td><code>False</code></td>
 </tr>
 <tr>
 <td><code>--help</code></td>
@@ -1152,7 +1363,7 @@
 <div class="md-dialog" data-md-component="dialog">
 <div class="md-dialog__inner md-typeset"></div>
 </div>
-<script id="__config" type="application/json">{"base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+<script id="__config" type="application/json">{"base": "../..", "features": ["navigation.expand"], "search": "../../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
 <script src="../../assets/javascripts/bundle.081f42fc.min.js"></script>
 <script>document$.subscribe(() => {
             const dark_scheme_name = "slate"
