@@ -12,6 +12,11 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
         python3.11-venv \
     && rm -rf /var/lib/apt/lists/*
 
+RUN apt-get update && apt-get install -y bash curl \
+    && curl -1sLf 'https://dl.cloudsmith.io/public/infisical/infisical-cli/setup.deb.sh' | bash \
+    && apt-get update && apt-get install -y infisical \
+    && rm -rf /var/lib/apt/lists/*
+
 COPY . /opt/tinymotion_backend
 COPY .git/ /opt/tinymotion_backend/.git/
 COPY .gitignore /opt/tinymotion_backend/.gitignore

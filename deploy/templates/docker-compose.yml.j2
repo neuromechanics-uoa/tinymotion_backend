@@ -6,10 +6,9 @@ services:
     user: 1000:1000
     environment:
       - TZ=Pacific/Auckland
-      - TINYMOTION_ACCESS_TOKEN_SECRET_KEY=${TINYMOTION_ACCESS_TOKEN_SECRET_KEY}
-      - TINYMOTION_REFRESH_TOKEN_SECRET_KEY=${TINYMOTION_REFRESH_TOKEN_SECRET_KEY}
-      - TINYMOTION_VIDEO_SECRET_KEY=${TINYMOTION_VIDEO_SECRET_KEY}
-      - TINYMOTION_DATABASE_SECRET_KEY=${TINYMOTION_DATABASE_SECRET_KEY}
+      - INFISICAL_TOKEN=${INFISICAL_TOKEN}
+      - INFISICAL_PROJECT_ID={{ INFISICAL_PROJECT_ID }}
+      - INFISICAL_ENV={{ infisical_env }}
       - TINYMOTION_DATABASE_URI=sqlite:////var/lib/tinymotion_backend/tinymotion.db
       - TINYMOTION_VIDEO_LIBRARY_PATH=/var/lib/tinymotion_backend/videos
     volumes:
@@ -25,7 +24,7 @@ services:
       - PUID=1000
       - PGID=1000
       - TZ=Pacific/Auckland
-      - URL={{ tinymotion_url }}
+      - URL={{ TINYMOTION_URL }}
       - VALIDATION=http
     volumes:
       - ./data/swag_config:/config

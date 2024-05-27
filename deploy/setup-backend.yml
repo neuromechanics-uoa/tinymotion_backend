@@ -9,7 +9,7 @@
         sleep: 10
         timeout: 600
 
-- name: Upgrade systems
+- name: Upgrade and configure
   hosts: all
   become: yes
   tasks:
@@ -28,10 +28,6 @@
       reboot:
       when: reboot_required_file.stat.exists == true
 
-- name: Set timezone
-  hosts: all
-  become: yes
-  tasks:
     - name: Set timezone
       community.general.timezone:
         name: Pacific/Auckland
@@ -83,12 +79,17 @@
   roles:
     - geerlingguy.docker
 
-- name: Setup tinymotion backend
+- name: Setup and run tinymotion backend
   hosts: all
   become: yes
   vars:
-    tinymotion_image_tag: v0.6.0
+    tinymotion_image_tag: v0.8.3
+    read_all_secrets_within_scope: "{{ lookup('infisical.vault.read_secrets', universal_auth_client_id=lookup('env', 'INFISICAL_CLIENT_ID'), universal_auth_client_secret=lookup('env', 'INFISICAL_CLIENT_SECRET'), project_id=lookup('env', 'INFISICAL_PROJECT_ID'), path='/tinymotion/ansible', env_slug=lookup('env', 'INFISICAL_ENV')) }}"
   tasks:
+    - name: debug
+      ansible.builtin.debug:
+        msg: infisical secrets {{ read_all_secrets_within_scope }}
+
     - name: Create directory for deployment
       ansible.builtin.file:
         path: "/home/{{ ansible_user }}/tinymotion_backend"
@@ -145,14 +146,14 @@
         group: "{{ ansible_user }}"
         mode: '0644'
 
-    - name: Configure .env file
-      ansible.builtin.template:
-        src: dot_env.j2
-        dest: "/home/{{ ansible_user }}/tinymotion_backend/.env"
-        owner: "{{ ansible_user }}"
-        group: "{{ ansible_user }}"
-        mode: '0600'
-      no_log: true
+#    - name: Configure .env file
+#      ansible.builtin.template:
+#        src: dot_env.j2
+#        dest: "/home/{{ ansible_user }}/tinymotion_backend/.env"
+#        owner: "{{ ansible_user }}"
+#        group: "{{ ansible_user }}"
+#        mode: '0600'
+#      no_log: true
 
     - name: Install and configure tinymotion-backend wrapper
       ansible.builtin.template:
@@ -162,10 +163,7 @@
         group: root
         mode: '0755'
 
-- name: Run tinymotion backend
-  hosts: all
-  tasks:
-    - name: Run services using docker compose
-      community.docker.docker_compose_v2:
-        project_src: "/home/{{ ansible_user }}/tinymotion_backend"
-        state: present
+#    - name: Run services using docker compose
+#      community.docker.docker_compose_v2:
+#        project_src: "/home/{{ ansible_user }}/tinymotion_backend"
+#        state: present

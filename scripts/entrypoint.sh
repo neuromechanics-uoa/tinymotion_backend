@@ -3,15 +3,18 @@
 # activate virtual env
 . /var/lib/tinymotion_env/bin/activate
 
+# infisical command
+PRECMD="infisical run --projectID ${INFISICAL_PROJECT_ID} --env ${INFISICAL_ENV} -- "
+
 # run the database migrations
 echo "Running database migrations..."
 cd /var/lib/tinymotion_migrations
-alembic upgrade head
+${PRECMD}alembic upgrade head
 
 # start gunicorn web server
 echo "Launching gunicorn..."
 cd /var/lib/tinymotion_backend
-gunicorn \
+${PRECMD}gunicorn \
     --timeout 240 \
     --workers 4 \
     --worker-class tinymotion_backend.custom_uvicorn_worker.CustomUvicornWorker \

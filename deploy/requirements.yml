@@ -1,1 +1,6 @@
-- name: geerlingguy.docker
+---
+roles:
+  - name: geerlingguy.docker
+
+collections:
+  - name: infisical.vault

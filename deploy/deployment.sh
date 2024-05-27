@@ -21,6 +21,8 @@ if [ "$#" -ne 2 ]; then
     exit 1
 fi
 
+export INFISICAL_ENV=${1}
+
 function provision_infrastructure {
     # TODO: need to create workspace if it doesn't exist
     ansible-playbook provision-infrastructure.yml -e operation=create -e terraform_workspace=${1}
