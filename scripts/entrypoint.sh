@@ -3,6 +3,12 @@
 # activate virtual env
 . /var/lib/tinymotion_env/bin/activate
 
+# test that token is set
+if [ ! -z "${INFISICAL_TOKEN}" ]; then
+    echo "Error: must set INFISICAL_TOKEN"
+    exit 1
+fi
+
 # infisical command
 PRECMD="infisical run --projectID ${INFISICAL_PROJECT_ID} --env ${INFISICAL_ENV} -- "
 

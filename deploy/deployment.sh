@@ -21,7 +21,7 @@ if [ "$#" -ne 2 ]; then
     exit 1
 fi
 
-export INFISICAL_ENV=${1}
+export INFISICAL_ENV=${2}
 
 function provision_infrastructure {
     # TODO: need to create workspace if it doesn't exist
