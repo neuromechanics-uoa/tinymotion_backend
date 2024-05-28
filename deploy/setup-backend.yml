@@ -37,6 +37,12 @@
   become: yes
   vars:
     use_duckdns: false
+    infisical_secrets: "{{ lookup('infisical.vault.read_secrets', \
+                                  universal_auth_client_id=lookup('env', 'INFISICAL_CLIENT_ID'), \
+                                  universal_auth_client_secret=lookup('env', 'INFISICAL_CLIENT_SECRET'), \
+                                  project_id=lookup('env', 'INFISICAL_PROJECT_ID'), \
+                                  path='/tinymotion_backend/ansible', \
+                                  env_slug=lookup('env', 'INFISICAL_ENV')) | items2dict }}"
   tasks:
     - name: Install cron and curl
       apt:
@@ -65,7 +71,7 @@
         day: "*"
         hour: "*"
         minute: "*"
-        job: curl -o /home/duckdns/curl.log "https://www.duckdns.org/update?domains={{ duckdns_domain }}&token={{ duckdns_token }}&ip="
+        job: curl -o /home/duckdns/curl.log "https://www.duckdns.org/update?domains={{ infisical_secrets.DUCKDNS_DOMAIN }}&token={{ infisical_secrets.DUCKDNS_TOKEN }}&ip="
         state: present
       no_log: true
       when: use_duckdns == true
@@ -84,12 +90,13 @@
   become: yes
   vars:
     tinymotion_image_tag: v0.8.3
-    read_all_secrets_within_scope: "{{ lookup('infisical.vault.read_secrets', universal_auth_client_id=lookup('env', 'INFISICAL_CLIENT_ID'), universal_auth_client_secret=lookup('env', 'INFISICAL_CLIENT_SECRET'), project_id=lookup('env', 'INFISICAL_PROJECT_ID'), path='/tinymotion/ansible', env_slug=lookup('env', 'INFISICAL_ENV')) }}"
+    infisical_secrets: "{{ lookup('infisical.vault.read_secrets', \
+                                  universal_auth_client_id=lookup('env', 'INFISICAL_CLIENT_ID'), \
+                                  universal_auth_client_secret=lookup('env', 'INFISICAL_CLIENT_SECRET'), \
+                                  project_id=lookup('env', 'INFISICAL_PROJECT_ID'), \
+                                  path='/tinymotion_backend/ansible', \
+                                  env_slug=lookup('env', 'INFISICAL_ENV')) | items2dict }}"
   tasks:
-    - name: debug
-      ansible.builtin.debug:
-        msg: infisical secrets {{ read_all_secrets_within_scope }}
-
     - name: Create directory for deployment
       ansible.builtin.file:
         path: "/home/{{ ansible_user }}/tinymotion_backend"
@@ -146,15 +153,6 @@
         group: "{{ ansible_user }}"
         mode: '0644'
 
-#    - name: Configure .env file
-#      ansible.builtin.template:
-#        src: dot_env.j2
-#        dest: "/home/{{ ansible_user }}/tinymotion_backend/.env"
-#        owner: "{{ ansible_user }}"
-#        group: "{{ ansible_user }}"
-#        mode: '0600'
-#      no_log: true
-
     - name: Install and configure tinymotion-backend wrapper
       ansible.builtin.template:
         src: tinymotion-backend.sh.j2
@@ -163,7 +161,14 @@
         group: root
         mode: '0755'
 
-#    - name: Run services using docker compose
-#      community.docker.docker_compose_v2:
-#        project_src: "/home/{{ ansible_user }}/tinymotion_backend"
-#        state: present
+    - name: Generate infisical token for app
+      ansible.builtin.command:
+        cmd: ifisical login --method=universal-auth --client-id={{ infisical_secrets.INFISICAL_CLIENT_ID }} --client-secret={{ infisical_secrets.INFISICAL_CLIENT_SECRET }} --silent --plain
+        register: infisical_token
+
+    - name: Run services using docker compose
+      community.docker.docker_compose_v2:
+        project_src: "/home/{{ ansible_user }}/tinymotion_backend"
+        state: present
+      environment:
+        INFISICAL_TOKEN: infisical_token.stdout

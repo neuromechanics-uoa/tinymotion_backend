@@ -7,8 +7,8 @@ services:
     environment:
       - TZ=Pacific/Auckland
       - INFISICAL_TOKEN=${INFISICAL_TOKEN}
-      - INFISICAL_PROJECT_ID={{ INFISICAL_PROJECT_ID }}
-      - INFISICAL_ENV={{ infisical_env }}
+      - INFISICAL_PROJECT_ID={{ infisical_secrets.INFISICAL_PROJECT_ID }}
+      - INFISICAL_ENV={{ lookup('env', 'INFISICAL_ENV') }}
       - TINYMOTION_DATABASE_URI=sqlite:////var/lib/tinymotion_backend/tinymotion.db
       - TINYMOTION_VIDEO_LIBRARY_PATH=/var/lib/tinymotion_backend/videos
     volumes:
@@ -24,7 +24,7 @@ services:
       - PUID=1000
       - PGID=1000
       - TZ=Pacific/Auckland
-      - URL={{ TINYMOTION_URL }}
+      - URL={{ infisical_secrets.TINYMOTION_URL }}
       - VALIDATION=http
     volumes:
       - ./data/swag_config:/config
