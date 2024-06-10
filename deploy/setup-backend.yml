@@ -89,7 +89,8 @@
   hosts: all
   become: yes
   vars:
-    tinymotion_image_tag: v0.8.3
+    tinymotion_image_tag: latest
+    pull_policy: policy
     infisical_secrets: "{{ lookup('infisical.vault.read_secrets', \
                                   universal_auth_client_id=lookup('env', 'INFISICAL_CLIENT_ID'), \
                                   universal_auth_client_secret=lookup('env', 'INFISICAL_CLIENT_SECRET'), \
@@ -165,6 +166,7 @@
       community.docker.docker_compose_v2:
         project_src: "/home/{{ ansible_user }}/tinymotion_backend"
         state: present
+        pull: "{{ pull_policy }}"
       environment:
         INFISICAL_CLIENT_ID: "{{ infisical_secrets.INFISICAL_CLIENT_ID }}"
         INFISICAL_CLIENT_SECRET: "{{ infisical_secrets.INFISICAL_CLIENT_SECRET }}"
