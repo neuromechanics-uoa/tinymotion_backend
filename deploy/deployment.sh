@@ -1,12 +1,17 @@
 #!/bin/bash -e
 
-
 scriptname=$0
 print_usage() {
     echo "Usage: ${scriptname} <provision|setup|create|destroy> <ENVIRONMENT_NAME>"
     echo
     echo "  - must specify the operation, either \"create\", \"destroy\", \"provision\" or \"setup\""
     echo "  - must specify the environment name, e.g. \"dev\", \"test\", etc."
+    echo
+    echo "The following environment variables must be set:"
+    echo
+    echo "  - INFISICAL_CLIENT_ID"
+    echo "  - INFISICAL_CLIENT_SECRET"
+    echo "  - INFISICAL_PROJECT_ID"
     echo
     echo "Operations:"
     echo "  - \"provision\" will provision the infrastructure (VM, floating IP, etc)"
@@ -22,6 +27,26 @@ if [ "$#" -ne 2 ]; then
 fi
 
 export INFISICAL_ENV=${2}
+
+if [ -z "${INFISICAL_CLIENT_ID}" ]; then
+    echo "Error: INFISICAL_CLIENT_ID is not set"
+    echo
+    print_usage
+    exit 1
+fi
+if [ -z "${INFISICAL_CLIENT_SECRET}" ]; then
+    echo "Error: INFISICAL_CLIENT_SECRET is not set"
+    echo
+    print_usage
+    exit 1
+fi
+if [ -z "${INFISICAL_PROJECT_ID}" ]; then
+    echo "Error: INFISICAL_PROJECT_ID is not set"
+    echo
+    print_usage
+    exit 1
+fi
+
 
 function provision_infrastructure {
     # TODO: need to create workspace if it doesn't exist

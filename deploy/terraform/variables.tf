@@ -40,7 +40,3 @@ variable "vm_user" {
   description = "FlexiHPC VM user"
   default = "ubuntu"
 }
-
-variable "openstack_cloud_name" {
-  description = "Name of the openstack cloud to use in clouds.yml"
-}

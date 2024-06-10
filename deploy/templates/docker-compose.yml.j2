@@ -6,7 +6,8 @@ services:
     user: 1000:1000
     environment:
       - TZ=Pacific/Auckland
-      - INFISICAL_TOKEN=${INFISICAL_TOKEN}
+      - INFISICAL_CLIENT_ID=$INFISICAL_CLIENT_ID
+      - INFISICAL_CLIENT_SECRET=$INFISICAL_CLIENT_SECRET
       - INFISICAL_PROJECT_ID={{ infisical_secrets.INFISICAL_PROJECT_ID }}
       - INFISICAL_ENV={{ lookup('env', 'INFISICAL_ENV') }}
       - TINYMOTION_DATABASE_URI=sqlite:////var/lib/tinymotion_backend/tinymotion.db

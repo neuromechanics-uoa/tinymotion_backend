@@ -161,14 +161,11 @@
         group: root
         mode: '0755'
 
-    - name: Generate infisical token for app
-      ansible.builtin.command:
-        cmd: infisical login --method=universal-auth --client-id={{ infisical_secrets.INFISICAL_CLIENT_ID }} --client-secret={{ infisical_secrets.INFISICAL_CLIENT_SECRET }} --silent --plain
-      register: infisical_token
-
     - name: Run services using docker compose
       community.docker.docker_compose_v2:
         project_src: "/home/{{ ansible_user }}/tinymotion_backend"
         state: present
       environment:
-        INFISICAL_TOKEN: infisical_token.stdout
+        INFISICAL_CLIENT_ID: "{{ infisical_secrets.INFISICAL_CLIENT_ID }}"
+        INFISICAL_CLIENT_SECRET: "{{ infisical_secrets.INFISICAL_CLIENT_SECRET }}"
+      no_log: true

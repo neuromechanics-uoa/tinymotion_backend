@@ -1,23 +1,45 @@
 - hosts: localhost
   vars:
     terraform_workspace: test
+    infisical_secrets: "{{ lookup('infisical.vault.read_secrets', \
+                                  universal_auth_client_id=lookup('env', 'INFISICAL_CLIENT_ID'), \
+                                  universal_auth_client_secret=lookup('env', 'INFISICAL_CLIENT_SECRET'), \
+                                  project_id=lookup('env', 'INFISICAL_PROJECT_ID'), \
+                                  path='/tinymotion_backend/ansible', \
+                                  env_slug=lookup('env', 'INFISICAL_ENV')) | items2dict }}"
   tasks:
-  - name: Provision infrastructure using Terraform
-    terraform:
-      project_path: "./terraform"
-      state: present
-      force_init: yes
-      init_reconfigure: yes
-      workspace: "{{ terraform_workspace }}"
-    register: terraform_provision
-    when: (operation == "create")
+    - name: Provision infrastructure using Terraform
+      terraform:
+        project_path: "./terraform"
+        state: present
+        force_init: yes
+        init_reconfigure: yes
+        workspace: "{{ terraform_workspace }}"
+      environment:
+        TF_VAR_auth_url: "{{ infisical_secrets.OS_AUTH_URL }}"
+        TF_VAR_tenant_name: "{{ infisical_secrets.OS_TENANT_NAME }}"
+        TF_VAR_region: "{{ infisical_secrets.OS_REGION_NAME }}"
+        OS_APPLICATION_CREDENTIAL_ID: "{{ infisical_secrets.OS_APPLICATION_CREDENTIAL_ID }}"
+        OS_APPLICATION_CREDENTIAL_SECRET: "{{ infisical_secrets.OS_APPLICATION_CREDENTIAL_SECRET }}"
+        AWS_ACCESS_KEY_ID: "{{ infisical_secrets.AWS_ACCESS_KEY_ID }}"
+        AWS_SECRET_KEY: "{{ infisical_secrets.AWS_SECRET_KEY }}"
+      register: terraform_provision
+      when: (operation == "create")
 
-  - name: Destroy resources
-    terraform:
-      project_path: "./terraform"
-      state: absent
-      force_init: yes
-      init_reconfigure: yes
-      workspace: "{{ terraform_workspace }}"
-    when: (operation == "destroy")
-    register: destroy
+    - name: Destroy resources
+      terraform:
+        project_path: "./terraform"
+        state: absent
+        force_init: yes
+        init_reconfigure: yes
+        workspace: "{{ terraform_workspace }}"
+      environment:
+        TF_VAR_auth_url: "{{ infisical_secrets.OS_AUTH_URL }}"
+        TF_VAR_tenant_name: "{{ infisical_secrets.OS_TENANT_NAME }}"
+        TF_VAR_region: "{{ infisical_secrets.OS_REGION_NAME }}"
+        OS_APPLICATION_CREDENTIAL_ID: "{{ infisical_secrets.OS_APPLICATION_CREDENTIAL_ID }}"
+        OS_APPLICATION_CREDENTIAL_SECRET: "{{ infisical_secrets.OS_APPLICATION_CREDENTIAL_SECRET }}"
+        AWS_ACCESS_KEY_ID: "{{ infisical_secrets.AWS_ACCESS_KEY_ID }}"
+        AWS_SECRET_KEY: "{{ infisical_secrets.AWS_SECRET_KEY }}"
+      when: (operation == "destroy")
+      register: destroy
