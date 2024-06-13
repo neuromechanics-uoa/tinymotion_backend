@@ -1,15 +1,8 @@
-tinymotion_url: api.tinymotion.example.duckdns.org
-# duckdns token and domain only required if `use_duckdns==true`
+# duckdns domain and token should be set in infisical
 use_duckdns: true
-duckdns_token: myduckdnstoken
-duckdns_domain: my.domain
-# client id, secret and project id only required if `use_infisical==true`
-use_infisical: false
-infisical_client_id: INFISICAL_CLIENT_ID
-infisical_client_secret: INFISICAL_CLIENT_SECRET
-infisical_project_id: INFISICAL_PROJECT_ID
-# these 4 secrets are only required if `use_infisical==false`
-access_token_secret: secretkey1
-refresh_token_secret: secretkey2
-video_secret: secretkey3
-database_secret: secretkey4
+
+# docker image tag
+tinymotion_image_tag: latest
+
+# docker image pull policy
+pull_policy: missing
