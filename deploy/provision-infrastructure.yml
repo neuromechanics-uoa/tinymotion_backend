@@ -25,6 +25,7 @@
         AWS_SECRET_KEY: "{{ infisical_secrets.AWS_SECRET_KEY }}"
       register: terraform_provision
       when: (operation == "create")
+      no_log: true
 
     - name: Destroy resources
       terraform:
@@ -43,3 +44,4 @@
         AWS_SECRET_KEY: "{{ infisical_secrets.AWS_SECRET_KEY }}"
       when: (operation == "destroy")
       register: destroy
+      no_log: true

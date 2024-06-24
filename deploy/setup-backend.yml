@@ -11,11 +11,11 @@
 
 - name: Upgrade and configure
   hosts: all
-  become: yes
+  become: true
   tasks:
     - name: Full system upgrade
       apt:
-        update_cache: yes
+        update_cache: true
         cache_valid_time: 3600
         upgrade: dist
 
@@ -34,7 +34,7 @@
 
 - name: Setup duckdns DDNS
   hosts: all
-  become: yes
+  become: true
   vars:
     use_duckdns: false
     infisical_secrets: "{{ lookup('infisical.vault.read_secrets', \
@@ -51,12 +51,12 @@
           - curl
         state: present
       when: use_duckdns == true
-    
+
     - name: Enable cron service
       service:
         name: cron
         state: started
-        enabled: yes
+        enabled: true
       when: use_duckdns == true
 
     - name: Create user for running duckdns update
@@ -78,16 +78,16 @@
 
 - name: Install docker
   hosts: all
-  become: yes
+  become: true
   vars:
     - docker_users:
-      - "{{ ansible_user }}"
+        - "{{ ansible_user }}"
   roles:
     - geerlingguy.docker
 
 - name: Setup and run tinymotion backend
   hosts: all
-  become: yes
+  become: true
   vars:
     tinymotion_image_tag: latest
     pull_policy: policy
@@ -162,12 +162,18 @@
         group: root
         mode: '0755'
 
+    - name: Generate infisical token for use in app
+      ansible.builtin.command:
+        cmd: infisical login --method=universal-auth --client-id={{ infisical_secrets.INFISICAL_CLIENT_ID }} \
+                 --client-secret={{ infisical_secrets.INFISICAL_CLIENT_SECRET }} --silent --plain
+      register: infisical_token
+      no_log: true
+
     - name: Run services using docker compose
       community.docker.docker_compose_v2:
         project_src: "/home/{{ ansible_user }}/tinymotion_backend"
         state: present
         pull: "{{ pull_policy }}"
       environment:
-        INFISICAL_CLIENT_ID: "{{ infisical_secrets.INFISICAL_CLIENT_ID }}"
-        INFISICAL_CLIENT_SECRET: "{{ infisical_secrets.INFISICAL_CLIENT_SECRET }}"
+        INFISICAL_TOKEN: infisical_token.stdout
       no_log: true

@@ -4,12 +4,8 @@
 . /var/lib/tinymotion_env/bin/activate
 
 # test that infisical vars are set
-if [ -z "${INFISICAL_CLIENT_ID}" ]; then
-    echo "Error: must set INFISICAL_CLIENT_ID"
-    exit 1
-fi
-if [ -z "${INFISICAL_CLIENT_SECRET}" ]; then
-    echo "Error: must set INFISICAL_CLIENT_SECRET"
+if [ -z "${INFISICAL_TOKEN}" ]; then
+    echo "Error: must set INFISICAL_TOKEN"
     exit 1
 fi
 if [ -z "${INFISICAL_PROJECT_ID}" ]; then
@@ -20,10 +16,6 @@ if [ -z "${INFISICAL_ENV}" ]; then
     echo "Error: must set INFISICAL_ENV"
     exit 1
 fi
-
-# generate infisical token
-export INFISICAL_TOKEN=$(infisical login --method=universal-auth --client-id=${INFISICAL_CLIENT_ID} \
-                             --client-secret=${INFISICAL_CLIENT_SECRET} --plain --silent)
 
 # infisical command
 PRECMD="infisical run --projectId ${INFISICAL_PROJECT_ID} --env ${INFISICAL_ENV} -- "
