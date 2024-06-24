@@ -278,4 +278,4 @@ def test_cli_infant_list(monkeypatch, session: Session, mocked_user_id: uuid.UUI
     result = runner.invoke(cli, ["infant", "list"])
 
     assert result.exit_code == 0
-    assert f"Found {num_add} infants" in result.output
+    assert f"Found {num_add} Infants" in result.output

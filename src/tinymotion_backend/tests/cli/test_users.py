@@ -124,4 +124,4 @@ def test_cli_user_list(monkeypatch, session: Session, num_add):
     result = runner.invoke(cli, ["user", "list"])
 
     assert result.exit_code == 0
-    assert f"Found {num_add + 1} users" in result.output
+    assert f"Found {num_add + 1} Users" in result.output

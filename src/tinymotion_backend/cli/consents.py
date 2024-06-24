@@ -64,33 +64,35 @@ def create(
 @consent.command()
 @click.option("-p", "--pager", is_flag=True, default=False, help="Display results using a pager")
 @click.option("-o", "--output-file", type=str, required=False, default=None, help="Write JSON output to file")
-def list(pager: bool, output_file: str):
+@click.option("-q", "--quiet", is_flag=True, default=False, help="Don't write Infants to standard output")
+def list(pager: bool, output_file: str, quiet: bool):
     """List existing consents."""
     with Session(database.engine) as session:
         # get the list of consents
         consent_service = ConsentService(session, None)
         consents = consent_service.list()
-        click.echo(f"Found {len(consents)} consents:")
+        click.echo(f"Found {len(consents)} Consents")
 
         # build a list of consents in json format
         consents_json = []
         for consent in consents:
             consents_json.append(json.loads(consent.json()))
 
-        # display to screen with pager or not
-        if pager:
-            echo_command = click.echo_via_pager
-        else:
-            echo_command = click.echo
+        # print to screen
+        if not quiet:
+            # display to screen with pager or not
+            if pager:
+                echo_command = click.echo_via_pager
+            else:
+                echo_command = click.echo
+
+            echo_command(json.dumps(consents_json, indent=2))
 
         # write json to file if requested
         if output_file is not None:
             with open(output_file, "w") as fout:
                 fout.write(json.dumps(consents_json, indent=2))
-            click.echo(f"Written consents to {output_file}")
-
-        # print to screen
-        echo_command(json.dumps(consents_json, indent=2))
+            click.echo(f"Written Consents to {output_file}")
 
 
 @consent.command()
