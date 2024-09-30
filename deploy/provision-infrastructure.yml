@@ -1,3 +1,4 @@
+---
 - hosts: localhost
   vars:
     terraform_workspace: test
@@ -12,8 +13,8 @@
       terraform:
         project_path: "./terraform"
         state: present
-        force_init: yes
-        init_reconfigure: yes
+        force_init: true
+        init_reconfigure: true
         workspace: "{{ terraform_workspace }}"
       environment:
         TF_VAR_auth_url: "{{ infisical_secrets.OS_AUTH_URL }}"
@@ -31,8 +32,8 @@
       terraform:
         project_path: "./terraform"
         state: absent
-        force_init: yes
-        init_reconfigure: yes
+        force_init: true
+        init_reconfigure: true
         workspace: "{{ terraform_workspace }}"
       environment:
         TF_VAR_auth_url: "{{ infisical_secrets.OS_AUTH_URL }}"

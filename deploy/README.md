@@ -3,7 +3,12 @@
 ## Prerequisites
 
 - Account on NeSI RDC
-- Install Ansible
+- Install Ansible and the *infisical-python* Python package, e.g.:
+  ```
+  python -m venv venv
+  source venv/bin/activate
+  pip install ansible infisical-python
+  ```
 - Install Terraform
 - [Inifisical secrets manangement](https://infisical.com/)
 - [Optional] Get a duckdns account and create a subdomain to use with each deployment

@@ -1,2 +1,4 @@
 vars/*.yml
 !vars/example.yml
+venv/
+.env*
