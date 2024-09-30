@@ -3,6 +3,15 @@
 # activate virtual env
 . /var/lib/tinymotion_env/bin/activate
 
+# print infisical cli version
+infisical --version
+
+# debugging
+echo "token is..."
+echo "-------"
+echo "\"${INFISICAL_TOKEN}\""
+echo "-------"
+
 # test that infisical vars are set
 if [ -z "${INFISICAL_TOKEN}" ]; then
     echo "Error: must set INFISICAL_TOKEN"
