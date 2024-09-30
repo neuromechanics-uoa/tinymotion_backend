@@ -6,12 +6,6 @@
 # print infisical cli version
 infisical --version
 
-# debugging
-echo "token is..."
-echo "-------"
-echo "\"${INFISICAL_TOKEN}\""
-echo "-------"
-
 # test that infisical vars are set
 if [ -z "${INFISICAL_TOKEN}" ]; then
     echo "Error: must set INFISICAL_TOKEN"
@@ -28,6 +22,7 @@ fi
 
 # infisical command
 PRECMD="infisical run --projectId ${INFISICAL_PROJECT_ID} --env ${INFISICAL_ENV} -- "
+echo "Prepending commands with: \"${PRECMD}\""
 
 # run the database migrations
 echo "Running database migrations..."

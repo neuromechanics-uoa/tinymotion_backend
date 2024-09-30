@@ -176,5 +176,5 @@
         state: present
         pull: "{{ pull_policy }}"
       environment:
-        INFISICAL_TOKEN: infisical_token.stdout
+        INFISICAL_TOKEN: "{{ infisical_token.stdout }}"
       no_log: true
