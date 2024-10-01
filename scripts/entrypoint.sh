@@ -21,7 +21,7 @@ if [ -z "${INFISICAL_ENV}" ]; then
 fi
 
 # infisical command
-PRECMD="infisical run --projectId ${INFISICAL_PROJECT_ID} --env ${INFISICAL_ENV} -- "
+PRECMD="infisical run --projectId ${INFISICAL_PROJECT_ID} --env ${INFISICAL_ENV} --path /tinymotion_backend/app -- "
 echo "Prepending commands with: \"${PRECMD}\""
 
 # run the database migrations
