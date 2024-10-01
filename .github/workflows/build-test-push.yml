@@ -32,11 +32,7 @@ jobs:
       - name: Check tinymotion-backend command installed
         run: tinymotion-backend --help
       - name: Configure secrets for running tests
-        run: |
-          tinymotion-backend secret generate -p -a > .tinymotion.env
-          tinymotion-backend secret generate -p -r >> .tinymotion.env
-          tinymotion-backend secret generate -p -d >> .tinymotion.env
-          tinymotion-backend secret generate -p -v >> .tinymotion.env
+        run: tinymotion-backend secret generate -eradv > .tinymotion.env
       - name: Run tests
         run: pytest
 

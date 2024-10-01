@@ -15,8 +15,8 @@ def secret():
 @click.option("-r", "--refresh", is_flag=True, default=False, help="Generate refresh token")
 @click.option("-d", "--database", is_flag=True, default=False, help="Generate database secret")
 @click.option("-v", "--video", is_flag=True, default=False, help="Generate video secret")
-@click.option("-p", "--plain", is_flag=True, default=False, help="Just print the secret with no extra text")
-def generate(access: bool, refresh: bool, database: bool, video: bool, plain: bool):
+@click.option("-e", "--for-env-file", is_flag=True, default=False, help="Print the secret(s) in .env file format")
+def generate(access: bool, refresh: bool, database: bool, video: bool, for_env_file: bool):
     """Generate new secrets"""
     # at least one secret should be specified
     if not (access or refresh or database or video):
@@ -26,53 +26,45 @@ def generate(access: bool, refresh: bool, database: bool, video: bool, plain: bo
         click.echo(ctx.get_help())
         ctx.exit()
 
-    # if plain was chosen, only one secret should be specified
-    if plain and (access + refresh + database + video > 1):
-        click.echo("Must select only one secret to generate when choosing \"--plain\"")
-        click.echo("")
-        ctx = click.get_current_context()
-        click.echo(ctx.get_help())
-        ctx.exit()
-
     if access:
-        if not plain:
+        if not for_env_file:
             click.echo("")
             click.echo("Generating access token:")
         access_token = secrets.token_urlsafe()
-        if plain:
-            click.echo(access_token)
+        if for_env_file:
+            click.echo(f"TINYMOTION_ACCESS_TOKEN_SECRET_KEY={access_token}")
         else:
             click.echo(f"access_token = {access_token}")
 
     if refresh:
-        if not plain:
+        if not for_env_file:
             click.echo("")
             click.echo("Generating refresh token:")
         refresh_token = secrets.token_urlsafe()
-        if plain:
-            click.echo(refresh_token)
+        if for_env_file:
+            click.echo(f"TINYMOTION_REFRESH_TOKEN_SECRET_KEY={refresh_token}")
         else:
             click.echo(f"refresh_token = {refresh_token}")
 
     if database:
-        if not plain:
+        if not for_env_file:
             click.echo("")
             click.echo("Generating database secrets:")
         database_secret = secrets.token_urlsafe()
-        if plain:
-            click.echo(database_secret)
+        if for_env_file:
+            click.echo(f"TINYMOTION_DATABASE_SECRET_KEY={database_secret}")
         else:
             click.echo(f"database_secret = {database_secret}")
 
     if video:
-        if not plain:
+        if not for_env_file:
             click.echo("")
             click.echo("Generating video secrets:")
         video_secret = Fernet.generate_key().decode("ascii")
-        if plain:
-            click.echo(video_secret)
+        if for_env_file:
+            click.echo(f"TINYMOTION_VIDEO_SECRET_KEY={video_secret}")
         else:
             click.echo(f"video_secret = {video_secret}")
 
-    if not plain:
+    if not for_env_file:
         click.echo("")
