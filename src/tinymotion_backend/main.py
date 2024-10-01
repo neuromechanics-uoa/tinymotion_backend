@@ -21,6 +21,17 @@ logger = logging.getLogger(__name__)
 async def lifespan(app: FastAPI):
     # ensure video library exists
     os.makedirs(settings.VIDEO_LIBRARY_PATH, exist_ok=True)
+
+    # make sure secrets were set
+    if settings.ACCESS_TOKEN_SECRET_KEY is None:
+        raise RuntimeError("ACCESS_TOKEN_SECRET_KEY has not been set")
+    if settings.REFRESH_TOKEN_SECRET_KEY is None:
+        raise RuntimeError("REFRESH_TOKEN_SECRET_KEY has not been set")
+    if settings.DATABASE_SECRET_KEY is None:
+        raise RuntimeError("DATABASE_SECRET_KEY has not been set")
+    if settings.VIDEO_SECRET_KEY is None:
+        raise RuntimeError("VIDEO_SECRET_KEY has not been set")
+
     yield
 
 
