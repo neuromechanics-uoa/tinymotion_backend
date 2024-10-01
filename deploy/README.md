@@ -10,7 +10,7 @@
   pip install ansible infisical-python
   ```
 - Install Terraform
-- [Inifisical secrets manangement](https://infisical.com/)
+- [Infisical secrets manangement](https://infisical.com/)
 - [Optional] Get a duckdns account and create a subdomain to use with each deployment
 
 ## Configuration
