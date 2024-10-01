@@ -5,8 +5,8 @@ from cryptography.fernet import Fernet
 
 
 class Settings(BaseSettings):
-    ACCESS_TOKEN_SECRET_KEY: str
-    REFRESH_TOKEN_SECRET_KEY: str
+    ACCESS_TOKEN_SECRET_KEY: str = secrets.token_urlsafe(32)
+    REFRESH_TOKEN_SECRET_KEY: str = secrets.token_urlsafe(32)
 
     ALGORITHM: str = "HS256"
 
@@ -22,7 +22,7 @@ class Settings(BaseSettings):
     DATABASE_SECRET_KEY: str = Fernet.generate_key().decode('ascii')
 
     VIDEO_LIBRARY_PATH: str = "./videos"
-    VIDEO_SECRET_KEY: str
+    VIDEO_SECRET_KEY: str = Fernet.generate_key().decode('ascii')
 
 
     model_config = SettingsConfigDict(case_sensitive=True, env_prefix="TINYMOTION_", env_file=".tinymotion.env")
