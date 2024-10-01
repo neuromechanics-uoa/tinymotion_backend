@@ -1,14 +1,27 @@
+import os
 import uuid
+from unittest import mock
+import secrets
 
 import pytest
 from fastapi.testclient import TestClient
 from sqlmodel import Session, SQLModel, create_engine, select
 from sqlmodel.pool import StaticPool
+from cryptography.fernet import Fernet
 
 from tinymotion_backend.main import app
 from tinymotion_backend.api.deps import get_session
 from tinymotion_backend import models  # noqa
 from tinymotion_backend.tests import mock_data
+
+
+@pytest.fixture(autouse=True)
+def mock_settings_env_vars():
+    with mock.patch.dict(os.environ, {"ACCESS_TOKEN_SECRET_KEY": secrets.token_urlsafe(32),
+                                      "REFRESH_TOKEN_SECRET_KEY": secrets.token_urlsafe(32),
+                                      "VIDEO_SECRET_KEY": secrets.token_urlsafe(32),
+                                      "DATABASE_SECRET_KEY": Fernet.generate_key().decode('ascii')}):
+        yield
 
 
 @pytest.fixture(name="session")
