@@ -36,6 +36,8 @@ RUN python3.11 -m venv /var/lib/tinymotion_env \
     && chmod +x /entrypoint.sh \
     && cp /opt/tinymotion_backend/scripts/tinymotion-backend /usr/local/bin/tinymotion-backend \
     && chmod +x /usr/local/bin/tinymotion-backend \
+    && cp /opt/tinymotion_backend/scripts/tinymotion-infisical-wrapper /usr/local/bin/tinymotion-infisical-wrapper \
+    && chmod +x /usr/local/bin/tinymotion-infisical-wrapper \
     && rm -rf /opt/tinymotion_backend
 
 WORKDIR /var/lib/tinymotion_backend
