@@ -162,6 +162,14 @@
         group: root
         mode: '0755'
 
+    - name: Install and configure tinymotion infisical logout wrapper
+      ansible.builtin.template:
+        src: tinymotion-infisical-logout.sh.j2
+        dest: /usr/local/bin/tinymotion-infisical-logout
+        owner: root
+        group: root
+        mode: '0755'
+
     - name: Generate infisical token for use in app
       ansible.builtin.command:
         cmd: |

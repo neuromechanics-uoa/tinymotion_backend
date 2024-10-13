@@ -6,4 +6,4 @@ set -e
 export INFISICAL_TOKEN=dummy
 
 cd /home/{{ ansible_user }}/tinymotion_backend
-docker compose exec tinymotion tinymotion-backend-infisical "$@"
+docker compose exec tinymotion infisical reset

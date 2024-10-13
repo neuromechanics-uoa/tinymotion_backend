@@ -3,7 +3,7 @@
 # in case it is set already, it interferes with infisical login
 unset INFISICAL_TOKEN
 
-# TODO: only if not already logged in?
+# TODO: only if not already logged in? (is there are way to tell?)
 infisical login
 
 # run tinymotion backend with secrets injected
