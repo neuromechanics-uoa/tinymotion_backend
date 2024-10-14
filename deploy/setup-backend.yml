@@ -170,6 +170,18 @@
         group: root
         mode: '0755'
 
+    - name: Get infisical project id for setting in json file
+      ansible.builtin.set_fact:
+        infisical_project_id: "{{ lookup('env', 'INFISICAL_PROJECT_ID') }}"
+
+    - name: Install infisical json config file
+      ansible.builtin.template:
+        src: infisical.json.j2
+        dest: "/home/{{ ansible_user }}/tinymotion_backend/data/tinymotion_backend/.infisical.json"
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        mode: '0644'
+
     - name: Generate infisical token for use in app
       ansible.builtin.command:
         cmd: |
