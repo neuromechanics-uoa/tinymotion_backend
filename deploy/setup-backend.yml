@@ -182,6 +182,35 @@
         group: "{{ ansible_user }}"
         mode: '0644'
 
+    - name: Install apt-transport-https
+      ansible.builtin.apt:
+        name: apt-transport-https
+        state: present
+
+    - name: Add infisical GPG key
+      ansible.builtin.apt_key:
+        url: "<https://dl.cloudsmith.io/public/infisical/infisical-cli/gpg.2E8A3D44C97EAED6.key>"
+        state: present
+        keyring: "/usr/share/keyrings/infisical-infisical-cli-archive-keyring.gpg"
+
+    - name: Add infisical apt repository
+      ansible.builtin.apt_repository:
+        repo: "deb [signed-by=/usr/share/keyrings/infisical-infisical-cli-archive-keyring.gpg] https://dl.cloudsmith.io/public/infisical/infisical-cli/deb/ubuntu jammy main"
+        state: present
+
+    - name: Add infisical apt source repository
+      ansible.builtin.apt_repository:
+        repo: "deb-src [signed-by=/usr/share/keyrings/infisical-infisical-cli-archive-keyring.gpg] https://dl.cloudsmith.io/public/infisical/infisical-cli/deb/ubuntu jammy main"
+        state: present
+
+    - name: Flush handlers
+      meta: flush_handlers
+
+    - name: Install infisical cli
+      ansible.builtin.apt:
+        state: present
+        name: infisical
+
     - name: Generate infisical token for use in app
       ansible.builtin.command:
         cmd: |
