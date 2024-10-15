@@ -11,7 +11,7 @@ The backend is written in Python using:
 - [pytest](https://docs.pytest.org/) for testing
 - [mkdocs](https://www.mkdocs.org/) for documentation
 
-Deployment is achieved using [Terraform](https://www.terraform.io/) and [Ansible](https://www.ansible.com/) to create and configure a VM on an OpenStack cloud ([NeSI RDC](https://support.cloud.nesi.org.nz/)). The TinyMotion backend software is containerised using docker and run using [Docker compose](https://docs.docker.com/compose/). [SWAG](https://docs.linuxserver.io/general/swag/) (secure web access gateway) is used in front of the API and handles generating SSL certificates.
+Deployment is achieved using [Terraform](https://www.terraform.io/) and [Ansible](https://www.ansible.com/) to create and configure a VM on an OpenStack cloud ([NeSI RDC](https://support.cloud.nesi.org.nz/)). The TinyMotion backend software is containerised using docker and run using [Docker compose](https://docs.docker.com/compose/). [SWAG](https://docs.linuxserver.io/general/swag/) (secure web access gateway) is used in front of the API and handles generating SSL certificates. [Infisical](https://infisical.com/docs/documentation/getting-started/introduction) is used for secrets management during deployment and while launching the app.
 
 ## API
 
@@ -23,9 +23,11 @@ An infant must be created first. Once an infant has been created a consent must 
 - a video is added with an NHI number that does not match an infant in the database
 - a video is added for an infant that has no consent recorded in the database
 
+The API should be assumed to be case sensitive unless otherwise mentioned (i.e. the case in the NHI number should match when making subsequent calls to the API with the same NHI number).
+
 ## Authentication
 
-An access key is created for each user and shared with them. The access key is entered into the app and an API endpoint called to exchange the access key for access and refresh JWT tokens. The access token is passed in the Authorization header with subsequent API requests. If the access token expires, the refresh token can be used to generate a new access token. If the refresh token expires the access key must be entered again.
+An access key is created for each user and shared with them. The access key is entered into the app and an API endpoint called to exchange the access key for access and refresh JWT tokens. The access token is passed in the Authorization header with subsequent API requests. If the access token expires, the refresh token can be used to generate a new access token. If the refresh token expires the access key must be entered again. The lifetimes of the access and refresh tokens are configurable.
 
 Initially, all users of the app will be treated the same (authorisation). All users will be able to upload (POST) information via the API. There are no API endpoints to retrieve information.
 
@@ -110,4 +112,5 @@ Video files are encrypted as they are received and written to disk on the VM in 
 
 ## Secrets management
 
-TODO
+[Infisical](https://infisical.com/docs/documentation/getting-started/introduction) is used for secrets management.
+

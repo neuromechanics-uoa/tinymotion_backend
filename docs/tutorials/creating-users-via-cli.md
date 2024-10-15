@@ -4,6 +4,8 @@ Full command line interface (CLI) reference can be found [here](../reference/cli
 
 ## Prerequisites
 
+### SSH key pair
+
 You will need to be able to SSH into the VM running the backend (TODO: move to a separate page).
 
 Usually the person who deployed the VM will have SSH access to the VM. In order for other people to access the VM they will need to create
@@ -23,9 +25,18 @@ is private and should not be shared but will be used to connect to the VM, e.g. 
 ssh -i ~/.ssh/<private-key-file> <username>@<backend-domain-name>
 ```
 
+### Access to the Infisical project
+
+You will need an Infisical account and access to the project that was used to deploy the environment.
+When you execute `tinymotion-backend` commands below, you will need to be authenticated to Infisical so the secrets can be injected into the app, otherwise you won't be able to decrypt information in the database, or the video files. The first time you run `tinymotion-backend` you should be asked to login to Infisical by following the interactive prompt/instructions. 
+
+!!! note
+
+    It is good practice to log out from Infisical when you have finished running commands, using `tinymotion-infisical-logout`, otherwise the next person who logs in might be able to use your cached credentials.
+
 ## CLI basics
 
-On the VM, you should be able to use the CLI with the command `tinymotion-backend`, for example you could print the version of the backend using:
+On the VM, you should be able to use the CLI with the command `tinymotion-backend`, for example you could print the version of the backend using (this will most likely require you to authenticate with Infisical):
 
 ```
 tinymotion-backend version
@@ -160,4 +171,12 @@ If successful the above command should output the updated user record in JSON fo
   "disabled": false,
   "email": "myuser@example.com"
 }
+```
+
+## Log out from Infisical
+
+Make sure you reset your Infisical session when you are finished:
+
+```
+tinymotion-infisical-logout
 ```
