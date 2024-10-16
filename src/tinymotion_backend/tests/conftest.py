@@ -4,6 +4,7 @@ import pytest
 from fastapi.testclient import TestClient
 from sqlmodel import Session, SQLModel, create_engine, select
 from sqlmodel.pool import StaticPool
+from sqlalchemy import event
 
 from tinymotion_backend.main import app
 from tinymotion_backend.api.deps import get_session
@@ -16,6 +17,13 @@ def session_fixture():
     engine = create_engine(
         "sqlite://", connect_args={"check_same_thread": False}, poolclass=StaticPool
     )
+
+    # enable foreign keys, from https://stackoverflow.com/a/7831210
+    def _fk_pragma_on_connect(dbapi_con, con_record):
+        dbapi_con.execute('pragma foreign_keys=ON')
+
+    event.listen(engine, 'connect', _fk_pragma_on_connect)
+
     SQLModel.metadata.create_all(engine)
     with Session(engine) as session:
         mock_data.insert_mocked_data(session)

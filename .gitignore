@@ -8,6 +8,7 @@ __pycache__/
 *.db
 .env
 *.env
+*.env.*
 _version.py
 *.egg-info/
 cov_html/
