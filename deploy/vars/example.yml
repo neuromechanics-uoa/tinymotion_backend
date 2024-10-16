@@ -10,3 +10,6 @@ pull_policy: missing
 
 # directory to restore database and video files from
 restore_dir: restore
+
+# upgrade system and reboot if required
+upgrade_system: true

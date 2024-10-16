@@ -12,21 +12,27 @@
 - name: Upgrade and configure
   hosts: all
   become: true
+  vars:
+    upgrade_system: true
   tasks:
     - name: Full system upgrade
       apt:
         update_cache: true
         cache_valid_time: 3600
         upgrade: dist
+      when: upgrade_system == true
 
     - name: Check if reboot required
       stat:
         path: /var/run/reboot-required
       register: reboot_required_file
+      when: upgrade_system == true
 
     - name: Reboot after upgrade
       reboot:
-      when: reboot_required_file.stat.exists == true
+      when:
+        - upgrade_system == true
+        - reboot_required_file.stat.exists == true
 
     - name: Set timezone
       community.general.timezone:
