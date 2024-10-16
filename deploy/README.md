@@ -60,6 +60,10 @@ following environment variables need to be set:
 
 Further configuration is required for Ansible. You should create a yml file named like *vars/<environment_name>.yml*, where *<environment_name>* is the name of the environment you are deploying (*dev* in the example below). Refer to *vars/example.yml* to see which variables should be set.
 
+### Restoring database and video files during deployment
+
+If you have a local backup of the database and video files these can be restored during the deployment process. In the yaml config file you can set `restore_dir` to point to the local directory that contains the database and video files. The database file must be named `tinymotion.db` in the root of that directory and there must also be a subdirectory called `videos` that contains the video files to be restored (if any). Files on the remote will not be overwritten, only files that don't exist on the remote will be restored.
+
 ## Deployment
 
 ### Duckdns single step deployment

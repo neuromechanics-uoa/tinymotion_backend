@@ -80,8 +80,8 @@
   hosts: all
   become: true
   vars:
-    - docker_users:
-        - "{{ ansible_user }}"
+    docker_users:
+      - "{{ ansible_user }}"
   roles:
     - geerlingguy.docker
 
@@ -91,6 +91,7 @@
   vars:
     tinymotion_image_tag: latest
     pull_policy: policy
+    restore_dir: restore
     infisical_secrets: "{{ lookup('infisical.vault.read_secrets', \
                                   universal_auth_client_id=lookup('env', 'INFISICAL_CLIENT_ID'), \
                                   universal_auth_client_secret=lookup('env', 'INFISICAL_CLIENT_SECRET'), \
@@ -137,6 +138,36 @@
         owner: "{{ ansible_user }}"
         group: "{{ ansible_user }}"
         mode: '0755'
+
+    - name: Restore local db file if available and remote one doesn't already exist
+      ansible.builtin.copy:
+        src: "{{ restore_dir }}/tinymotion.db"
+        dest: "/home/{{ ansible_user }}/tinymotion_backend/data/tinymotion_backend/tinymotion.db"
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        mode: "0644"
+        force: false
+      when:
+        - lookup('ansible.builtin.fileglob', restore_dir + '/tinymotion.db') != []
+
+    - name: Make sure the videos directory is present
+      ansible.builtin.file:
+        path: "/home/{{ ansible_user }}/tinymotion_backend/data/tinymotion_backend/videos"
+        state: directory
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        mode: '0755'
+
+    - name: Restore local videos if available and not already present on remote
+      ansible.builtin.copy:
+        src: "{{ item }}"
+        dest: "/home/{{ ansible_user }}/tinymotion_backend/data/tinymotion_backend/videos/{{ item | basename }}"
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        mode: "0644"
+        force: false
+      with_fileglob:
+        - "{{ restore_dir }}/videos/*"
 
     - name: Configure docker-compose.yml
       ansible.builtin.template:
@@ -202,9 +233,6 @@
       ansible.builtin.apt_repository:
         repo: "deb-src [signed-by=/usr/share/keyrings/infisical-infisical-cli-archive-keyring.gpg] https://dl.cloudsmith.io/public/infisical/infisical-cli/deb/ubuntu jammy main"
         state: present
-
-    - name: Flush handlers
-      meta: flush_handlers
 
     - name: Install infisical cli
       ansible.builtin.apt:

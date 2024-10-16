@@ -20,3 +20,6 @@ terraform.tfvars
 host.ini
 terraform.tfstate*
 .terraform*
+restore/*.db
+restore/videos
+!restore/videos/.gitkeep

@@ -1,3 +1,4 @@
+---
 # duckdns domain and token should be set in infisical
 use_duckdns: true
 
@@ -6,3 +7,6 @@ tinymotion_image_tag: latest
 
 # docker image pull policy
 pull_policy: missing
+
+# directory to restore database and video files from
+restore_dir: restore
