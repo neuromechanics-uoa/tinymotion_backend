@@ -14,4 +14,4 @@ if ! infisical token >& /dev/null; then
 fi
 
 # run tinymotion backend with secrets injected
-infisical run --path /tinymotion_backend/app -- tinymotion-backend "$@"
+infisical run --env ${INFISICAL_ENV} --path /tinymotion_backend/app -- tinymotion-backend "$@"
