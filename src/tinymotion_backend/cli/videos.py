@@ -18,36 +18,29 @@ def video():
 
 @video.command()
 @click.option("-p", "--pager", is_flag=True, default=False, help="Display results using a pager")
-@click.option("-o", "--output-file", type=str, required=False, default=None, help="Write JSON output to file")
-@click.option("-q", "--quiet", is_flag=True, default=False, help="Don't write Infants to standard output")
-def list(pager: bool, output_file: str, quiet: bool):
+@click.option("-j", "--json-output", is_flag=True, default=False, help="Output JSON only, no extra messages")
+def list(pager: bool, json_output: bool):
     """List stored videos."""
     with Session(database.engine) as session:
         # get the list of Videos
         video_service = VideoService(session, 0)
         videos = video_service.list()
-        click.echo(f"Found {len(videos)} Videos")
+        if not json_output:
+            click.echo(f"Found {len(videos)} Videos")
 
         # build a list of Videos in json format
         videos_json = []
         for video in videos:
             videos_json.append(json.loads(video.json()))
 
-        if not quiet:
-            # display to screen with pager or not
-            if pager:
-                echo_command = click.echo_via_pager
-            else:
-                echo_command = click.echo
+        # display to screen with pager or not
+        if pager and not json_output:
+            echo_command = click.echo_via_pager
+        else:
+            echo_command = click.echo
 
-            # print to screen
-            echo_command(json.dumps(videos_json, indent=2))
-
-        # write json to file if requested
-        if output_file is not None:
-            with open(output_file, "w") as fout:
-                fout.write(json.dumps(videos_json, indent=2))
-            click.echo(f"Written Videos data to {output_file}")
+        # print to screen
+        echo_command(json.dumps(videos_json, indent=2))
 
 
 @video.command()

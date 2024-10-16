@@ -42,36 +42,29 @@ def create(
 
 @user.command()
 @click.option("-p", "--pager", is_flag=True, default=False, help="Display results using a pager")
-@click.option("-o", "--output-file", type=str, required=False, default=None, help="Write JSON output to file")
-@click.option("-q", "--quiet", is_flag=True, default=False, help="Don't write Infants to standard output")
-def list(pager: bool, output_file: str, quiet: bool):
+@click.option("-j", "--json-output", is_flag=True, default=False, help="Output JSON only, no extra messages")
+def list(pager: bool, json_output: bool):
     """List existing users."""
     with Session(database.engine) as session:
         # get the list of Users
         user_service = UserService(session)
         users = user_service.list()
-        click.echo(f"Found {len(users)} Users")
+        if not json_output:
+            click.echo(f"Found {len(users)} Users")
 
         # build a list of Users in json format
         users_json = []
         for user in users:
             users_json.append(json.loads(user.json()))
 
-        if not quiet:
-            # display to screen with pager or not
-            if pager:
-                echo_command = click.echo_via_pager
-            else:
-                echo_command = click.echo
+        # display to screen with pager or not
+        if pager and not json_output:
+            echo_command = click.echo_via_pager
+        else:
+            echo_command = click.echo
 
-            # print to screen
-            echo_command(json.dumps(users_json, indent=2, default=convert_json))
-
-        # write json to file if requested
-        if output_file is not None:
-            with open(output_file, "w") as fout:
-                fout.write(json.dumps(users_json, indent=2))
-            click.echo(f"Written Users to {output_file}")
+        # print to screen
+        echo_command(json.dumps(users_json, indent=2, default=convert_json))
 
 
 @user.command()

@@ -55,36 +55,28 @@ def create(
 
 @infant.command()
 @click.option("-p", "--pager", is_flag=True, default=False, help="Display results using a pager")
-@click.option("-o", "--output-file", type=str, required=False, default=None, help="Write JSON output to file")
-@click.option("-q", "--quiet", is_flag=True, default=False, help="Don't write Infants to standard output")
-def list(pager: bool, output_file: str, quiet: bool):
+@click.option("-j", "--json-output", is_flag=True, default=False, help="Output JSON only, no extra messages")
+def list(pager: bool, json_output: bool):
     """List existing infants."""
     with Session(database.engine) as session:
         # get the list of Infants
         infant_service = InfantService(session, None)
         infants = infant_service.list()
-        click.echo(f"Found {len(infants)} Infants")
+        if not json_output:
+            click.echo(f"Found {len(infants)} Infants")
 
         # build a list of Infants in json format
         infants_json = []
         for infant in infants:
             infants_json.append(json.loads(infant.json()))
 
-        # print to screen
-        if not quiet:
-            # display to screen with pager or not
-            if pager:
-                echo_command = click.echo_via_pager
-            else:
-                echo_command = click.echo
+        # display to screen with pager or not
+        if pager and not json_output:
+            echo_command = click.echo_via_pager
+        else:
+            echo_command = click.echo
 
-            echo_command(json.dumps(infants_json, indent=2, default=convert_json))
-
-        # write json to file if requested
-        if output_file is not None:
-            with open(output_file, "w") as fout:
-                fout.write(json.dumps(infants_json, indent=2))
-            click.echo(f"Written Infants to {output_file}")
+        echo_command(json.dumps(infants_json, indent=2, default=convert_json))
 
 
 @infant.command()
